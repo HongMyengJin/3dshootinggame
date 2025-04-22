@@ -66,39 +66,9 @@ public class PlayerFire : MonoBehaviour
         if (Input.GetMouseButton(0) && CurCoolTime < 0.0f)
         {
             ShootAttack();
-            CurShootEnum = ShootEnum.None;
-            BulletUI.Instance.UpdateState(CurShootEnum);
-
-            CurCoolTime = MaxCoolTime;
         }
 
-        // 장전
-        if(Input.GetKeyDown(KeyCode.R))
-        {
-            if (CurShootEnum == ShootEnum.None) // 장전 시작
-            {
-                CurLoadTime = MaxLoadTime;
-            }
-            else if(CurShootEnum == ShootEnum.Load) // 장전 중 - 취소
-            {
-                CurLoadTime = 0.0f;
-            }
-
-            CurShootEnum = CurShootEnum == ShootEnum.None ? ShootEnum.Load : ShootEnum.None;
-            BulletUI.Instance.UpdateState(CurShootEnum);
-        }
-        
-        if(CurShootEnum == ShootEnum.Load)
-        {
-            CurLoadTime -= Time.deltaTime;
-            if (CurLoadTime < 0.0f)
-            {
-                // 장전 완료
-                CurLoadTime = 0.0f;
-                BulletManager.Instance.ResetBullet();
-            }
-        }
-        BulletUI.Instance.UpdateBulletTimer(CurLoadTime);
+        LoadGun();
     }
 
     public void BombAttack()
@@ -125,7 +95,13 @@ public class PlayerFire : MonoBehaviour
         {
             // 피격 이펙트 생성(표시)
             BulletManager.Instance.UseBullet(hitInfo.point);
+            LazerManager.Instance.SettingLine(transform.position, hitInfo.point);
         }
+
+        CurShootEnum = ShootEnum.None;
+        BulletUI.Instance.UpdateState(CurShootEnum);
+
+        CurCoolTime = MaxCoolTime;
     }
 
     public void AddPower()
@@ -138,5 +114,36 @@ public class PlayerFire : MonoBehaviour
     {
         BombGaugeUI.Instance.Ratio = ThrowPower / MaxThrowPower;
         BombGaugeUI.Instance.UpdateValue();
+    }
+
+    public void LoadGun()
+    {
+        // 장전
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            if (CurShootEnum == ShootEnum.None) // 장전 시작
+            {
+                CurLoadTime = MaxLoadTime;
+            }
+            else if (CurShootEnum == ShootEnum.Load) // 장전 중 - 취소
+            {
+                CurLoadTime = 0.0f;
+            }
+
+            CurShootEnum = CurShootEnum == ShootEnum.None ? ShootEnum.Load : ShootEnum.None;
+            BulletUI.Instance.UpdateState(CurShootEnum);
+        }
+
+        if (CurShootEnum == ShootEnum.Load)
+        {
+            CurLoadTime -= Time.deltaTime;
+            if (CurLoadTime < 0.0f)
+            {
+                // 장전 완료
+                CurLoadTime = 0.0f;
+                BulletManager.Instance.ResetBullet();
+            }
+        }
+        BulletUI.Instance.UpdateBulletTimer(CurLoadTime);
     }
 }
