@@ -87,7 +87,7 @@ public class PlayerMove : MonoBehaviour
         float climbValue = PlayerDataSo.StaminaUseSpeed * Time.deltaTime;
         if (CheckClimb() && Input.GetKey(KeyCode.K) && climbValue < PlayerStat.CurStamina) // 벽 타기 중이면
         {
-             Debug.Log("Climb~~~");
+            Debug.Log("Climb~~~");
             dir = new Vector3(h, v, 0).normalized;
             dir = Camera.main.transform.TransformDirection(dir);
             dir.z = 0.0f;
