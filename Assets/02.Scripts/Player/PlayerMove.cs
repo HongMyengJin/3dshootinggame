@@ -11,7 +11,7 @@ public class PlayerMove : MonoBehaviour
     private int _jumpN = 0;
     private bool _bDash = false;
     private Vector3 _dir = Vector3.zero;
-    private bool _bClimb = false; 
+    // private bool _bClimb = false; 
     private float _yVelocity = 0f;
 
     public Slider Slider;
@@ -33,7 +33,7 @@ public class PlayerMove : MonoBehaviour
             _dir = dir;
         dir = Camera.main.transform.TransformDirection(dir);
 
-        if (!Climb(dir, h, v))
+        if (Climb(dir, h, v))
             return;
 
         Jump();
@@ -78,22 +78,22 @@ public class PlayerMove : MonoBehaviour
 
 
     public bool Climb(Vector3 dir, float h, float v){
-        CheckClimb(); // 벽 타기 체크
-        if (_bClimb) // 벽 타기 중이면
+
+        float climbValue = PlayerDataSo.StaminaUseSpeed * Time.deltaTime;
+        if (CheckClimb() && Input.GetKey(KeyCode.K) && climbValue < PlayerStat.CurStamina) // 벽 타기 중이면
         {
+             Debug.Log("Climb~~~");
             dir = new Vector3(h, v, 0).normalized;
             dir = Camera.main.transform.TransformDirection(dir);
             dir.z = 0.0f;
             _characterController.Move(dir * _moveSpeed * Time.deltaTime);
-            PlayerStat.CurStamina -= PlayerDataSo.StaminaUseSpeed * Time.deltaTime;
+            PlayerStat.CurStamina -= climbValue;
             PlayerStat.ChangeStamina();
             _yVelocity = 0.0f; // 중력 초기화
             Debug.Log($"Stat: {PlayerStat.CurStamina}");
-            if (PlayerStat.CurStamina <= 0.0f)
-                _bClimb = false;
-            return false;
-        }   
-        return true;
+            return true;
+        }
+        return false;
     }
 
     public void Jump(){
@@ -140,18 +140,15 @@ public class PlayerMove : MonoBehaviour
         PlayerStat.ChangeStamina();
     }
 
-    public void CheckClimb()
+    public bool CheckClimb()
     {
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.forward, out hit, 1.0f)){
-            if(hit.collider.CompareTag("Wall"))
-                _bClimb = true;
-            else
-                _bClimb = false;
+            if (hit.collider.CompareTag("Wall"))
+                return true;
         }
-        else{
-            _bClimb = false;
-        }
+
+        return false;
     }
 }
 
