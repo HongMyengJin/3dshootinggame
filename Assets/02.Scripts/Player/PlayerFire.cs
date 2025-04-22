@@ -1,7 +1,14 @@
+using System.Data;
 using UnityEngine;
 
 public class PlayerFire : MonoBehaviour
 {
+    public enum ShootEnum
+    {
+        None,
+        Load
+    }
+
     // 필요 속성
     // - 발사 위치
     public GameObject FirePosition;
@@ -14,26 +21,33 @@ public class PlayerFire : MonoBehaviour
 
     public const float AddThrowSpeed = 20.0f;
 
-    public ParticleSystem BulletEffect;
-
     private Camera _mainCamera;
 
+    public const float MaxLoadTime = 2.0f;
+    public float CurLoadTime = 0.0f;
 
+    public const float MaxCoolTime = 0.5f;
+    public float CurCoolTime = 0.0f;
+
+    public ShootEnum CurShootEnum;
 
     private void Start()
     {
         _mainCamera = Camera.main;
+
+        CurShootEnum = ShootEnum.None;
 
         Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void Update()
     {
+        CurCoolTime -= Time.deltaTime;
         // 2. 오른쪽 버튼 입력 받기
         // - 0: 왼쪽, 1: 오른쪽, 2: 휠
 
         // 마우스 오른쪽이 눌릴 때 + 현재 사용 가능한 폭탄 존재
-        if(Input.GetMouseButton(1) && BombUI.Instance.CheckUseBomb())
+        if (Input.GetMouseButton(1) && BombUI.Instance.CheckUseBomb())
         {
             AddPower();
         }
@@ -49,15 +63,42 @@ public class PlayerFire : MonoBehaviour
 
         // 목표: 마우스의 왼쪽 버튼을 누르면 카메라가 바라보는 방향으로 총을 발사하고 싶다. - 총알 발사(레이저 방식)
         // 1. 왼쪽 버튼 입력 받기
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0) && CurCoolTime < 0.0f)
         {
             ShootAttack();
+            CurShootEnum = ShootEnum.None;
+            BulletUI.Instance.UpdateState(CurShootEnum);
+
+            CurCoolTime = MaxCoolTime;
         }
 
+        // 장전
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            if (CurShootEnum == ShootEnum.None) // 장전 시작
+            {
+                CurLoadTime = MaxLoadTime;
+            }
+            else if(CurShootEnum == ShootEnum.Load) // 장전 중 - 취소
+            {
+                CurLoadTime = 0.0f;
+            }
 
-        // Ray: 레이저(시작 위치, 방향)
-        // RayCast: 레이저를 발사
-        // RayCastHit: 레이저가 물체와 부딪혔다면 그 정보를 저장하는 구조체
+            CurShootEnum = CurShootEnum == ShootEnum.None ? ShootEnum.Load : ShootEnum.None;
+            BulletUI.Instance.UpdateState(CurShootEnum);
+        }
+        
+        if(CurShootEnum == ShootEnum.Load)
+        {
+            CurLoadTime -= Time.deltaTime;
+            if (CurLoadTime < 0.0f)
+            {
+                // 장전 완료
+                CurLoadTime = 0.0f;
+                BulletManager.Instance.ResetBullet();
+            }
+        }
+        BulletUI.Instance.UpdateBulletTimer(CurLoadTime);
     }
 
     public void BombAttack()
@@ -83,8 +124,7 @@ public class PlayerFire : MonoBehaviour
         if (isHit) // ㄴ에 데이터가 있다면(부딪혔다면) 피격 이펙트 생성(표시)
         {
             // 피격 이펙트 생성(표시)
-            BulletEffect.transform.position = hitInfo.point;
-            BulletEffect.Play();
+            BulletManager.Instance.UseBullet(hitInfo.point);
         }
     }
 

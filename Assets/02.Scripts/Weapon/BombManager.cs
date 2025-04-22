@@ -30,6 +30,7 @@ public class BombManager : MonoBehaviour
         for(int i = 0; i < MaxBombN; i++)
         {
             GameObject bomb = Instantiate(BombPrefab);
+            bomb.transform.parent = gameObject.transform;
             _bombList.Add(bomb.GetComponent<Bomb>());
             bomb.gameObject.SetActive(false);
         }   
