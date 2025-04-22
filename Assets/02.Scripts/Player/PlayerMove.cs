@@ -9,9 +9,8 @@ public class PlayerMove : MonoBehaviour
     private float _moveSpeed = 7f;
     private CharacterController _characterController;
     private int _jumpN = 0;
-    private bool _bDash = false;
+    private bool _isDash = false;
     private Vector3 _dir = Vector3.zero;
-    // private bool _bClimb = false; 
     private float _yVelocity = 0f;
 
     public Slider Slider;
@@ -19,11 +18,13 @@ public class PlayerMove : MonoBehaviour
 
     public PlayerStat PlayerStat;
 
-    private void Awake(){
+    private void Awake()
+    {
         _characterController = GetComponent<CharacterController>();
     }
 
-    private void Update() {
+    private void Update() 
+    {
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
 
@@ -44,19 +45,21 @@ public class PlayerMove : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.E)){
             Dash();
         }
-        else if(!_bDash){
+        else if(!_isDash)
+        {
             BasicStamina();
         }
 
 
         dir = GetVelocity(dir);
-        if (_bDash)
+        if (_isDash)
             return;
 
         _characterController.Move(dir * _moveSpeed * Time.deltaTime);
     }
 
-    public Vector3 GetVelocity(Vector3 dir){
+    public Vector3 GetVelocity(Vector3 dir)
+    {
         _yVelocity += PlayerDataSo.Gravity * Time.deltaTime;
         dir.y = _yVelocity;
 
@@ -64,7 +67,8 @@ public class PlayerMove : MonoBehaviour
     }
 
 
-    IEnumerator CoDash(float dashTime){
+    IEnumerator CoDash(float dashTime)
+    {
         float elapseTime = 0.0f;
         while (elapseTime < dashTime)
         {
@@ -73,11 +77,12 @@ public class PlayerMove : MonoBehaviour
             yield return null;
         }
 
-        _bDash = false;
+        _isDash = false;
     }
 
 
-    public bool Climb(Vector3 dir, float h, float v){
+    public bool Climb(Vector3 dir, float h, float v)
+    {
 
         float climbValue = PlayerDataSo.StaminaUseSpeed * Time.deltaTime;
         if (CheckClimb() && Input.GetKey(KeyCode.K) && climbValue < PlayerStat.CurStamina) // 벽 타기 중이면
@@ -96,19 +101,23 @@ public class PlayerMove : MonoBehaviour
         return false;
     }
 
-    public void Jump(){
-        if (_characterController.isGrounded){
+    public void Jump()
+    {
+        if (_characterController.isGrounded)
+        {
             _jumpN = 0;
         }
 
         // 3. 점프 적용
-        if (Input.GetButtonDown("Jump") && _jumpN < 2){
+        if (Input.GetButtonDown("Jump") && _jumpN < 2)
+        {
             _yVelocity = PlayerDataSo.JumpPower;
             _jumpN++;
         }
     }
 
-    public void Run(){
+    public void Run()
+    {
 
         // 스태미나 0보다 작은지 체크
         _moveSpeed = 12.0f;
@@ -119,20 +128,21 @@ public class PlayerMove : MonoBehaviour
 
     public void Dash()
     {
-        if (_bDash == false)
+        if (_isDash == false)
         {
             if (PlayerStat.CurStamina - PlayerDataSo.StaminaDashUseSpeed < 0)
                 return;
 
             PlayerStat.CurStamina -= PlayerDataSo.StaminaDashUseSpeed;
             PlayerStat.ChangeStamina();
-            _bDash = true;
+            _isDash = true;
             _dir = Camera.main.transform.TransformDirection(_dir);
             StartCoroutine(CoDash(0.5f));
         }
     }
 
-    public void BasicStamina(){
+    public void BasicStamina()
+    {
         _moveSpeed = 7.0f;
 
         if (PlayerStat.CurStamina < PlayerDataSo.MaxStamina)
