@@ -3292,6 +3292,7 @@ MonoBehaviour:
   Health: 100
   DamagedTime: 0.5
   DeathTime: 0.2
+  PatrolTime: 0.2
   PatrolPositions:
   - {fileID: 2096035273}
   - {fileID: 453328767}
@@ -3847,10 +3848,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e31a1211951a18047a39d4a51ed1b0ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  recoilForce: 50
+  recoilForce: -50
   recoilAngle: 20
-  recoilDuraion: 0.15
-  delayTime: 0.15
+  recoilDuraion: 0.05
+  delayTime: 0.1
 --- !u!1 &1758315558
 GameObject:
   m_ObjectHideFlags: 0

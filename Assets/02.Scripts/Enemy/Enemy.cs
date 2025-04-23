@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public class Enemy : MonoBehaviour
 {
@@ -127,20 +128,28 @@ public class Enemy : MonoBehaviour
     public void Patrol()
     {
         // 만약 도달했으면 다음으로
-        if(TargetFollow(PatrolPositions[PatrolIndex].position))
+        if (HasReachedTarget(PatrolPositions[PatrolIndex].position))
+        {
             PatrolIndex = (++PatrolIndex) % PatrolPositions.Length;
+        }
+        else
+        {
+            TargetFollow(PatrolPositions[PatrolIndex].position);
+        }
     }
 
-    public bool TargetFollow(Vector3 Taget) // Follow 완료 - true
+    public bool HasReachedTarget(Vector3 TargetPos)
+    {
+        Vector3 pos = transform.position;
+        float dis = Vector2.Distance(new Vector2(TargetPos.x, TargetPos.z), new Vector2(pos.x, pos.z));
+        return (dis <= _characterController.minMoveDistance + _distanceGap);
+    }
+
+    public void TargetFollow(Vector3 Taget) // Follow 완료 - true
     {
         Vector3 pos = transform.position;
         Vector3 dir = (Taget - transform.position).normalized;
         _characterController.Move(dir * MoveSpeed * Time.deltaTime);
-
-        // 도달 여부 리턴
-        float dis = Vector2.Distance(new Vector2(Taget.x, Taget.z), new Vector2(pos.x, pos.z));
-        Debug.Log($"(현재 Distance: {dis})");
-        return (dis <= _characterController.minMoveDistance + _distanceGap);
 
     }
 
