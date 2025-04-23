@@ -17,7 +17,7 @@ public class LazerManager : MonoBehaviour
 
     private float _length;
 
-    private float _moveSpeed = 100.0f;
+    private float _moveSpeed = 50.0f;
 
 
     private void Awake()

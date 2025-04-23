@@ -10,6 +10,7 @@ public class PlayerMove : MonoBehaviour
     private CharacterController _characterController;
     private int _jumpN = 0;
     private bool _isDash = false;
+    private bool _isClimb = false;
     private Vector3 _dir = Vector3.zero;
     private float _yVelocity = 0f;
 
@@ -17,6 +18,7 @@ public class PlayerMove : MonoBehaviour
     public PlayerSO PlayerDataSo;
 
     public PlayerStat PlayerStat;
+
 
     private void Awake()
     {
@@ -78,7 +80,6 @@ public class PlayerMove : MonoBehaviour
         float climbValue = PlayerDataSo.StaminaUseSpeed * Time.deltaTime;
         if (CheckClimb() && Input.GetKey(KeyCode.K) && climbValue < PlayerStat.CurStamina) // 벽 타기 중이면
         {
-            Debug.Log("Climb~~~");
             dir = new Vector3(h, v, 0).normalized;
             dir = Camera.main.transform.TransformDirection(dir);
             dir.z = 0.0f;
@@ -86,9 +87,11 @@ public class PlayerMove : MonoBehaviour
             PlayerStat.CurStamina -= climbValue;
             PlayerStat.ChangeStamina();
             _yVelocity = 0.0f; // 중력 초기화
-            Debug.Log($"Stat: {PlayerStat.CurStamina}");
+            Debug.Log($"Stat: {PlayerStat.CurStamina} 사용 한 스태미나 {climbValue}");
+            Debug.Log("클라이밍 중!");
             return true;
         }
+        Debug.Log("클라이밍 실패!");
         return false;
     }
 
@@ -141,7 +144,11 @@ public class PlayerMove : MonoBehaviour
             _moveSpeed = 7.0f;
 
             if (PlayerStat.CurStamina < PlayerDataSo.MaxStamina)
+            {
                 PlayerStat.CurStamina += Time.deltaTime * PlayerDataSo.StaminaFillSpeed;
+                Debug.Log("현재 스태미나 증가 중!");
+            }
+                
             PlayerStat.ChangeStamina();
         }
     }

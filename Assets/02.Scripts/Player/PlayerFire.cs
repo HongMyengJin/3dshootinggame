@@ -97,6 +97,19 @@ public class PlayerFire : MonoBehaviour
             // 피격 이펙트 생성(표시)
             BulletManager.Instance.UseBullet(hitInfo.point);
             LazerManager.Instance.SettingLine(FirePosition.transform.position, hitInfo.point);
+
+            Debug.Log($"현재 총 맞은 태그: {hitInfo.collider.gameObject.tag}");
+            if (hitInfo.collider.gameObject.CompareTag("Enemy"))
+            {
+                Enemy enemy = hitInfo.collider.GetComponent<Enemy>();
+
+                Damage damage = new Damage();
+
+                damage.Value = 10;
+                damage.From = this.gameObject;
+
+                enemy.TakeDamage(damage);
+            }
         }
 
         CurShootEnum = ShootEnum.None;
