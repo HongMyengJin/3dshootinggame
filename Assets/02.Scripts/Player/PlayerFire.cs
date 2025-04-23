@@ -101,14 +101,15 @@ public class PlayerFire : MonoBehaviour
             Debug.Log($"현재 총 맞은 태그: {hitInfo.collider.gameObject.tag}");
             if (hitInfo.collider.gameObject.CompareTag("Enemy"))
             {
+                Vector3 hitDir = -hitInfo.normal;
+                hitDir.y = 0.0f;
                 Enemy enemy = hitInfo.collider.GetComponent<Enemy>();
-
                 Damage damage = new Damage();
 
                 damage.Value = 10;
                 damage.From = this.gameObject;
 
-                enemy.TakeDamage(damage);
+                enemy.TakeDamage(damage, hitDir);
             }
         }
 

@@ -7,6 +7,7 @@ public class Enemy : MonoBehaviour
     public enum EnemyState
     {
         Idle, // 대기
+        Patrol, // 순찰
         Trace, // 추적
         Return, // 복귀
         Attack, // 공격
@@ -31,8 +32,17 @@ public class Enemy : MonoBehaviour
 
     public int Health = 100;
     public float DamagedTime = 1.0f; // 경직 시간
-    private float _damagedTimer = 0.0f; // ㄴ 체크기
+    //private float _damagedTimer = 0.0f; // ㄴ 체크기
     public float DeathTime = 0.2f; // 죽는 시간
+    public float PatrolTime = 3.0f; // Idle에서 체크 시간
+    
+
+    public Transform[] PatrolPositions;
+    public int PatrolIndex = 0;
+
+    private const float _distanceGap = 0.1f;
+    private const float _nockBackTime = 0.5f;
+    private float _nockBackMaxSpeed = 20.0f;
 
     private void Start()
     {
@@ -49,6 +59,11 @@ public class Enemy : MonoBehaviour
             case EnemyState.Idle:
             {
                     Idle();
+                    break;
+            }
+            case EnemyState.Patrol:
+            {
+                    Patrol();
                     break;
             }
             case EnemyState.Trace:
@@ -69,7 +84,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void TakeDamage(Damage damage)
+    public void TakeDamage(Damage damage, Vector3 dir)
     {
         // 사망했거나 공격받고 있는 중이면...
         if (CurrentState == EnemyState.Damaged || CurrentState == EnemyState.Die)
@@ -92,6 +107,7 @@ public class Enemy : MonoBehaviour
 
         CurrentState = EnemyState.Damaged;
         StartCoroutine(Damaged_Coroutine());
+        StartCoroutine(Knockback(_nockBackTime, dir));
     }
 
     // 3. 상태 함수들을 구현한다.
@@ -103,6 +119,29 @@ public class Enemy : MonoBehaviour
             Debug.Log("상태전환: Idle -> Trace");
             CurrentState = EnemyState.Trace;
         }
+
+        // 만약 Idle 시간이 5초 지나면
+        StartCoroutine(Patrol_Coroutine());
+    }
+
+    public void Patrol()
+    {
+        // 만약 도달했으면 다음으로
+        if(TargetFollow(PatrolPositions[PatrolIndex].position))
+            PatrolIndex = (++PatrolIndex) % PatrolPositions.Length;
+    }
+
+    public bool TargetFollow(Vector3 Taget) // Follow 완료 - true
+    {
+        Vector3 pos = transform.position;
+        Vector3 dir = (Taget - transform.position).normalized;
+        _characterController.Move(dir * MoveSpeed * Time.deltaTime);
+
+        // 도달 여부 리턴
+        float dis = Vector2.Distance(new Vector2(Taget.x, Taget.z), new Vector2(pos.x, pos.z));
+        Debug.Log($"(현재 Distance: {dis})");
+        return (dis <= _characterController.minMoveDistance + _distanceGap);
+
     }
 
     private void Trace()
@@ -125,8 +164,7 @@ public class Enemy : MonoBehaviour
         }
 
         // 행동: 플레이어를 추적한다.
-        Vector3 dir = (_player.transform.position - transform.position).normalized;
-        _characterController.Move(dir * MoveSpeed * Time.deltaTime);
+        TargetFollow(_player.transform.position);
     }
 
     private void Return()
@@ -134,7 +172,7 @@ public class Enemy : MonoBehaviour
         // 행동: 복귀한다.
 
         // 전이: 시작 위치와 가까워지면 -> Idle
-        if (Vector3.Distance(transform.position, _startPosition) <= _characterController.minMoveDistance)
+        if (Vector3.Distance(transform.position, _startPosition) <= _characterController.minMoveDistance + _distanceGap)
         {
             Debug.Log("상태전환: Return -> Idle");
             transform.position = _startPosition;
@@ -172,7 +210,6 @@ public class Enemy : MonoBehaviour
         {
             Debug.Log("플레이어 공격!");
             _attackTimer = 0;
-
         }
 
     }
@@ -195,17 +232,39 @@ public class Enemy : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    private void Damaged()
+    private IEnumerator Patrol_Coroutine()
     {
-        // 행동: 일정 시간 동안 멈춰있다가 공격
-        _damagedTimer += Time.deltaTime;
-        if(_damagedTimer >= DamagedTime)
-        {
-            _damagedTimer = 0.0f;
-            Debug.Log("상태전환: Damaged -> Trace");
-            CurrentState = EnemyState.Trace;
-        }
+
+        // 코루틴 방식으로 변경
+        yield return new WaitForSeconds(PatrolTime);
+        Debug.Log("상태전환: Idle -> Patrol");
+        CurrentState = EnemyState.Patrol;
     }
+
+    private IEnumerator Knockback(float knockbackTime, Vector3 dir)
+    {
+        float elapsedTime = 0.0f;
+        while (elapsedTime < knockbackTime)
+        {
+            float time = elapsedTime / knockbackTime;
+            float value = Mathf.Lerp(0.0f, _nockBackMaxSpeed, time);
+            _characterController.Move(dir * value * Time.deltaTime);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        // 코루틴 방식으로 변경
+    }
+    //private void Damaged()
+    //{
+    //    // 행동: 일정 시간 동안 멈춰있다가 공격
+    //    _damagedTimer += Time.deltaTime;
+    //    if(_damagedTimer >= DamagedTime)
+    //    {
+    //        _damagedTimer = 0.0f;
+    //        Debug.Log("상태전환: Damaged -> Trace");
+    //        CurrentState = EnemyState.Trace;
+    //    }
+    //}
 
     private void Die()
     {

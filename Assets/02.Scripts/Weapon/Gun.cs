@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI;
 
@@ -40,16 +41,21 @@ public class Gun : MonoBehaviour
         StartCoroutine(ApplyRecoil(delayTime));
     }
 
+    public void Rebound(float elapsedTime, float startAngle, float endAngle)
+    {
+        float time = elapsedTime / recoilDuraion;
+        float value = Mathf.Lerp(startAngle, endAngle, time);
+        mainCamera.transform.localRotation = originalCameraRotation * Quaternion.Euler(-value, 0.0f, 0.0f);
+        mainCamera.transform.localPosition = originalCameraPosition + transform.forward * value * Time.deltaTime * 20.0f;
+    }
+
     private IEnumerator ApplyRecoil(float delayTime)
     {
         yield return new WaitForSeconds(delayTime);
         float elapsedTime = 0.0f;
         while (elapsedTime < recoilDuraion)
         {
-            float time = elapsedTime / recoilDuraion;
-            float value = Mathf.Lerp(0.0f, recoilAngle, time);
-            mainCamera.transform.localRotation = originalCameraRotation * Quaternion.Euler(-value, 0.0f, 0.0f);
-            mainCamera.transform.localPosition = originalCameraPosition - transform.forward * value * Time.deltaTime * 20.0f;
+            Rebound(elapsedTime, 0.0f, recoilAngle);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
@@ -57,10 +63,7 @@ public class Gun : MonoBehaviour
         elapsedTime = 0.0f;
         while (elapsedTime < recoilDuraion)
         {
-            float time = elapsedTime / recoilDuraion;
-            float value = Mathf.Lerp(recoilAngle, 0.0f, time);
-            mainCamera.transform.localRotation = originalCameraRotation * Quaternion.Euler(-value, 0.0f, 0.0f);
-            mainCamera.transform.localPosition = originalCameraPosition - transform.forward * value * Time.deltaTime * 20.0f;
+            Rebound(elapsedTime, recoilAngle, 0.0f);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
