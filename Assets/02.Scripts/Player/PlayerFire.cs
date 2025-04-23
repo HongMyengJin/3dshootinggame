@@ -53,7 +53,7 @@ public class PlayerFire : MonoBehaviour
         }
 
         // 마우스 오른쪽 올릴 때
-        if (Input.GetMouseButtonUp(1))
+        if (Input.GetMouseButtonUp(1) && BombUI.Instance.CheckUseBomb())
         {
             BombAttack();
             ThrowPower = 0.0f;
