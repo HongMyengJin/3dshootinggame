@@ -38,23 +38,14 @@ public class PlayerMove : MonoBehaviour
             return;
 
         Jump();
+        Run();
+        Dash();
 
-        if (Input.GetKey(KeyCode.LeftShift)){
-            Run();
-        }
-        else if (Input.GetKeyDown(KeyCode.E)){
-            Dash();
-        }
-        else if(!_isDash)
-        {
-            BasicStamina();
-        }
-
-
+        BasicStamina();
         dir = GetVelocity(dir);
+
         if (_isDash)
             return;
-
         _characterController.Move(dir * _moveSpeed * Time.deltaTime);
     }
 
@@ -118,17 +109,19 @@ public class PlayerMove : MonoBehaviour
 
     public void Run()
     {
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            // 스태미나 0보다 작은지 체크
+            _moveSpeed = 12.0f;
 
-        // 스태미나 0보다 작은지 체크
-        _moveSpeed = 12.0f;
-
-        PlayerStat.CurStamina -= Time.deltaTime * PlayerDataSo.StaminaUseSpeed;
-        PlayerStat.ChangeStamina();
+            PlayerStat.CurStamina -= Time.deltaTime * PlayerDataSo.StaminaUseSpeed;
+            PlayerStat.ChangeStamina();
+        }
     }
 
     public void Dash()
     {
-        if (_isDash == false)
+        if (_isDash == false && Input.GetKeyDown(KeyCode.E))
         {
             if (PlayerStat.CurStamina - PlayerDataSo.StaminaDashUseSpeed < 0)
                 return;
@@ -143,11 +136,14 @@ public class PlayerMove : MonoBehaviour
 
     public void BasicStamina()
     {
-        _moveSpeed = 7.0f;
+        if (!_isDash)
+        {
+            _moveSpeed = 7.0f;
 
-        if (PlayerStat.CurStamina < PlayerDataSo.MaxStamina)
-            PlayerStat.CurStamina += Time.deltaTime * PlayerDataSo.StaminaFillSpeed;
-        PlayerStat.ChangeStamina();
+            if (PlayerStat.CurStamina < PlayerDataSo.MaxStamina)
+                PlayerStat.CurStamina += Time.deltaTime * PlayerDataSo.StaminaFillSpeed;
+            PlayerStat.ChangeStamina();
+        }
     }
 
     public bool CheckClimb()

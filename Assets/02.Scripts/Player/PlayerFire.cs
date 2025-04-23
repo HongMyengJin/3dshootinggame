@@ -66,6 +66,7 @@ public class PlayerFire : MonoBehaviour
         if (Input.GetMouseButton(0) && CurCoolTime < 0.0f)
         {
             ShootAttack();
+            Gun.Instance.Shoot();
         }
 
         LoadGun();
@@ -95,7 +96,7 @@ public class PlayerFire : MonoBehaviour
         {
             // 피격 이펙트 생성(표시)
             BulletManager.Instance.UseBullet(hitInfo.point);
-            LazerManager.Instance.SettingLine(transform.position, hitInfo.point);
+            LazerManager.Instance.SettingLine(FirePosition.transform.position, hitInfo.point);
         }
 
         CurShootEnum = ShootEnum.None;

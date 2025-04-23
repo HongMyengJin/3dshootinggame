@@ -17,7 +17,7 @@ public class LazerManager : MonoBehaviour
 
     private float _length;
 
-    private float _moveSpeed = 15.0f;
+    private float _moveSpeed = 100.0f;
 
 
     private void Awake()
@@ -47,7 +47,7 @@ public class LazerManager : MonoBehaviour
 
     public void Moving()
     {
-        _startPoint += _dir * Time.deltaTime * 3.0f * _moveSpeed;
+        _startPoint += _dir * Time.deltaTime * _moveSpeed;
         UpdateLine();
     }
 
@@ -68,7 +68,7 @@ public class LazerManager : MonoBehaviour
     {
         while (0.0f < _length)
         {
-            _length -= Time.deltaTime * 3.0f * _moveSpeed;
+            _length -= Time.deltaTime * _moveSpeed;
             Moving();
             yield return null;
         }
