@@ -91,7 +91,6 @@ public class PlayerMove : MonoBehaviour
             Debug.Log("클라이밍 중!");
             return true;
         }
-        Debug.Log("클라이밍 실패!");
         return false;
     }
 

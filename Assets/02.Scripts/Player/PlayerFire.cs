@@ -9,6 +9,13 @@ public class PlayerFire : MonoBehaviour
         Load
     }
 
+    public struct FireData
+    {
+        public Vector3 direction;
+        public Ray ray;
+        public RaycastHit? hitInfo;
+    }
+
     // 필요 속성
     // - 발사 위치
     public GameObject FirePosition;
@@ -36,8 +43,6 @@ public class PlayerFire : MonoBehaviour
         _mainCamera = Camera.main;
 
         CurShootEnum = ShootEnum.None;
-
-        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void Update()
@@ -82,32 +87,94 @@ public class PlayerFire : MonoBehaviour
         bombRigidbody.AddTorque(Vector3.one);
     }
 
+    public FireData CalculateFireData()
+    {
+        CameraViewType cameraViewType = CameraManager.Instance.GetCurrentViewType();
+        Vector3 muzzlePos = FirePosition.transform.position;
+
+        switch (cameraViewType)
+        {
+            case CameraViewType.FPS:
+                {
+                    Vector3 dir = Camera.main.transform.forward;
+                    return new FireData
+                    {
+                        direction = dir,
+                        ray = new Ray(muzzlePos, dir),
+                        hitInfo = null
+                    };
+                }
+            case CameraViewType.TPS:
+                {
+                    Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
+                    if (Physics.Raycast(ray, out RaycastHit hit, 100f))
+                    {
+                        Vector3 dir = (hit.point - muzzlePos).normalized;
+                        return new FireData { direction = dir, ray = new Ray(muzzlePos, dir), hitInfo = hit };
+                    }
+                    else
+                    {
+                        Vector3 dir = ray.direction;
+                        return new FireData { direction = dir, ray = new Ray(muzzlePos, dir), hitInfo = null };
+                    }
+                }
+            case CameraViewType.QuaterView:
+                {
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    if (Physics.Raycast(ray, out RaycastHit hit))
+                    {
+                        Vector3 dir = (hit.point - muzzlePos).normalized;
+                        return new FireData { direction = dir, ray = new Ray(muzzlePos, dir), hitInfo = hit };
+                    }
+                    else
+                    {
+                        Vector3 dir = transform.forward;
+                        return new FireData { direction = dir, ray = new Ray(muzzlePos, dir), hitInfo = null };
+                    }
+                }
+        }
+
+        return new FireData { direction = Vector3.zero, ray = new Ray(muzzlePos, Vector3.forward), hitInfo = null };
+    }
+
     public void ShootAttack()
     {
-        // 2. 레이를 생성하고 발사 위치와 진행 방향을 설정
-        Ray ray = new Ray(FirePosition.transform.position, Camera.main.transform.forward);
+        FireData fire = CalculateFireData();
+        RaycastHit hitInfo;
 
-        // 3. 레이와 부딪힌 물체의 정보를 저장할 변수를 생성
-        RaycastHit hitInfo = new RaycastHit();
+        bool isHit = false;
 
-        // 4. 레이를 발사한 다음,                 
-        bool isHit = Physics.Raycast(ray, out hitInfo);
-        if (isHit) // ㄴ에 데이터가 있다면(부딪혔다면) 피격 이펙트 생성(표시)
+        if (fire.hitInfo.HasValue)
         {
-            // 피격 이펙트 생성(표시)
+            hitInfo = fire.hitInfo.Value;
+            isHit = true;
+        }
+        else if (Physics.Raycast(fire.ray, out hitInfo))
+        {
+            isHit = true;
+            fire.hitInfo = hitInfo;
+        }
+
+        if (isHit)
+        {
+
+            hitInfo = fire.hitInfo.Value;
             BulletManager.Instance.UseBullet(hitInfo.point);
             LazerManager.Instance.SettingLine(FirePosition.transform.position, hitInfo.point);
 
             Debug.Log($"현재 총 맞은 태그: {hitInfo.collider.gameObject.tag}");
+
             if (hitInfo.collider.gameObject.CompareTag("Enemy"))
             {
                 Vector3 hitDir = -hitInfo.normal;
                 hitDir.y = 0.0f;
-                Enemy enemy = hitInfo.collider.GetComponent<Enemy>();
-                Damage damage = new Damage();
 
-                damage.Value = 10;
-                damage.From = this.gameObject;
+                Enemy enemy = hitInfo.collider.GetComponent<Enemy>();
+                Damage damage = new Damage
+                {
+                    Value = 10,
+                    From = this.gameObject
+                };
 
                 enemy.TakeDamage(damage, hitDir);
             }
@@ -115,9 +182,9 @@ public class PlayerFire : MonoBehaviour
 
         CurShootEnum = ShootEnum.None;
         BulletUI.Instance.UpdateState(CurShootEnum);
-
         CurCoolTime = MaxCoolTime;
     }
+
 
     public void AddPower()
     {
