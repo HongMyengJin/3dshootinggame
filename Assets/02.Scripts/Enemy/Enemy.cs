@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 using static UnityEditor.PlayerSettings;
 
 public class Enemy : MonoBehaviour
@@ -25,6 +26,7 @@ public class Enemy : MonoBehaviour
     public float ReturnDistance = 10.0f;         // 적 복귀 범위
 
     private CharacterController _characterController;
+    private NavMeshAgent _agent;               // 네비메쉬 에이전트
     private Vector3 _startPosition;
     public float MoveSpeed = 3.3f;
 
@@ -47,6 +49,9 @@ public class Enemy : MonoBehaviour
 
     private void Start()
     {
+        _agent = GetComponent<NavMeshAgent>();
+        _agent.speed = MoveSpeed;
+
         _startPosition = transform.position;
         _characterController = GetComponent<CharacterController>();
         _player = GameObject.FindGameObjectWithTag("Player");
@@ -147,9 +152,10 @@ public class Enemy : MonoBehaviour
 
     public void TargetFollow(Vector3 Taget) // Follow 완료 - true
     {
-        Vector3 pos = transform.position;
-        Vector3 dir = (Taget - transform.position).normalized;
-        _characterController.Move(dir * MoveSpeed * Time.deltaTime);
+        //Vector3 pos = transform.position;
+        //Vector3 dir = (Taget - transform.position).normalized;
+        ////_characterController.Move(dir * MoveSpeed * Time.deltaTime);
+        _agent.SetDestination(Taget);
 
     }
 
@@ -196,8 +202,10 @@ public class Enemy : MonoBehaviour
             CurrentState = EnemyState.Trace;
         }
 
-        Vector3 dir = (_startPosition - transform.position).normalized;
-        _characterController.Move(dir * MoveSpeed * Time.deltaTime);
+
+        //Vector3 dir = (_startPosition - transform.position).normalized;
+        //_characterController.Move(dir * MoveSpeed * Time.deltaTime);
+        _agent.SetDestination(_startPosition);
     }
 
     private void Attack()
@@ -227,6 +235,8 @@ public class Enemy : MonoBehaviour
     {
 
         // 코루틴 방식으로 변경
+        _agent.isStopped = true;
+        _agent.ResetPath();
         yield return new WaitForSeconds(DamagedTime);
         Debug.Log("상태전환: Damaged -> Trace");
         CurrentState = EnemyState.Trace;
