@@ -5,6 +5,7 @@ using static UnityEditor.PlayerSettings;
 
 public class Enemy : MonoBehaviour
 {
+    private IEnemyState currentState;
     // 1. 상태를 열거형으로 정의한다.
     public enum EnemyState
     {
@@ -273,17 +274,6 @@ public class Enemy : MonoBehaviour
         }
         // 코루틴 방식으로 변경
     }
-    //private void Damaged()
-    //{
-    //    // 행동: 일정 시간 동안 멈춰있다가 공격
-    //    _damagedTimer += Time.deltaTime;
-    //    if(_damagedTimer >= DamagedTime)
-    //    {
-    //        _damagedTimer = 0.0f;
-    //        Debug.Log("상태전환: Damaged -> Trace");
-    //        CurrentState = EnemyState.Trace;
-    //    }
-    //}
 
     private void Die()
     {
