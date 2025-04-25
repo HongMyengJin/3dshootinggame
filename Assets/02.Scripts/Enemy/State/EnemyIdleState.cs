@@ -4,22 +4,16 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 public class EnemyIdleState : IEnemyState
 {
     private IEnemyContext context;
-    public void Enter(IEnemyContext ctx)
-    {
-        context = ctx;
-
-        context.ScheduleStateChange();
-    }
+    public void Enter(IEnemyContext ctx) => context = ctx;
     public void Update()
     {
-        // 행동: 가만히 있는다.
-        if (Vector3.Distance(transform.position, _player.transform.position) < _stat.FindDistance)
+        if (Vector3.Distance(context.Self.position, context.Target.position) < context.State.FindDistance)
         {
-            Debug.Log("상태전환: Idle -> Trace");
-            CurrentState = EnemyState.Trace;
+            context.ScheduleStateChange(EnemyStateType.Chase);
+            return;
         }
 
-        StartCoroutine(Patrol_Coroutine());
+        context.ScheduleStateChange(EnemyStateType.Patrol, context.State.PatrolWaitTime);
     }
     public void Exit()
     {

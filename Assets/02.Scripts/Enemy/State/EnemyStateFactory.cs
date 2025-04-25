@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 public static class EnemyStateFactory
@@ -7,18 +7,18 @@ public static class EnemyStateFactory
 
     public static IEnemyState Get(EnemyStateType type)
     {
-        if(!stateCache.TryGetValue(type, out var state)) // ¾øÀ¸¸é »ý¼º
+        if(!stateCache.TryGetValue(type, out var state)) // ì—†ìœ¼ë©´ ìƒì„±
         {
             state = type switch
             {
                 EnemyStateType.Idle => new EnemyIdleState(),
-                EnemyStateType.Patrol => new EnemyIdleState(),
-                EnemyStateType.Trace => new EnemyIdleState(),
-                EnemyStateType.Return => new EnemyIdleState(),
-                EnemyStateType.Attack => new EnemyIdleState(),
-                EnemyStateType.Damaged => new EnemyIdleState(),
-                EnemyStateType.Die => new EnemyIdleState(),
-                _ => null // ±× ¿Ü
+                EnemyStateType.Patrol => new EnemyPatrolState(),
+                EnemyStateType.Chase => new EnemyChaseState(),
+                EnemyStateType.Return => new EnemyReturnState(),
+                EnemyStateType.Attack => new EnemyAttackState(),
+                EnemyStateType.Damaged => new EnemyDamagedState(),
+                EnemyStateType.Die => new EnemyDieState(),
+                _ => null // ê·¸ ì™¸
             };
             stateCache[type] = state;
         }

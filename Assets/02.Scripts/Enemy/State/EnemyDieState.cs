@@ -7,7 +7,7 @@ public class EnemyDieState : IEnemyState
     {
         context = ctx;
 
-        context.ScheduleStateChange();
+        GameObject.Destroy(ctx.Self.gameObject);
     }
     public void Update()
     {

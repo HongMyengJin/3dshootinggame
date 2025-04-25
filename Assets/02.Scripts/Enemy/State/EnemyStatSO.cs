@@ -36,7 +36,7 @@ public class EnemyStatSO : ScriptableObject
     public int MaxHealth => maxHealth;
     public float DamagedStunTime => damagedStunTime;
     public float DeathDelay => deathDelay;
-    public float PatrolCheckTime => patrolCheckTime;
+    public float PatrolWaitTime => patrolCheckTime;
 
     public float KnockbackDuration => knockbackDuration;
     public float KnockbackMaxSpeed => knockbackMaxSpeed;

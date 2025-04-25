@@ -1,12 +1,12 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public enum EnemyStateType
 {
-    Idle, // ´ë±â
-    Patrol, // ¼øÂû
-    Trace, // ÃßÀû
-    Return, // º¹±Í
-    Attack, // °ø°İ
-    Damaged, // ÇÇ°İ
-    Die // »ç¸Á
+    Idle, // ëŒ€ê¸°
+    Patrol, // ìˆœì°°
+    Chase, // ì¶”ì 
+    Return, // ë³µê·€
+    Attack, // ê³µê²©
+    Damaged, // í”¼ê²©
+    Die // ì‚¬ë§
 }
