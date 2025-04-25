@@ -1,10 +1,10 @@
-using System.Collections;
+ï»¿using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using static UnityEditor.PlayerSettings;
 
-public class PlayerMove : MonoBehaviour
+public class PlayerMove : MonoBehaviour, IDamageable
 {
     private float _moveSpeed = 7f;
     private CharacterController _characterController;
@@ -78,7 +78,7 @@ public class PlayerMove : MonoBehaviour
     {
 
         float climbValue = PlayerDataSo.StaminaUseSpeed * Time.deltaTime;
-        if (CheckClimb() && Input.GetKey(KeyCode.K) && climbValue < PlayerStat.CurStamina) // º® Å¸±â ÁßÀÌ¸é
+        if (CheckClimb() && Input.GetKey(KeyCode.K) && climbValue < PlayerStat.CurStamina) // ë²½ íƒ€ê¸° ì¤‘ì´ë©´
         {
             dir = new Vector3(h, v, 0).normalized;
             dir = Camera.main.transform.TransformDirection(dir);
@@ -86,9 +86,9 @@ public class PlayerMove : MonoBehaviour
             _characterController.Move(dir * _moveSpeed * Time.deltaTime);
             PlayerStat.CurStamina -= climbValue;
             PlayerStat.ChangeStamina();
-            _yVelocity = 0.0f; // Áß·Â ÃÊ±âÈ­
-            Debug.Log($"Stat: {PlayerStat.CurStamina} »ç¿ë ÇÑ ½ºÅÂ¹Ì³ª {climbValue}");
-            Debug.Log("Å¬¶óÀÌ¹Ö Áß!");
+            _yVelocity = 0.0f; // ì¤‘ë ¥ ì´ˆê¸°í™”
+            Debug.Log($"Stat: {PlayerStat.CurStamina} ì‚¬ìš© í•œ ìŠ¤íƒœë¯¸ë‚˜ {climbValue}");
+            Debug.Log("í´ë¼ì´ë° ì¤‘!");
             return true;
         }
         return false;
@@ -101,7 +101,7 @@ public class PlayerMove : MonoBehaviour
             _jumpN = 0;
         }
 
-        // 3. Á¡ÇÁ Àû¿ë
+        // 3. ì í”„ ì ìš©
         if (Input.GetButtonDown("Jump") && _jumpN < 2)
         {
             _yVelocity = PlayerDataSo.JumpPower;
@@ -113,7 +113,7 @@ public class PlayerMove : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            // ½ºÅÂ¹Ì³ª 0º¸´Ù ÀÛÀºÁö Ã¼Å©
+            // ìŠ¤íƒœë¯¸ë‚˜ 0ë³´ë‹¤ ìž‘ì€ì§€ ì²´í¬
             _moveSpeed = 12.0f;
 
             PlayerStat.CurStamina -= Time.deltaTime * PlayerDataSo.StaminaUseSpeed;
@@ -145,7 +145,7 @@ public class PlayerMove : MonoBehaviour
             if (PlayerStat.CurStamina < PlayerDataSo.MaxStamina)
             {
                 PlayerStat.CurStamina += Time.deltaTime * PlayerDataSo.StaminaFillSpeed;
-                Debug.Log("ÇöÀç ½ºÅÂ¹Ì³ª Áõ°¡ Áß!");
+                Debug.Log("í˜„ìž¬ ìŠ¤íƒœë¯¸ë‚˜ ì¦ê°€ ì¤‘!");
             }
                 
             PlayerStat.ChangeStamina();
@@ -161,6 +161,11 @@ public class PlayerMove : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void TakeDamage(Damage damage)
+    {
+
     }
 }
 

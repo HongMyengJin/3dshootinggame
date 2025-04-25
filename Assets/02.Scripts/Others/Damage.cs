@@ -1,7 +1,8 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
-public class Damage     // °ª Å¸ÀÔ, ±¸Á¶Ã¼: ´Ù¾çÇÑ µ¥ÀÌÅÍ¸¦ ¹Ş±â À§ÇÑ
+public class Damage     // ê°’ íƒ€ì…, êµ¬ì¡°ì²´: ë‹¤ì–‘í•œ ë°ì´í„°ë¥¼ ë°›ê¸° ìœ„í•œ
 {
     public int Value;
     public GameObject From;
+    public Vector3 Dir;
 }

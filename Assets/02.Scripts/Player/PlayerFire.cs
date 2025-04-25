@@ -1,4 +1,4 @@
-using System.Data;
+ï»¿using System.Data;
 using UnityEngine;
 
 public class PlayerFire : MonoBehaviour
@@ -16,12 +16,12 @@ public class PlayerFire : MonoBehaviour
         public RaycastHit? hitInfo;
     }
 
-    // ÇÊ¿ä ¼Ó¼º
-    // - ¹ß»ç À§Ä¡
+    // í•„ìš” ì†ì„±
+    // - ë°œì‚¬ ìœ„ì¹˜
     public GameObject FirePosition;
-    // - ÆøÅº ÇÁ¸®ÆÕ
+    // - í­íƒ„ í”„ë¦¬íŒ¹
     public GameObject BombPrefab;
-    // - ´øÁö´Â Èû
+    // - ë˜ì§€ëŠ” í˜
     public float ThrowPower = 0.0f;
 
     public const float MaxThrowPower = 50.0f;
@@ -48,16 +48,16 @@ public class PlayerFire : MonoBehaviour
     private void Update()
     {
         CurCoolTime -= Time.deltaTime;
-        // 2. ¿À¸¥ÂÊ ¹öÆ° ÀÔ·Â ¹Ş±â
-        // - 0: ¿ŞÂÊ, 1: ¿À¸¥ÂÊ, 2: ÈÙ
+        // 2. ì˜¤ë¥¸ìª½ ë²„íŠ¼ ì…ë ¥ ë°›ê¸°
+        // - 0: ì™¼ìª½, 1: ì˜¤ë¥¸ìª½, 2: íœ 
 
-        // ¸¶¿ì½º ¿À¸¥ÂÊÀÌ ´­¸± ¶§ + ÇöÀç »ç¿ë °¡´ÉÇÑ ÆøÅº Á¸Àç
+        // ë§ˆìš°ìŠ¤ ì˜¤ë¥¸ìª½ì´ ëˆŒë¦´ ë•Œ + í˜„ì¬ ì‚¬ìš© ê°€ëŠ¥í•œ í­íƒ„ ì¡´ì¬
         if (Input.GetMouseButton(1) && BombUI.Instance.CheckUseBomb())
         {
             AddPower();
         }
 
-        // ¸¶¿ì½º ¿À¸¥ÂÊ ¿Ã¸± ¶§
+        // ë§ˆìš°ìŠ¤ ì˜¤ë¥¸ìª½ ì˜¬ë¦´ ë•Œ
         if (Input.GetMouseButtonUp(1) && BombUI.Instance.CheckUseBomb())
         {
             BombAttack();
@@ -66,8 +66,8 @@ public class PlayerFire : MonoBehaviour
             BombUI.Instance.UseBomb();
         }
 
-        // ¸ñÇ¥: ¸¶¿ì½ºÀÇ ¿ŞÂÊ ¹öÆ°À» ´©¸£¸é Ä«¸Ş¶ó°¡ ¹Ù¶óº¸´Â ¹æÇâÀ¸·Î ÃÑÀ» ¹ß»çÇÏ°í ½Í´Ù. - ÃÑ¾Ë ¹ß»ç(·¹ÀÌÀú ¹æ½Ä)
-        // 1. ¿ŞÂÊ ¹öÆ° ÀÔ·Â ¹Ş±â
+        // ëª©í‘œ: ë§ˆìš°ìŠ¤ì˜ ì™¼ìª½ ë²„íŠ¼ì„ ëˆ„ë¥´ë©´ ì¹´ë©”ë¼ê°€ ë°”ë¼ë³´ëŠ” ë°©í–¥ìœ¼ë¡œ ì´ì„ ë°œì‚¬í•˜ê³  ì‹¶ë‹¤. - ì´ì•Œ ë°œì‚¬(ë ˆì´ì € ë°©ì‹)
+        // 1. ì™¼ìª½ ë²„íŠ¼ ì…ë ¥ ë°›ê¸°
         if (Input.GetMouseButton(0) && CurCoolTime < 0.0f)
         {
             ShootAttack();
@@ -79,9 +79,9 @@ public class PlayerFire : MonoBehaviour
 
     public void BombAttack()
     {
-        // 3. ¹ß»ç À§Ä¡¿¡ ¼ö·ùÅº
+        // 3. ë°œì‚¬ ìœ„ì¹˜ì— ìˆ˜ë¥˜íƒ„
         GameObject bomb = BombManager.Instance.UseBomb(FirePosition.transform.position);
-        // 4. »ı¼ºµÈ ¼ö·ùÅºÀ» Ä«¸Ş¶ó ¹æÇâÀ¸·Î ¹°¸®ÀûÀÎ Èû °¡ÇÏ±â
+        // 4. ìƒì„±ëœ ìˆ˜ë¥˜íƒ„ì„ ì¹´ë©”ë¼ ë°©í–¥ìœ¼ë¡œ ë¬¼ë¦¬ì ì¸ í˜ ê°€í•˜ê¸°
         Rigidbody bombRigidbody = bomb.GetComponent<Rigidbody>();
         bombRigidbody.AddForce(_mainCamera.transform.forward * ThrowPower, ForceMode.Impulse);
         bombRigidbody.AddTorque(Vector3.one);
@@ -162,32 +162,21 @@ public class PlayerFire : MonoBehaviour
             BulletManager.Instance.UseBullet(hitInfo.point);
             LazerManager.Instance.SettingLine(FirePosition.transform.position, hitInfo.point);
 
-            Debug.Log($"ÇöÀç ÃÑ ¸ÂÀº ÅÂ±×: {hitInfo.collider.gameObject.tag}");
+            Debug.Log($"í˜„ì¬ ì´ ë§ì€ íƒœê·¸: {hitInfo.collider.gameObject.tag}");
 
-            if (hitInfo.collider.gameObject.CompareTag("Enemy"))
+            if (hitInfo.collider.TryGetComponent<IDamageable>(out IDamageable damageable))
             {
                 Vector3 hitDir = -hitInfo.normal;
                 hitDir.y = 0.0f;
 
-                Enemy enemy = hitInfo.collider.GetComponent<Enemy>();
                 Damage damage = new Damage
                 {
                     Value = 10,
-                    From = this.gameObject
+                    From = this.gameObject,
+                    Dir = hitDir
                 };
 
-                enemy.TakeDamage(damage, hitDir);
-            }
-            else if (hitInfo.collider.gameObject.CompareTag("Barrel"))
-            {
-                Barrel barrel = hitInfo.collider.GetComponent<Barrel>();
-                Damage damage = new Damage
-                {
-                    Value = 10,
-                    From = this.gameObject
-                };
-
-                barrel.TakeDamage(damage);
+                damageable.TakeDamage(damage);
             }
         }
 
@@ -211,14 +200,14 @@ public class PlayerFire : MonoBehaviour
 
     public void LoadGun()
     {
-        // ÀåÀü
+        // ì¥ì „
         if (Input.GetKeyDown(KeyCode.R))
         {
-            if (CurShootEnum == ShootEnum.None) // ÀåÀü ½ÃÀÛ
+            if (CurShootEnum == ShootEnum.None) // ì¥ì „ ì‹œì‘
             {
                 CurLoadTime = MaxLoadTime;
             }
-            else if (CurShootEnum == ShootEnum.Load) // ÀåÀü Áß - Ãë¼Ò
+            else if (CurShootEnum == ShootEnum.Load) // ì¥ì „ ì¤‘ - ì·¨ì†Œ
             {
                 CurLoadTime = 0.0f;
             }
@@ -232,7 +221,7 @@ public class PlayerFire : MonoBehaviour
             CurLoadTime -= Time.deltaTime;
             if (CurLoadTime < 0.0f)
             {
-                // ÀåÀü ¿Ï·á
+                // ì¥ì „ ì™„ë£Œ
                 CurLoadTime = 0.0f;
                 BulletManager.Instance.ResetBullet();
             }

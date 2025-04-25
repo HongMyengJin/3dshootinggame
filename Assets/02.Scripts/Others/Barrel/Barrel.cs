@@ -1,9 +1,9 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEditor.PackageManager;
 using UnityEngine;
 using static Enemy;
 
-public class Barrel : MonoBehaviour
+public class Barrel : MonoBehaviour, IDamageable
 {
     public int Health = 30;
     public float Radius = 20.0f;
@@ -17,7 +17,6 @@ public class Barrel : MonoBehaviour
             EffectManager.Instance.Play(EffectType.BarrelBomb, transform.position);
             TriggerExplosion();
             ExplodeSelf();
-            StartCoroutine(DelayedDestroy(DestroyTime));
             return;
         }
 
@@ -26,35 +25,31 @@ public class Barrel : MonoBehaviour
 
     public void TriggerExplosion()
     {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, Radius);
+        Collider[] colliders = Physics.OverlapSphere(transform.position, Radius, ~LayerMask.NameToLayer("Barrel"));
 
         foreach(Collider collider in colliders)
         {
-            GameObject gameObject = collider.gameObject;
-            Enemy barrel = gameObject.GetComponent<Enemy>();
-            if (gameObject.CompareTag("Enemy"))
+            if(collider.TryGetComponent(out IDamageable damageable))
             {
-                Enemy enemy = gameObject.GetComponent<Enemy>();
                 Damage damage = new Damage
                 {
                     Value = 10,
                     From = this.gameObject
                 };
-                enemy.TakeDamage(damage, Vector3.zero);
-            }
-            else if(gameObject.CompareTag("Player"))
-            {
-                PlayerMove playerMove = gameObject.GetComponent<PlayerMove>();
-                Damage damage = new Damage
-                {
-                    Value = 10,
-                    From = this.gameObject
-                };
-
-                Debug.Log("Player ¸ÂÀ½!");
-                //
+                damageable.TakeDamage(damage);
             }
         }
+
+        Collider[] barrels = Physics.OverlapSphere(transform.position, Radius, LayerMask.NameToLayer("Barrel"));
+
+        foreach (Collider collider in barrels)
+        {
+            if (collider.TryGetComponent(out Barrel barrel))
+            {
+                barrel.ExplodeSelf();
+            }
+        }
+        Destroy(gameObject, DestroyTime);
     }
 
     public void ExplodeSelf(float force = 12.0f, float Power = 5.0f)
@@ -62,21 +57,15 @@ public class Barrel : MonoBehaviour
         if(!TryGetComponent<Rigidbody>(out Rigidbody rb))
             return;
 
-        // ¾Õ + À§·Î ³¯¸®±â
+        // ì•ž + ìœ„ë¡œ ë‚ ë¦¬ê¸°
 
         Vector3 direction = (transform.forward + Vector3.up * 1.5f + Random.insideUnitSphere * 0.5f).normalized;
         rb.AddForce(direction * force, ForceMode.Impulse);
 
-        // ºù±Û È¸Àü
+        // ë¹™ê¸€ íšŒì „
         Vector3 randomTorque = Random.onUnitSphere * Power; 
         rb.AddTorque(randomTorque, ForceMode.Impulse);
 
         EffectManager.Instance.Play(EffectType.BarrelBomb, transform.position);
-    }
-
-    IEnumerator DelayedDestroy(float delayTime)
-    {
-        yield return new WaitForSeconds(delayTime);
-        Destroy(gameObject);
     }
 }
