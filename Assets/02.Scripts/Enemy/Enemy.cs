@@ -1,282 +1,70 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using static UnityEditor.PlayerSettings;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, IEnemyContext
 {
-    private IEnemyState currentState;
-    // 1. »óÅÂ¸¦ ¿­°ÅÇüÀ¸·Î Á¤ÀÇÇÑ´Ù.
-    public enum EnemyState
-    {
-        Idle, // ´ë±â
-        Patrol, // ¼øÂû
-        Trace, // ÃßÀû
-        Return, // º¹±Í
-        Attack, // °ø°Ý
-        Damaged, // ÇÇ°Ý
-        Die // »ç¸Á
-    }
+    [SerializeField] private EnemyStatSO _stat;
+    [SerializeField] private Transform _target;
 
-    // 2. ÇöÀç »óÅÂ¸¦ ÁöÁ¤ÇÑ´Ù.
-    public EnemyState CurrentState = EnemyState.Idle;
+    [SerializeField] private int _health;
+    [SerializeField] private float _attackTimer;
 
-    private GameObject _player;             // ÇÃ·¹ÀÌ¾î
-    public float FindDistance = 5.0f;         // ÇÃ·¹ÀÌ¾î ¹ß°ß ¹üÀ§
-    public float AttackDistance = 2.5f;       // ÇÃ·¹ÀÌ¾î °ø°Ý ¹üÀ§
-    public float ReturnDistance = 10.0f;         // Àû º¹±Í ¹üÀ§
-
-    private CharacterController _characterController;
-    private NavMeshAgent _agent;               // ³×ºñ¸Þ½¬ ¿¡ÀÌÀüÆ®
-    private Vector3 _startPosition;
-    public float MoveSpeed = 3.3f;
-
-    public float AttackCooltime = 2.0f;
-    private float _attackTimer = 0.0f;
-
-    public int Health = 100;
-    public float DamagedTime = 1.0f; // °æÁ÷ ½Ã°£
-    //private float _damagedTimer = 0.0f; // ¤¤ Ã¼Å©±â
-    public float DeathTime = 0.2f; // Á×´Â ½Ã°£
-    public float PatrolTime = 3.0f; // Idle¿¡¼­ Ã¼Å© ½Ã°£
+    public Transform Target => _target;
+    public EnemyStatSO State => _stat;
     
+
+    private IEnemyState currentState;
+    private EnemyStateType currentType;
+    private Coroutine sheduledTransition;
+    
+    private CharacterController _characterController;
+    private NavMeshAgent _agent;               // ë„¤ë¹„ë©”ì‰¬ ì—ì´ì „íŠ¸
+    private Vector3 _startPosition;
 
     public Transform[] PatrolPositions;
     public int PatrolIndex = 0;
 
-    private const float _distanceGap = 0.1f;
-    private const float _nockBackTime = 0.5f;
-    private float _nockBackMaxSpeed = 20.0f;
+    private Coroutine scheduledTransition;
+
+
+    public void ChangeState(EnemyStateType next)
+    {
+        currentState?.Exit();
+        currentState = EnemyStateFactory.Get(next);
+        currentState.Enter(this);
+        currentType = next;
+        Debug.Log($"ìƒíƒœ ì „í™˜: {currentType} -> {next}");
+
+    }
+
+    public void ScheduleStateChange(EnemyStateType next, float delay)
+    {
+        if (scheduledTransition != null)
+            StopCoroutine(scheduledTransition);
+
+        scheduledTransition = StartCoroutine(DelayedChange(next, delay));
+    }
+
+    private IEnumerator DelayedChange(EnemyStateType next, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        ChangeState(next);
+    }
+
+    public new Coroutine StartCoroutine(IEnumerator routine) => StartCoroutine(routine);
+    public new void StopCoroutine(Coroutine coroutine) => StopCoroutine(coroutine);
+
 
     private void Start()
     {
         _agent = GetComponent<NavMeshAgent>();
-        _agent.speed = MoveSpeed;
+        _agent.speed = _stat.MoveSpeed;
 
         _startPosition = transform.position;
         _characterController = GetComponent<CharacterController>();
-        _player = GameObject.FindGameObjectWithTag("Player");
+        _target = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
-    private void Update()
-    {
-        // ³ªÀÇ ÇöÀç »óÅÂ¿¡ µû¶ó »óÅÂ ÇÔ¼ö¸¦ È£ÃâÇÑ´Ù.
-        switch (CurrentState)
-        {
-            case EnemyState.Idle:
-            {
-                    Idle();
-                    break;
-            }
-            case EnemyState.Patrol:
-            {
-                    Patrol();
-                    break;
-            }
-            case EnemyState.Trace:
-            {
-                    Trace();
-                    break;
-            }
-            case EnemyState.Return:
-            {
-                    Return();
-                    break;
-            }
-            case EnemyState.Attack:
-            {
-                    Attack();
-                    break;
-            }
-        }
-    }
-
-    public void TakeDamage(Damage damage, Vector3 dir)
-    {
-        // »ç¸ÁÇß°Å³ª °ø°Ý¹Þ°í ÀÖ´Â ÁßÀÌ¸é...
-        if (CurrentState == EnemyState.Damaged || CurrentState == EnemyState.Die)
-        {
-            return;
-        }
-
-        Health -= damage.Value;
-
-        if (Health <= 0)
-        {
-            CurrentState = EnemyState.Die;
-            Debug.Log($"»óÅÂÀüÈ¯: {CurrentState} -> Damaged");
-            CurrentState = EnemyState.Die;
-            StartCoroutine(Die_Coroutine());
-            return;
-        }
-
-        Debug.Log($"»óÅÂÀüÈ¯: {CurrentState} -> Damaged");
-
-        CurrentState = EnemyState.Damaged;
-        StartCoroutine(Damaged_Coroutine());
-        StartCoroutine(Knockback(_nockBackTime, dir));
-    }
-
-    // 3. »óÅÂ ÇÔ¼öµéÀ» ±¸ÇöÇÑ´Ù.
-    private void Idle()
-    {
-        // Çàµ¿: °¡¸¸È÷ ÀÖ´Â´Ù.
-        if(Vector3.Distance(transform.position, _player.transform.position) < FindDistance)
-        {
-            Debug.Log("»óÅÂÀüÈ¯: Idle -> Trace");
-            CurrentState = EnemyState.Trace;
-        }
-
-        // ¸¸¾à Idle ½Ã°£ÀÌ 5ÃÊ Áö³ª¸é
-        StartCoroutine(Patrol_Coroutine());
-    }
-
-    public void Patrol()
-    {
-        // ¸¸¾à µµ´ÞÇßÀ¸¸é ´ÙÀ½À¸·Î
-        if (HasReachedTarget(PatrolPositions[PatrolIndex].position))
-        {
-            PatrolIndex = (++PatrolIndex) % PatrolPositions.Length;
-        }
-        else
-        {
-            TargetFollow(PatrolPositions[PatrolIndex].position);
-        }
-    }
-
-    public bool HasReachedTarget(Vector3 TargetPos)
-    {
-        Vector3 pos = transform.position;
-        float dis = Vector2.Distance(new Vector2(TargetPos.x, TargetPos.z), new Vector2(pos.x, pos.z));
-        return (dis <= _characterController.minMoveDistance + _distanceGap);
-    }
-
-    public void TargetFollow(Vector3 Taget) // Follow ¿Ï·á - true
-    {
-        //Vector3 pos = transform.position;
-        //Vector3 dir = (Taget - transform.position).normalized;
-        ////_characterController.Move(dir * MoveSpeed * Time.deltaTime);
-        _agent.SetDestination(Taget);
-
-    }
-
-    private void Trace()
-    {
-
-        // ÀüÀÌ: ÇÃ·¹ÀÌ¾î¿Í ¸Ö¾îÁö¸é -> Return
-        if (Vector3.Distance(transform.position, _player.transform.position) >= ReturnDistance)
-        {
-            Debug.Log("»óÅÂÀüÈ¯: Trace -> Return");
-            CurrentState = EnemyState.Return;
-            return;
-        }
-
-        // ÀüÀÌ: °ø°Ý ¹üÀ§ ¸¸Å­ °¡±î¿ö Áö¸é -> Attack
-        if (Vector3.Distance(transform.position, _player.transform.position) < AttackDistance)
-        {
-            Debug.Log("»óÅÂÀüÈ¯: Trace -> Attack");
-            CurrentState = EnemyState.Attack;
-            return;
-        }
-
-        // Çàµ¿: ÇÃ·¹ÀÌ¾î¸¦ ÃßÀûÇÑ´Ù.
-        TargetFollow(_player.transform.position);
-    }
-
-    private void Return()
-    {
-        // Çàµ¿: º¹±ÍÇÑ´Ù.
-
-        // ÀüÀÌ: ½ÃÀÛ À§Ä¡¿Í °¡±î¿öÁö¸é -> Idle
-        if (Vector3.Distance(transform.position, _startPosition) <= _characterController.minMoveDistance + _distanceGap)
-        {
-            Debug.Log("»óÅÂÀüÈ¯: Return -> Idle");
-            transform.position = _startPosition;
-            CurrentState = EnemyState.Idle;
-            return;
-        }
-
-        // ÀüÀÌ: ½ÃÀÛ À§Ä¡¿Í °¡±î¿öÁö¸é -> Trace
-        if (Vector3.Distance(transform.position, _player.transform.position) < FindDistance)
-        {
-            Debug.Log("»óÅÂÀüÈ¯: Return -> Trace");
-            CurrentState = EnemyState.Trace;
-        }
-
-
-        //Vector3 dir = (_startPosition - transform.position).normalized;
-        //_characterController.Move(dir * MoveSpeed * Time.deltaTime);
-        _agent.SetDestination(_startPosition);
-    }
-
-    private void Attack()
-    {
-        // Çàµ¿: ÇÃ·¹ÀÌ¾î¸¦ °ø°ÝÇÑ´Ù.
-
-        // ÀüÀÌ: °ø°Ý ¹üÀ§º¸´Ù ¸Ö¾îÁö¸é -> Trace
-        // ÀüÀÌ: ½ÃÀÛ À§Ä¡¿Í °¡±î¿öÁö¸é -> Idle
-        if (Vector3.Distance(transform.position, _startPosition) >= AttackDistance)
-        {
-            Debug.Log("»óÅÂÀüÈ¯: Attack -> Trace");
-            CurrentState = EnemyState.Trace;
-            return;
-        }
-        
-        // Çàµ¿: ÇÃ·¹ÀÌ¾î¸¦ °ø°ÝÇÑ´Ù.
-        _attackTimer += Time.deltaTime;
-        if (_attackTimer >= AttackCooltime)
-        {
-            Debug.Log("ÇÃ·¹ÀÌ¾î °ø°Ý!");
-            _attackTimer = 0;
-        }
-
-    }
-
-    private IEnumerator Damaged_Coroutine()
-    {
-
-        // ÄÚ·çÆ¾ ¹æ½ÄÀ¸·Î º¯°æ
-        _agent.isStopped = true;
-        _agent.ResetPath();
-        yield return new WaitForSeconds(DamagedTime);
-        Debug.Log("»óÅÂÀüÈ¯: Damaged -> Trace");
-        CurrentState = EnemyState.Trace;
-    }
-    private IEnumerator Die_Coroutine()
-    {
-
-        // ÄÚ·çÆ¾ ¹æ½ÄÀ¸·Î º¯°æ
-        yield return new WaitForSeconds(DeathTime);
-        Debug.Log("»óÅÂÀüÈ¯: Damaged -> Die");
-        CurrentState = EnemyState.Die;
-        gameObject.SetActive(false);
-    }
-
-    private IEnumerator Patrol_Coroutine()
-    {
-
-        // ÄÚ·çÆ¾ ¹æ½ÄÀ¸·Î º¯°æ
-        yield return new WaitForSeconds(PatrolTime);
-        Debug.Log("»óÅÂÀüÈ¯: Idle -> Patrol");
-        CurrentState = EnemyState.Patrol;
-    }
-
-    private IEnumerator Knockback(float knockbackTime, Vector3 dir)
-    {
-        float elapsedTime = 0.0f;
-        while (elapsedTime < knockbackTime)
-        {
-            float time = elapsedTime / knockbackTime;
-            float value = Mathf.Lerp(0.0f, _nockBackMaxSpeed, time);
-            _characterController.Move(dir * value * Time.deltaTime);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-        // ÄÚ·çÆ¾ ¹æ½ÄÀ¸·Î º¯°æ
-    }
-
-    private void Die()
-    {
-        // Çàµ¿: Á×´Â´Ù.
-    }
 }

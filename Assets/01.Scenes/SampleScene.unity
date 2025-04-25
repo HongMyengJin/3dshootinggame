@@ -4905,20 +4905,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentState: 0
-  FindDistance: 8
-  AttackDistance: 2
-  ReturnDistance: 10
-  MoveSpeed: 3.3
-  AttackCooltime: 2
   Health: 100
-  DamagedTime: 0.5
-  DeathTime: 0.2
-  PatrolTime: 0.2
   PatrolPositions:
   - {fileID: 2096035273}
   - {fileID: 453328767}
   - {fileID: 31773936}
   PatrolIndex: 0
+  EnemyStatSO: {fileID: 11400000, guid: c1589a72fe33dbb439c651118be449a9, type: 2}
 --- !u!143 &1283055106
 CharacterController:
   m_ObjectHideFlags: 0
@@ -5311,6 +5304,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Health: 30
   Radius: 20
+  DestroyTime: 3
 --- !u!54 &1361226172
 Rigidbody:
   m_ObjectHideFlags: 0

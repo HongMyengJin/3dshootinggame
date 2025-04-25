@@ -1,8 +1,8 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public interface IEnemyState
 {
-    void Enter(Enemy enemy);
+    void Enter(IEnemyContext ctx);
     void Update();
     void Exit();
 }
