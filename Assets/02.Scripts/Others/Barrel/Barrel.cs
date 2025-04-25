@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using UnityEditor.PackageManager;
 using UnityEngine;
-using static Enemy;
 
 public class Barrel : MonoBehaviour, IDamageable
 {

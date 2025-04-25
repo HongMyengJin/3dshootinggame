@@ -5110,13 +5110,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _self: {fileID: 1283055104}
   _target: {fileID: 652186131}
+  _agent: {fileID: 0}
+  _controller: {fileID: 1283055106}
   _stat: {fileID: 11400000, guid: c1589a72fe33dbb439c651118be449a9, type: 2}
+  _health: 100
   _patrolPoints:
   - {fileID: 2096035273}
   - {fileID: 453328767}
   - {fileID: 31773936}
-  _controller: {fileID: 1283055106}
-  _health: 100
 --- !u!143 &1283055106
 CharacterController:
   m_ObjectHideFlags: 0

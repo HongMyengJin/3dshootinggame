@@ -7,10 +7,14 @@ public class EnemyPatrolState : IEnemyState
     public void Enter(IEnemyContext ctx) => context = ctx;
     public void Update()
     {
+        IEnemyPatrolContext patrolContext = context as IEnemyPatrolContext;
+        if (patrolContext == null)
+            return;
+
         NavMeshAgent Agent = context.Agent;
         if (!Agent.pathPending && Agent.remainingDistance < context.State.DistanceGap)
         {
-            context.MoveToNextPatrolPoint(); // 다음 경로 이동
+            patrolContext.MoveToNextPatrolPoint(); // 다음 경로 이동
         }
 
         if (Vector3.Distance(context.Self.position, context.Target.position) < context.State.FindDistance)
@@ -18,7 +22,6 @@ public class EnemyPatrolState : IEnemyState
             context.ScheduleStateChange(EnemyStateType.Chase);
             return;
         }
-
     }
     public void Exit()
     {
