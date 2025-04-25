@@ -1,12 +1,13 @@
-using UnityEngine;
+ï»¿using UnityEngine;
+using System.Collections;
 
 public interface IEnemyContext
 {
-    Transform Self { get; } // ³» ÀÚ½Å À§Ä¡
-    Transform Target { get; } // Å¸°Ù À§Ä¡
-    float AttackDistance { get; } // °ø°Ý °Å¸®
-    float Speed { get; } // ¼Óµµ
+    Transform Target { get; } // íƒ€ê²Ÿ ìœ„ì¹˜
 
-    void ChangeState(EnemyStateType nextState);
-    void TriggerAttack();
+    EnemyStatSO State { get;  }
+
+    Coroutine StartCoroutine(IEnumerator routine);
+    void StopCoroutine(Coroutine coroutine);
+    void ScheduleStateChange(EnemyStateType next, float delay);
 }
