@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.AI;
 
-public interface IEnemyPatrolContext
+public interface IEnemyPatrolContext : IEnemyContext
 {
     Transform[] PatrolPoints { get; }
     int PatrolIndex { get; }

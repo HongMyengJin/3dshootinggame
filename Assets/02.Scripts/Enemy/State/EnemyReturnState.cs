@@ -2,10 +2,23 @@
 
 public class EnemyReturnState : IEnemyState
 {
-    private IEnemyContext context;
-    public void Enter(IEnemyContext ctx) => context = ctx;
+    private IEnemyReturnContext context;
+    private IEnemyStrategy<IEnemyReturnContext> returnStrategy;
+    public EnemyReturnState(IEnemyStrategy<IEnemyReturnContext> returnStrategy)
+    {
+        this.returnStrategy = returnStrategy;
+    }
+    public void Enter(IEnemyContext ctx)
+    {
+        context = ctx as IEnemyReturnContext;
+    }
     public void Update()
     {
+        if (context == null)
+            return;
+
+        returnStrategy.Execute(context);
+
         if (Vector3.Distance(context.Self.position, context.StartPoint) <= context.State.DistanceGap)
         {
             context.Self.position = context.StartPoint;
@@ -16,7 +29,6 @@ public class EnemyReturnState : IEnemyState
         {
             context.ScheduleStateChange(EnemyStateType.Chase);
         }
-        context.Agent.SetDestination(context.Target.position);
     }
     public void Exit()
     {

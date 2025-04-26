@@ -4,26 +4,26 @@
 public class EnemyStatSO : ScriptableObject
 {
     [Header("AI 감지 및 범위")]
-    [SerializeField] private float findDistance; //  = 5.0f;        // 플레이어 발견 범위
-    [SerializeField] private float attackDistance; // = 2.5f;      // 플레이어 공격 범위
-    [SerializeField] private float returnDistance; // = 10.0f;     // 복귀 범위
-    [SerializeField] private float distanceGap; // = 0.1f;
+    [SerializeField] private float findDistance; 
+    [SerializeField] private float attackDistance; 
+    [SerializeField] private float returnDistance; 
+    [SerializeField] private float distanceGap;
 
     [Header("이동 및 전투")]
-    [SerializeField] private float moveSpeed; // = 3.3f;
-    [SerializeField] private float attackCooldown; // = 2.0f;
+    [SerializeField] private float moveSpeed; 
+    [SerializeField] private float attackCooldown; 
 
     [Header("스탯")]
-    [SerializeField] private int maxHealth; // = 100;
+    [SerializeField] private int maxHealth;
 
     [Header("리액션/연출 관련")]
-    [SerializeField] private float damagedStunTime; // = 1.0f;     // 피격 시 경직
-    [SerializeField] private float deathDelay; // = 0.2f;          // 죽음 이후 시간
-    [SerializeField] private float patrolCheckTime; // = 3.0f;     // Idle 상태에서 행동 결정 시간
+    [SerializeField] private float damagedStunTime; 
+    [SerializeField] private float deathDelay; 
+    [SerializeField] private float patrolCheckTime; 
 
     [Header("넉백 설정")]
-    [SerializeField] private float knockbackDuration; // = 0.5f;
-    [SerializeField] private float knockbackMaxSpeed; // = 20.0f;
+    [SerializeField] private float knockbackDuration; 
+    [SerializeField] private float knockbackMaxSpeed; 
 
     // 읽기 전용 프로퍼티
     public float FindDistance => findDistance;

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   findDistance: 10
   attackDistance: 2.5
-  returnDistance: 30
+  returnDistance: 15
   distanceGap: 0.1
   moveSpeed: 3.5
   attackCooldown: 2

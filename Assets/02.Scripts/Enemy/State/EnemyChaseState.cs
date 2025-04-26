@@ -3,26 +3,31 @@ using UnityEngine;
 
 public class EnemyChaseState : IEnemyState
 {
-    private IEnemyContext context;
+    private IEnemyChaseContext context;
+    private IEnemyStrategy<IEnemyChaseContext> chaseStrategy;
+    public EnemyChaseState(IEnemyStrategy<IEnemyChaseContext> chaseStrategy)
+    {
+        this.chaseStrategy = chaseStrategy;
+    }
     public void Enter(IEnemyContext ctx)
     {
-        context = ctx;
+        context = ctx as IEnemyChaseContext;
     }
     public void Update()
     {
-        if (Vector3.Distance(context.Self.position, context.Target.position) >= context.State.ReturnDistance)
+        if (context == null)
+            return;
+
+        chaseStrategy.Execute(context);
+        float distance = Vector3.Distance(context.Self.position, context.Target.position);
+        if (distance >= context.State.ReturnDistance)
         {
             context.ScheduleStateChange(EnemyStateType.Return);
-            return;
         }
-
-        if (Vector3.Distance(context.Self.position, context.Target.position) < context.State.AttackDistance)
+        else if (distance < context.State.AttackDistance)
         {
             context.ScheduleStateChange(EnemyStateType.Attack);
-            return;
         }
-
-        context.SetDestination(context.Target.position);
     }
     public void Exit()
     {

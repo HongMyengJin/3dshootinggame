@@ -11,13 +11,13 @@ public static class EnemyStateFactory
         {
             state = type switch
             {
-                EnemyStateType.Idle => new EnemyIdleState(),
-                EnemyStateType.Patrol => new EnemyPatrolState(),
-                EnemyStateType.Chase => new EnemyChaseState(),
-                EnemyStateType.Return => new EnemyReturnState(),
-                EnemyStateType.Attack => new EnemyAttackState(),
-                EnemyStateType.Damaged => new EnemyDamagedState(),
-                EnemyStateType.Die => new EnemyDieState(),
+                EnemyStateType.Idle => new EnemyIdleState(new EnemyIdleStrategy()),
+                EnemyStateType.Patrol => new EnemyPatrolState(new EnemyPatrolStragegy()),
+                EnemyStateType.Chase => new EnemyChaseState(new EnemyChaseStragegy()),
+                EnemyStateType.Return => new EnemyReturnState(new EnemyReturnStragegy()),
+                EnemyStateType.Attack => new EnemyAttackState(new EnemyAttackStragegy()),
+                EnemyStateType.Damaged => new EnemyDamagedState(new EnemyDamagedStragegy()),
+                EnemyStateType.Die => new EnemyDieState(new EnemyDieStragegy()),
                 _ => null // 그 외
             };
             stateCache[type] = state;

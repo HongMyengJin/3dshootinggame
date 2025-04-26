@@ -1,17 +1,19 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
+using System.Collections.Generic;
 
-public class BaseEnemy : MonoBehaviour, IEnemyContext
+public class EnemyBase : MonoBehaviour, IEnemyContext
 {
     // --- 컴포넌트 및 참조 --
     [SerializeField] protected Transform _self;                
     [SerializeField] protected Transform _target;              
     [SerializeField] protected NavMeshAgent _agent;            
     [SerializeField] protected CharacterController _controller;
-    [SerializeField] protected EnemyStatSO _stat;              
+    [SerializeField] protected EnemyStatSO _stat;
 
     // --- 상태 관련 ---
+    Dictionary<EnemyStateType, IEnemyState> _stateMap = new();
     protected IEnemyState currentState;                       
     protected EnemyStateType currentType;                     
     protected EnemyStateType sheduledChangeType;              
@@ -33,7 +35,7 @@ public class BaseEnemy : MonoBehaviour, IEnemyContext
     public Vector3 StartPoint => _startPosition;
     public Vector3 KnockbackDirection => _knockbackDirection;
 
-    protected virtual void Start()
+    protected virtual void Awake()
     {
         _startPosition = transform.position;
         _controller = GetComponent<CharacterController>();
@@ -42,7 +44,6 @@ public class BaseEnemy : MonoBehaviour, IEnemyContext
         _agent = GetComponent<NavMeshAgent>();
         _agent.speed = _stat.MoveSpeed;
     }
-
     protected virtual void Update()
     {
         currentState?.Update();

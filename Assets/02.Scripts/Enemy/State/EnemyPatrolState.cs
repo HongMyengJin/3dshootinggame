@@ -3,19 +3,24 @@ using UnityEngine.AI;
 
 public class EnemyPatrolState : IEnemyState
 {
-    private IEnemyContext context;
-    public void Enter(IEnemyContext ctx) => context = ctx;
+    private IEnemyPatrolContext context;
+    private IEnemyStrategy<IEnemyPatrolContext> patrolStrategy;
+    public EnemyPatrolState(IEnemyStrategy<IEnemyPatrolContext> patrolStrategy)
+    {
+        this.patrolStrategy = patrolStrategy;
+    }
+    public void Enter(IEnemyContext ctx)
+    {
+        context = ctx as IEnemyPatrolContext;
+    }
     public void Update()
     {
-        IEnemyPatrolContext patrolContext = context as IEnemyPatrolContext;
-        if (patrolContext == null)
+        if (context == null)
             return;
 
-        NavMeshAgent Agent = context.Agent;
-        if (!Agent.pathPending && Agent.remainingDistance < context.State.DistanceGap)
-        {
-            patrolContext.MoveToNextPatrolPoint(); // 다음 경로 이동
-        }
+        patrolStrategy.Execute(context);
+
+        // 상태 전환 판단 - State 관리
 
         if (Vector3.Distance(context.Self.position, context.Target.position) < context.State.FindDistance)
         {
@@ -25,10 +30,13 @@ public class EnemyPatrolState : IEnemyState
     }
     public void Exit()
     {
-        NavMeshAgent Agent = context.Agent;
+        if (context == null || context.Agent == null)
+            return;
 
-        Agent.isStopped = true;
-        Agent.ResetPath();
+        NavMeshAgent agent = context.Agent;
+
+        agent.isStopped = true;
+        agent.ResetPath();
     }
 }
 
