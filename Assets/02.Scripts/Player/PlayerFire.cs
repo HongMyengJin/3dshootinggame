@@ -68,11 +68,11 @@ public class PlayerFire : MonoBehaviour
 
         // 목표: 마우스의 왼쪽 버튼을 누르면 카메라가 바라보는 방향으로 총을 발사하고 싶다. - 총알 발사(레이저 방식)
         // 1. 왼쪽 버튼 입력 받기
-        if (Input.GetMouseButton(0) && CurCoolTime < 0.0f)
-        {
-            ShootAttack();
-            Gun.Instance.Shoot();
-        }
+        //if (Input.GetMouseButton(0) && CurCoolTime < 0.0f)
+        //{
+        //    ShootAttack();
+        //    Gun.Instance.Shoot();
+        //}
 
         LoadGun();
     }

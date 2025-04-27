@@ -19,16 +19,21 @@ public class PlayerMove : MonoBehaviour, IDamageable
 
     public PlayerStat PlayerStat;
 
+    private Animator _animator;
 
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
+        _animator = GetComponent<Animator>();
     }
 
     private void Update() 
     {
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
+
+        _animator.SetFloat("Horizontal", h);
+        _animator.SetFloat("Vertical", v);
 
         Vector3 dir = new Vector3(h, 0, v).normalized;
 

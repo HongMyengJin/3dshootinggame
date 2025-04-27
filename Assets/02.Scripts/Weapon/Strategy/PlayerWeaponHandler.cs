@@ -1,0 +1,110 @@
+using UnityEngine;
+using System.Collections.Generic;
+
+public enum WeaponType
+{
+    Gun,
+    Sword
+}
+
+public class PlayerWeaponHandler : MonoBehaviour
+{
+    private IWeaponStrategy _currentWeaponStrategy;
+
+    [SerializeField] private Transform _weaponSocket;
+    [SerializeField] private Animator _animator;
+    [SerializeField] private List<WeaponDataSO> _weaponDataAssets;
+
+    private Dictionary<WeaponType, IWeaponStrategy> _weaponStrategies;
+    private Dictionary<WeaponType, GameObject> _weaponInstances;
+    private Dictionary<KeyCode, WeaponType> _keyWeaponMappings;
+    private WeaponType _currentWeaponType = WeaponType.Gun;
+
+    private void Awake()
+    {
+        _weaponInstances = new Dictionary<WeaponType, GameObject>();
+        foreach (WeaponDataSO data in _weaponDataAssets)
+        {
+            GameObject weapon = Instantiate(data.weaponPrefab, _weaponSocket);
+            weapon.transform.localPosition = Vector3.zero;
+            weapon.transform.localRotation = Quaternion.identity;
+            weapon.SetActive(false);
+
+            _weaponInstances[data.weaponType] = weapon;
+        }
+
+        _weaponStrategies = new Dictionary<WeaponType, IWeaponStrategy>()
+        {
+            { WeaponType.Gun, new GunWeaponStrategy(_weaponInstances[WeaponType.Gun].transform.Find("MuzzlePosition")) },
+            { WeaponType.Sword, new SwordWeaponStrategy(_animator) }
+        };
+
+        _keyWeaponMappings = new Dictionary<KeyCode, WeaponType>()
+        {
+            { KeyCode.Alpha1, WeaponType.Gun },
+            { KeyCode.Alpha2, WeaponType.Sword }
+        };
+
+    }
+
+    private void Start()
+    {
+        SwitchWeapon(WeaponType.Gun); // 기본 무기
+    }
+
+    private void Update()
+    {
+        HandleAttackInput();
+        HandleWeaponSwitchInput();
+        HandleBombThrowInput();
+    }
+
+    private void HandleAttackInput()
+    {
+        if (Input.GetButtonDown("Fire1"))
+        {
+            _currentWeaponStrategy?.Attack();
+        }
+    }
+
+    private void HandleWeaponSwitchInput()
+    {
+        foreach (var mapping in _keyWeaponMappings)
+        {
+            if (Input.GetKeyDown(mapping.Key))
+            {
+                SwitchWeapon(mapping.Value);
+                break;
+            }
+        }
+    }
+
+    private void HandleBombThrowInput()
+    {
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            ThrowBomb();
+        }
+    }
+
+    private void SwitchWeapon(WeaponType weaponType)
+    {
+
+        if (_weaponStrategies.TryGetValue(weaponType, out var strategy))
+        {
+            _weaponInstances[_currentWeaponType]?.SetActive(false);
+            _currentWeaponStrategy = strategy;
+            _currentWeaponType = weaponType;
+            _weaponInstances[weaponType]?.SetActive(true);
+        }
+        else
+        {
+            Debug.LogWarning($"무기 전략을 찾을 수 없음: {weaponType}");
+        }
+    }
+
+    private void ThrowBomb()
+    {
+        Debug.Log("폭탄 던지기!");
+    }
+}
