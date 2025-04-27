@@ -3,7 +3,7 @@ using UnityEngine.AI;
 using System.Collections;
 using System.Collections.Generic;
 
-public class EnemyBase : MonoBehaviour, IEnemyContext
+public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
 {
     // --- 컴포넌트 및 참조 --
     [SerializeField] protected Transform _self;                
@@ -34,7 +34,7 @@ public class EnemyBase : MonoBehaviour, IEnemyContext
 
     public Vector3 StartPoint => _startPosition;
     public Vector3 KnockbackDirection => _knockbackDirection;
-
+    public bool IsActive => gameObject.activeInHierarchy;
     protected virtual void Awake()
     {
         _startPosition = transform.position;
@@ -88,5 +88,20 @@ public class EnemyBase : MonoBehaviour, IEnemyContext
         sheduledChangeType = next;
         yield return new WaitForSeconds(delay);
         ChangeState(next);
+    }
+
+    public virtual void Initialize(Vector3 spawnPosition) // 소환될 때 초기화
+    {
+        transform.position = spawnPosition;
+        gameObject.SetActive(true);
+    }
+
+    public void OnSpawn()
+    {
+        gameObject.SetActive(true);
+    }
+    public void OnDespawn()
+    {
+        gameObject.SetActive(false);
     }
 }

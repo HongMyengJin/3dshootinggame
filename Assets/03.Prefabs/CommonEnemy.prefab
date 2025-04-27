@@ -133,9 +133,9 @@ MonoBehaviour:
   _stat: {fileID: 11400000, guid: c1589a72fe33dbb439c651118be449a9, type: 2}
   _health: 100
   _patrolPoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 6454240838494793644, guid: 32f956f04bfa1484bbf7f18fbfe13716, type: 3}
+  - {fileID: 6431743228245909266, guid: 97be208ef83497a4b87f20cb6f9fe0af, type: 3}
+  - {fileID: 4758367159731196268, guid: 694a85f5d2e9cbe45aa077e00f0f3008, type: 3}
 --- !u!143 &7205010852558052044
 CharacterController:
   m_ObjectHideFlags: 0
