@@ -13,7 +13,7 @@ public class EnemyBase : MonoBehaviour, IEnemyContext
     [SerializeField] protected EnemyStatSO _stat;
 
     // --- 상태 관련 ---
-    Dictionary<EnemyStateType, IEnemyState> _stateMap = new();
+    protected readonly Dictionary<EnemyStateType, IEnemyState> stateMap = new();
     protected IEnemyState currentState;                       
     protected EnemyStateType currentType;                     
     protected EnemyStateType sheduledChangeType;              
@@ -51,17 +51,31 @@ public class EnemyBase : MonoBehaviour, IEnemyContext
 
     protected void ChangeState(EnemyStateType next)
     {
-        currentState?.Exit();
-        currentState = EnemyStateFactory.Get(next);
-        currentState.Enter(this);
-        currentType = next;
-        Debug.Log($"상태 전환: {currentType} -> {next}");
+        currentState?.Exit();        
+        if (stateMap.TryGetValue(next, out var nextState))
+        {
+            currentState = nextState;
+            currentType = next;
+            currentState.Enter(this);
+            Debug.Log($"상태 전환: {currentType} -> {next}");
+        }
+        else
+        {
+            UnityEngine.Debug.LogWarning($"[ChangeState] {next} 상태는 이 Enemy에 등록되어 있지 않습니다.");
+        }
 
     }
 
     public void ScheduleStateChange(EnemyStateType next, float delay)
     {
-        scheduledTransition = StartCoroutine(DelayedChange(next, delay));
+        if (stateMap.TryGetValue(next, out var nextState))
+        {
+            scheduledTransition = StartCoroutine(DelayedChange(next, delay));
+        }
+        else
+        {
+            UnityEngine.Debug.LogWarning($"[ChangeState] {next} 상태는 이 Enemy에 등록되어 있지 않습니다.");
+        }
     }
 
     public void SetDestination(Vector3 targetPosition)

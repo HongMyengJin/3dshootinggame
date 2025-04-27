@@ -5,14 +5,18 @@ public class EnemyDamagedState : IEnemyState
 {
     private IEnemyDamagedContext context;
     private IEnemyStrategy<IEnemyDamagedContext> damagedStrategy;
-    public EnemyDamagedState(IEnemyStrategy<IEnemyDamagedContext> damagedStrategy)
+    private readonly EnemyStateType nextState;
+
+    public EnemyDamagedState(IEnemyStrategy<IEnemyDamagedContext> damagedStrategy, EnemyStateType nextState)
     {
         this.damagedStrategy = damagedStrategy;
+        this.nextState = nextState;
     }
     public void Enter(IEnemyContext ctx)
     {
         context = ctx as IEnemyDamagedContext;
         damagedStrategy.Execute(context);
+        context.StartCoroutine(Stun(context, nextState));
     }
     public void Update()
     {
@@ -21,7 +25,15 @@ public class EnemyDamagedState : IEnemyState
     }
     public void Exit()
     {
+    }
 
+    private IEnumerator Stun(IEnemyDamagedContext context, EnemyStateType nextState)
+    {
+        // 코루틴 방식으로 변경
+        context.Agent.isStopped = true;
+        context.Agent.ResetPath();
+        yield return new WaitForSeconds(context.State.DamagedStunTime);
+        context.ScheduleStateChange(nextState);
     }
 
 }

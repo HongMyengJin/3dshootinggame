@@ -6,12 +6,9 @@ using UnityEngine.AI;
 using UnityEngine.Rendering;
 using static UnityEditor.PlayerSettings;
 
-public class BasicEnemy : EnemyBase, IDamageable, IEnemyIdleContext, IEnemyChaseContext, IEnemyPatrolContext, IEnemyReturnContext, IEnemyAttackContext, IEnemyDamagedContext, IEnemyDieContext
+public class CommonEnemy : EnemyBase, IDamageable, IEnemyIdleContext, IEnemyChaseContext, IEnemyPatrolContext, IEnemyReturnContext, IEnemyAttackContext, IEnemyDamagedContext, IEnemyDieContext
 {
     [SerializeField] private Transform[] _patrolPoints;
-
-    protected readonly Dictionary<EnemyStateType, IEnemyState> stateMap = new();
-
 
     private int patrolIndex;
 
@@ -24,15 +21,16 @@ public class BasicEnemy : EnemyBase, IDamageable, IEnemyIdleContext, IEnemyChase
         InitializeStates();
         ChangeState(EnemyStateType.Idle);
     }
+
     public void InitializeStates()
     {
-        stateMap.Add(EnemyStateType.Idle, EnemyStateFactory.Get(EnemyStateType.Idle));
-        stateMap.Add(EnemyStateType.Chase, EnemyStateFactory.Get(EnemyStateType.Chase));
-        stateMap.Add(EnemyStateType.Attack, EnemyStateFactory.Get(EnemyStateType.Attack));
-        stateMap.Add(EnemyStateType.Damaged, EnemyStateFactory.Get(EnemyStateType.Damaged));
-        stateMap.Add(EnemyStateType.Return, EnemyStateFactory.Get(EnemyStateType.Return));
-        stateMap.Add(EnemyStateType.Patrol, EnemyStateFactory.Get(EnemyStateType.Patrol));
-        stateMap.Add(EnemyStateType.Die, EnemyStateFactory.Get(EnemyStateType.Die));
+        stateMap.Add(EnemyStateType.Idle, new EnemyIdleState(new EnemyIdleStrategy()));
+        stateMap.Add(EnemyStateType.Chase, new EnemyChaseState(new EnemyChaseStragegy()));
+        stateMap.Add(EnemyStateType.Attack, new EnemyAttackState(new EnemyAttackStragegy()));
+        stateMap.Add(EnemyStateType.Damaged, new EnemyDamagedState(new EnemyDamagedStragegy(), EnemyStateType.Chase));
+        stateMap.Add(EnemyStateType.Return, new EnemyReturnState(new EnemyReturnStragegy()));
+        stateMap.Add(EnemyStateType.Patrol, new EnemyPatrolState(new EnemyPatrolStragegy()));
+        stateMap.Add(EnemyStateType.Die, new EnemyDieState(new EnemyDieStragegy()));
     }
 
 
