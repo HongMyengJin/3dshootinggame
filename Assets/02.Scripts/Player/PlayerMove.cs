@@ -7,7 +7,7 @@ using static UnityEditor.PlayerSettings;
 
 public class PlayerMove : MonoBehaviour, IDamageable
 {
-    private float _moveSpeed = 15.0f;
+    private float _moveSpeed = 20.0f;
     private CharacterController _characterController;
     private int _jumpN = 0;
     private bool _isDash = false;
@@ -23,6 +23,9 @@ public class PlayerMove : MonoBehaviour, IDamageable
 
     private Animator _animator;
 
+    private Vector3 _targetPosition;
+    private bool _IsMove = false;
+
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
@@ -33,20 +36,19 @@ public class PlayerMove : MonoBehaviour, IDamageable
     {
         if (!_canInput)
             return;
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
+        Vector2 input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
-        _animator.SetFloat("Horizontal", h);
-        _animator.SetFloat("Vertical", v);
+        _animator.SetFloat("Horizontal", input.x);
+        _animator.SetFloat("Vertical", input.y);
 
-        Vector3 dir = new Vector3(h, 0, v).normalized;
+        Vector3 dir = new Vector3(input.x, 0, input.y).normalized;
 
         if (Mathf.Abs(dir.x) > 0.0f || Mathf.Abs(dir.z) > 0.0f)
             _dir = dir;
         
         dir = Camera.main.transform.TransformDirection(dir);
 
-        if (Climb(dir, h, v))
+        if (Climb(dir, input.x, input.y))
             return;
 
         Jump();
@@ -59,14 +61,36 @@ public class PlayerMove : MonoBehaviour, IDamageable
 
         if (_isDash)
             return;
+        
+
+        if(Input.GetMouseButtonDown(1))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hitInfo))
+            {
+                _targetPosition = hitInfo.point;
+                _IsMove = true;
+            }
+        }
+
+        if(_IsMove)
+        {
+            Vector3 direction = _targetPosition - transform.position;
+            if (direction.sqrMagnitude > 0.01f)
+            {
+                direction.Normalize();
+
+                _animator.SetFloat("Horizontal", direction.x);
+                _animator.SetFloat("Vertical", direction.z);
+                // _animator.SetFloat("Vertical", transform.forward.x);
+                _characterController.Move(new Vector3(direction.x, 0.0f, direction.z) * _moveSpeed * Time.deltaTime);
+            }
+            else
+                _IsMove = false;
+        }
+
         _characterController.Move(dir * _moveSpeed * Time.deltaTime);
 
-        if(Input.GetMouseButton(1) && CameraManager.Instance.GetCurrentViewType() == CameraViewType.QuaterView)
-        {
-            _animator.SetFloat("Horizontal", transform.forward.z);
-            _animator.SetFloat("Vertical", transform.forward.x);
-            _characterController.Move(transform.forward * _moveSpeed * Time.deltaTime);
-        }
     }
 
     public Vector3 GetVelocity(Vector3 dir)
@@ -136,7 +160,7 @@ public class PlayerMove : MonoBehaviour, IDamageable
         if (Input.GetKey(KeyCode.LeftShift))
         {
             // 스태미나 0보다 작은지 체크
-            _moveSpeed = 20.0f;
+            _moveSpeed = 23.0f;
 
             PlayerStat.CurStamina -= Time.deltaTime * PlayerDataSo.StaminaUseSpeed;
             PlayerStat.ChangeStamina();
@@ -162,7 +186,7 @@ public class PlayerMove : MonoBehaviour, IDamageable
     {
         if (!_isDash)
         {
-            _moveSpeed = 15.0f;
+            _moveSpeed = 20.0f;
 
             if (PlayerStat.CurStamina < PlayerDataSo.MaxStamina)
             {

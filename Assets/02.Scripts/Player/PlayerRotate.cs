@@ -2,7 +2,7 @@
 
 public class PlayerRotate : MonoBehaviour
 {
-    public float RotationSpeed = 150f;
+    public float RotationSpeed = 200.0f;
 
     private float _rotationX = 0;
 
@@ -22,7 +22,7 @@ public class PlayerRotate : MonoBehaviour
         }
         else
         {
-            if (Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(0))
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out RaycastHit hitInfo))

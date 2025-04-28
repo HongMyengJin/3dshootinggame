@@ -12,6 +12,9 @@ public class GunWeaponStrategy : IWeaponStrategy
     public GunWeaponStrategy(Animator animator, Transform firePoint)
     {
         this._animator = animator;
+
+        if (firePoint == null)
+            Debug.Log("쏘는 포인트 없음");
         this._firePoint = firePoint;
     }
 
@@ -25,11 +28,8 @@ public class GunWeaponStrategy : IWeaponStrategy
     }
     public void OnAttackAnimationEvent()
     {
-        if (Input.GetMouseButton(1))
-        {
-            ShootAttack();
-            Gun.Instance.Shoot();
-        }
+        ShootAttack();
+        // Gun.Instance.Shoot();
     }
 
     public FireData CalculateFireData()
