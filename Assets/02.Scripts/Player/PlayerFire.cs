@@ -47,7 +47,7 @@ public class PlayerFire : MonoBehaviour
 
     private void Update()
     {
-        CurCoolTime -= Time.deltaTime;
+        //CurCoolTime -= Time.deltaTime;
         // 2. 오른쪽 버튼 입력 받기
         // - 0: 왼쪽, 1: 오른쪽, 2: 휠
 

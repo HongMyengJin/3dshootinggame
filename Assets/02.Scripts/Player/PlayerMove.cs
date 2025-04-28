@@ -43,6 +43,7 @@ public class PlayerMove : MonoBehaviour, IDamageable
 
         if (Mathf.Abs(dir.x) > 0.0f || Mathf.Abs(dir.z) > 0.0f)
             _dir = dir;
+        
         dir = Camera.main.transform.TransformDirection(dir);
 
         if (Climb(dir, h, v))
@@ -59,6 +60,13 @@ public class PlayerMove : MonoBehaviour, IDamageable
         if (_isDash)
             return;
         _characterController.Move(dir * _moveSpeed * Time.deltaTime);
+
+        if(Input.GetMouseButton(1) && CameraManager.Instance.GetCurrentViewType() == CameraViewType.QuaterView)
+        {
+            _animator.SetFloat("Horizontal", transform.forward.z);
+            _animator.SetFloat("Vertical", transform.forward.x);
+            _characterController.Move(transform.forward * _moveSpeed * Time.deltaTime);
+        }
     }
 
     public Vector3 GetVelocity(Vector3 dir)

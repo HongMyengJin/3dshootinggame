@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class PlayerRotate : MonoBehaviour
 {
@@ -6,15 +6,41 @@ public class PlayerRotate : MonoBehaviour
 
     private float _rotationX = 0;
 
+    private Quaternion _targetRotation;
     private void Update()
     {
-        // 1. ¸¶¿ì½º ÀÔ·ÂÀ» ¹Þ´Â´Ù. (¸¶¿ì½ºÀÇ Ä¿¼­ÀÇ ¿òÁ÷ÀÓ ¹æÇâ)
-        float mouseX = Input.GetAxis("Mouse X");
+        if (CameraManager.Instance.GetCurrentViewType() != CameraViewType.QuaterView)
+        {
+            // 1. ë§ˆìš°ìŠ¤ ìž…ë ¥ì„ ë°›ëŠ”ë‹¤. (ë§ˆìš°ìŠ¤ì˜ ì»¤ì„œì˜ ì›€ì§ìž„ ë°©í–¥)
+            float mouseX = Input.GetAxis("Mouse X");
 
-        // 2. È¸ÀüÇÑ ¾ç¸¸Å­ ´©Àû½ÃÄÑ ³ª°£´Ù.
-        _rotationX += mouseX * RotationSpeed * Time.deltaTime;
+            // 2. íšŒì „í•œ ì–‘ë§Œí¼ ëˆ„ì ì‹œì¼œ ë‚˜ê°„ë‹¤.
+            _rotationX += mouseX * RotationSpeed * Time.deltaTime;
 
-        // 3. È¸Àü ¹æÇâÀ¸·Î È¸Àü½ÃÅ²´Ù.
-        transform.eulerAngles = new Vector3(0, _rotationX, 0);
+            // 3. íšŒì „ ë°©í–¥ìœ¼ë¡œ íšŒì „ì‹œí‚¨ë‹¤.
+            transform.eulerAngles = new Vector3(0, _rotationX, 0);
+        }
+        else
+        {
+            if (Input.GetMouseButtonDown(1))
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out RaycastHit hitInfo))
+                {
+                    Vector3 clickPosition = hitInfo.point;
+                    Vector3 direction = (clickPosition - transform.position);
+                    direction.y = 0; // ìˆ˜í‰ íšŒì „ë§Œ
+                    if (direction.sqrMagnitude > 0.01f)
+                    {
+                        Quaternion targetRotation = Quaternion.LookRotation(direction);
+                        _targetRotation = targetRotation;
+                    }
+                }
+            }
+            else
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotation, Time.deltaTime * 5.0f);
+            }
+        }
     }
 }
