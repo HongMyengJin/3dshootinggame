@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections.Generic;
 
 public enum WeaponType
@@ -14,6 +14,7 @@ public class PlayerWeaponHandler : MonoBehaviour
     [SerializeField] private Transform _weaponSocket;
     [SerializeField] private Animator _animator;
     [SerializeField] private List<WeaponDataSO> _weaponDataAssets;
+    [SerializeField] private AttackDataSO _swordAttackData;
 
     private Dictionary<WeaponType, IWeaponStrategy> _weaponStrategies;
     private Dictionary<WeaponType, GameObject> _weaponInstances;
@@ -35,8 +36,8 @@ public class PlayerWeaponHandler : MonoBehaviour
 
         _weaponStrategies = new Dictionary<WeaponType, IWeaponStrategy>()
         {
-            { WeaponType.Gun, new GunWeaponStrategy(_weaponInstances[WeaponType.Gun].transform.Find("MuzzlePosition")) },
-            { WeaponType.Sword, new SwordWeaponStrategy(_animator) }
+            { WeaponType.Gun, new GunWeaponStrategy(_animator, _weaponInstances[WeaponType.Gun].transform.Find("MuzzlePosition")) },
+            { WeaponType.Sword, new SwordWeaponStrategy(_animator, transform, _swordAttackData, this) }
         };
 
         _keyWeaponMappings = new Dictionary<KeyCode, WeaponType>()
@@ -46,12 +47,6 @@ public class PlayerWeaponHandler : MonoBehaviour
         };
 
     }
-
-    private void Start()
-    {
-        SwitchWeapon(WeaponType.Gun); // ±âº» ¹«±â
-    }
-
     private void Update()
     {
         HandleAttackInput();
@@ -61,10 +56,14 @@ public class PlayerWeaponHandler : MonoBehaviour
 
     private void HandleAttackInput()
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetMouseButtonDown(0))
         {
-            _currentWeaponStrategy?.Attack();
+            _currentWeaponStrategy?.OnAttackInput();
         }
+    }
+    public void OnAttackAnimationEvent()
+    {
+        _currentWeaponStrategy?.OnAttackAnimationEvent(); 
     }
 
     private void HandleWeaponSwitchInput()
@@ -99,12 +98,17 @@ public class PlayerWeaponHandler : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"¹«±â Àü·«À» Ã£À» ¼ö ¾øÀ½: {weaponType}");
+            Debug.LogWarning($"ë¬´ê¸° ì „ëµì„ ì°¾ì„ ìˆ˜ ì—†ìŒ: {weaponType}");
         }
+    }
+
+    public void OnAttackHit()
+    {
+        _currentWeaponStrategy?.Attack();
     }
 
     private void ThrowBomb()
     {
-        Debug.Log("ÆøÅº ´øÁö±â!");
+        Debug.Log("í­íƒ„ ë˜ì§€ê¸°!");
     }
 }

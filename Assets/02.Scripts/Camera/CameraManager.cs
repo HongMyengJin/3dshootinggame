@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEditor.Experimental.GraphView.GraphView;
 
 public enum CameraViewType { FPS, TPS, QuaterView }
 public class CameraManager : MonoBehaviour
 {
+    private bool _canControl = false;
     public static CameraManager Instance { get; private set; }
 
     private void Awake()
@@ -34,7 +36,7 @@ public class CameraManager : MonoBehaviour
             { CameraViewType.QuaterView, new QuarterView(Camera.main.transform, _player.transform) },
         };
 
-        SetView(CameraViewType.FPS);
+        SetView(CameraViewType.QuaterView);
     }
 
     public void SetView(CameraViewType type)
@@ -57,8 +59,18 @@ public class CameraManager : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (!_canControl)
+            return;
         currentView?.UpdateView();
     }
 
+    public void EnableControl()
+    {
+        _canControl = true;
+    }
 
+    public void DisableControl()
+    {
+        _canControl = false;
+    }
 }

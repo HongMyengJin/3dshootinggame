@@ -2,17 +2,19 @@
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Experimental.GraphView.GraphView;
 using static UnityEditor.PlayerSettings;
 
 public class PlayerMove : MonoBehaviour, IDamageable
 {
-    private float _moveSpeed = 7f;
+    private float _moveSpeed = 15.0f;
     private CharacterController _characterController;
     private int _jumpN = 0;
     private bool _isDash = false;
     private bool _isClimb = false;
     private Vector3 _dir = Vector3.zero;
     private float _yVelocity = 0f;
+    private bool _canInput = false;
 
     public Slider Slider;
     public PlayerSO PlayerDataSo;
@@ -29,6 +31,8 @@ public class PlayerMove : MonoBehaviour, IDamageable
 
     private void Update() 
     {
+        if (!_canInput)
+            return;
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
 
@@ -50,6 +54,7 @@ public class PlayerMove : MonoBehaviour, IDamageable
 
         BasicStamina();
         dir = GetVelocity(dir);
+        
 
         if (_isDash)
             return;
@@ -60,6 +65,7 @@ public class PlayerMove : MonoBehaviour, IDamageable
     {
         _yVelocity += PlayerDataSo.Gravity * Time.deltaTime;
         dir.y = _yVelocity;
+        _animator.SetFloat("yVelocity", _yVelocity);
 
         return dir;
     }
@@ -104,11 +110,14 @@ public class PlayerMove : MonoBehaviour, IDamageable
         if (_characterController.isGrounded)
         {
             _jumpN = 0;
+            _yVelocity = 0.0f;
+            _animator.SetBool("Jump", false);
         }
 
         // 3. 점프 적용
         if (Input.GetButtonDown("Jump") && _jumpN < 2)
         {
+            _animator.SetBool("Jump", true);
             _yVelocity = PlayerDataSo.JumpPower;
             _jumpN++;
         }
@@ -119,7 +128,7 @@ public class PlayerMove : MonoBehaviour, IDamageable
         if (Input.GetKey(KeyCode.LeftShift))
         {
             // 스태미나 0보다 작은지 체크
-            _moveSpeed = 12.0f;
+            _moveSpeed = 20.0f;
 
             PlayerStat.CurStamina -= Time.deltaTime * PlayerDataSo.StaminaUseSpeed;
             PlayerStat.ChangeStamina();
@@ -145,7 +154,7 @@ public class PlayerMove : MonoBehaviour, IDamageable
     {
         if (!_isDash)
         {
-            _moveSpeed = 7.0f;
+            _moveSpeed = 15.0f;
 
             if (PlayerStat.CurStamina < PlayerDataSo.MaxStamina)
             {
@@ -171,6 +180,16 @@ public class PlayerMove : MonoBehaviour, IDamageable
     public void TakeDamage(Damage damage)
     {
 
+    }
+
+    public void EnableControl()
+    {
+        _canInput = true;
+    }
+
+    public void DisableControl()
+    {
+        _canInput = false;
     }
 }
 

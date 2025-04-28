@@ -44,11 +44,12 @@ public class CommonEnemy : EnemyBase, IDamageable, IEnemyIdleContext, IEnemyChas
         patrolIndex = (patrolIndex + 1) % PatrolPoints.Length;
         Agent.SetDestination(PatrolPoints[patrolIndex].position);
     }
-    public void TakeDamage(Damage damage)
-    {
-        _health -= damage.Value;
-        _knockbackDirection = damage.Dir;
+    //public void TakeDamage(Damage damage)
+    //{
+    //    _healthComponent.TakeDamage(damage.Value);
+    //    _health -= damage.Value;
+    //    _knockbackDirection = damage.Dir;
 
-        ChangeState(EnemyStateType.Damaged);
-    }
+    //    ChangeState(EnemyStateType.Damaged);
+    //}
 }

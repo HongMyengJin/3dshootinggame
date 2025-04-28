@@ -52,19 +52,19 @@ public class PlayerFire : MonoBehaviour
         // - 0: 왼쪽, 1: 오른쪽, 2: 휠
 
         // 마우스 오른쪽이 눌릴 때 + 현재 사용 가능한 폭탄 존재
-        if (Input.GetMouseButton(1) && BombUI.Instance.CheckUseBomb())
-        {
-            AddPower();
-        }
+        //if (Input.GetMouseButton(1) && BombUI.Instance.CheckUseBomb())
+        //{
+        //    AddPower();
+        //}
 
-        // 마우스 오른쪽 올릴 때
-        if (Input.GetMouseButtonUp(1) && BombUI.Instance.CheckUseBomb())
-        {
-            BombAttack();
-            ThrowPower = 0.0f;
-            BombGaugeUpdate();
-            BombUI.Instance.UseBomb();
-        }
+        //// 마우스 오른쪽 올릴 때
+        //if (Input.GetMouseButtonUp(1) && BombUI.Instance.CheckUseBomb())
+        //{
+        //    BombAttack();
+        //    ThrowPower = 0.0f;
+        //    BombGaugeUpdate();
+        //    BombUI.Instance.UseBomb();
+        //}
 
         // 목표: 마우스의 왼쪽 버튼을 누르면 카메라가 바라보는 방향으로 총을 발사하고 싶다. - 총알 발사(레이저 방식)
         // 1. 왼쪽 버튼 입력 받기

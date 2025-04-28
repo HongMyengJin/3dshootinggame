@@ -5,17 +5,20 @@ using System.Collections.Generic;
 
 public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
 {
+
     // --- 컴포넌트 및 참조 --
     [SerializeField] protected Transform _self;                
     [SerializeField] protected Transform _target;              
     [SerializeField] protected NavMeshAgent _agent;            
     [SerializeField] protected CharacterController _controller;
     [SerializeField] protected EnemyStatSO _stat;
+    [SerializeField] protected HealthComponent _healthComponent;
+    [SerializeField] protected HealthBarController _healthBarController;
 
     // --- 상태 관련 ---
     protected readonly Dictionary<EnemyStateType, IEnemyState> stateMap = new();
     protected IEnemyState currentState;                       
-    protected EnemyStateType currentType;                     
+    protected EnemyStateType _currentType;                     
     protected EnemyStateType sheduledChangeType;              
     protected Coroutine scheduledTransition;                  
 
@@ -35,6 +38,9 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
     public Vector3 StartPoint => _startPosition;
     public Vector3 KnockbackDirection => _knockbackDirection;
     public bool IsActive => gameObject.activeInHierarchy;
+    public Transform Transform => transform;
+
+    public EnemyStateType CurrentType => _currentType;
     protected virtual void Awake()
     {
         _startPosition = transform.position;
@@ -43,6 +49,11 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
 
         _agent = GetComponent<NavMeshAgent>();
         _agent.speed = _stat.MoveSpeed;
+
+        if (_healthComponent != null && _healthBarController != null)
+        {
+            _healthBarController.Setup(transform, _healthComponent);
+        }
     }
     protected virtual void Update()
     {
@@ -55,9 +66,9 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
         if (stateMap.TryGetValue(next, out var nextState))
         {
             currentState = nextState;
-            currentType = next;
+            _currentType = next;
             currentState.Enter(this);
-            Debug.Log($"상태 전환: {currentType} -> {next}");
+            Debug.Log($"상태 전환: {_currentType} -> {next}");
         }
         else
         {
@@ -103,5 +114,13 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
     public void OnDespawn()
     {
         gameObject.SetActive(false);
+    }
+    public void TakeDamage(Damage damage)
+    {
+        _healthComponent.TakeDamage(damage.Value);
+        _health -= damage.Value;
+        _knockbackDirection = damage.Dir;
+
+        ChangeState(EnemyStateType.Damaged);
     }
 }

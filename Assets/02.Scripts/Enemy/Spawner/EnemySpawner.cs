@@ -4,6 +4,11 @@ using System.Collections.Generic;
 
 public class EnemySpawner : MonoBehaviour
 {
+    public static EnemySpawner Instance { get; private set; }
+
+    private List<IEnemy> _activeEnemies = new List<IEnemy>();
+    public IReadOnlyList<IEnemy> GetActiveEnemies() => _activeEnemies;
+
     [System.Serializable]
     public struct EnemyType
     {
@@ -21,7 +26,16 @@ public class EnemySpawner : MonoBehaviour
 
     private void Awake()
     {
-        foreach (var type in enemyTypes)
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
+        foreach (EnemyType type in enemyTypes)
         {
             pools[type.prefab] = new EnemyPool(type.prefab, this.transform, type.initialPoolSize);
         }
@@ -59,6 +73,13 @@ public class EnemySpawner : MonoBehaviour
 
         enemy.Initialize(PickSpawnPos(enemyType.spawnRange));
         enemy.OnSpawn();
+        _activeEnemies.Add(enemy); // 추가
+    }
+
+    // 적이 죽을 때
+    public void OnEnemyDead(IEnemy enemy)
+    {
+        _activeEnemies.Remove(enemy);
     }
 
     private Vector3 PickSpawnPos(float spawnRange)
@@ -82,5 +103,7 @@ public class EnemySpawner : MonoBehaviour
         Vector2 offset = Random.insideUnitCircle * range;
         return new Vector3(center.x + offset.x, center.y, center.z + offset.y);
     }
+
+
 
 }
