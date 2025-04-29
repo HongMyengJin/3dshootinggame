@@ -6,6 +6,7 @@ public class GunWeaponStrategy : IWeaponStrategy
 {
     private readonly Animator _animator;
     private readonly Transform _firePoint;
+    private bool _aim = false;
 
     public Transform Self { get; }
 
@@ -20,7 +21,8 @@ public class GunWeaponStrategy : IWeaponStrategy
 
     public void OnAttackInput()
     {
-        _animator.SetTrigger("Shoot");
+        _aim = !_aim;
+        _animator.SetBool("Aim", _aim);
     }
     public void Attack()
     {
