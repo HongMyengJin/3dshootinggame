@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 
@@ -6,7 +6,17 @@ public class EnemyDamagedStragegy : IEnemyStrategy<IEnemyDamagedContext>
 {
     public void Execute(IEnemyDamagedContext context)
     {
+        if (context == null)
+            return;
         context.StartCoroutine(Knockback(context));
+    }
+    public void Update(IEnemyDamagedContext context)
+    {
+
+    }
+    public void Exit(IEnemyDamagedContext context)
+    {
+
     }
     private IEnumerator Knockback(IEnemyDamagedContext context)
     {

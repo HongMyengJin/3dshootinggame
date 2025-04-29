@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 
@@ -10,5 +10,13 @@ public class EnemyReturnStragegy : IEnemyStrategy<IEnemyReturnContext>
             return;
 
         context.Agent.SetDestination(context.StartPoint);
+    }
+    public void Update(IEnemyReturnContext context)
+    {
+
+    }
+    public void Exit(IEnemyReturnContext context)
+    {
+
     }
 }

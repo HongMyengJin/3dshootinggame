@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 
@@ -9,5 +9,13 @@ public class EnemyDieStragegy : IEnemyStrategy<IEnemyDieContext>
         if (context == null)
             return;
         GameObject.Destroy(context.Self.gameObject);
+    }
+    public void Update(IEnemyDieContext context)
+    {
+
+    }
+    public void Exit(IEnemyDieContext context)
+    {
+
     }
 }

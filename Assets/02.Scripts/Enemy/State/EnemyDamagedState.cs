@@ -22,9 +22,11 @@ public class EnemyDamagedState : IEnemyState
     {
         if (context == null)
             return;
+        damagedStrategy.Update(context);
     }
     public void Exit()
     {
+        damagedStrategy.Exit(context);
     }
 
     private IEnumerator Stun(IEnemyDamagedContext context, EnemyStateType nextState)

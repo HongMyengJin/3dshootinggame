@@ -10,6 +10,8 @@ public interface IEnemyContext
     NavMeshAgent Agent { get; }
     EnemyStatSO State { get;  }
 
+    Animator Animator { get; }
+
     Coroutine StartCoroutine(IEnumerator routine);
     void StopCoroutine(Coroutine coroutine);
     void ScheduleStateChange(EnemyStateType next, float delay = 0.0f);

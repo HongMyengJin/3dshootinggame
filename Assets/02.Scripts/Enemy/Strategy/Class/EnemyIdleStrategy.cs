@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
 public class EnemyIdleStrategy : IEnemyStrategy<IEnemyIdleContext>
@@ -7,5 +7,13 @@ public class EnemyIdleStrategy : IEnemyStrategy<IEnemyIdleContext>
     {
         if (context == null)
             return;
+    }
+    public void Update(IEnemyIdleContext context)
+    {
+
+    }
+    public void Exit(IEnemyIdleContext context)
+    {
+
     }
 }

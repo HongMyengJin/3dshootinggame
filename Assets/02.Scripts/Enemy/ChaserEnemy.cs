@@ -24,7 +24,7 @@ public class ChaserEnemy : EnemyBase, IDamageable, IEnemyChaseContext, IEnemyDam
 
     protected override void Update()
     {
-        currentState?.Update();
+        _currentState?.Update();
     }
 
     //public void TakeDamage(Damage damage)

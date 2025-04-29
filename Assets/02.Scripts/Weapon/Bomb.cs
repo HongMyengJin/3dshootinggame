@@ -43,7 +43,7 @@ public class Bomb : MonoBehaviour
 
     public void OnSimulation()
     {
-        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.linearVelocity = Vector3.zero;
         _rigidbody.angularVelocity = Vector3.zero;
         _rigidbody.useGravity = true;
         _collider.enabled = true;

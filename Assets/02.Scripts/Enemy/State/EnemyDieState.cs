@@ -17,9 +17,10 @@ public class EnemyDieState : IEnemyState
     {
         if (context == null)
             return;
+        dieStrategy.Update(context);
     }
     public void Exit()
     {
-
+        dieStrategy.Exit(context);
     }
 }

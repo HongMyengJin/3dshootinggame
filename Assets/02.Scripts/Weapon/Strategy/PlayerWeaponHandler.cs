@@ -98,16 +98,18 @@ public class PlayerWeaponHandler : MonoBehaviour
         if (_weaponStrategies.TryGetValue(weaponType, out var strategy))
         {
             _currentWeaponStrategy = strategy;
-            _currentWeaponType = weaponType;
+            _weaponInstances[_currentWeaponType]?.SetActive(false);
             if (!_weaponInstances.ContainsKey(weaponType))
+            {
                 return;
+            }
             Transform grip = _weaponInstances[weaponType].transform.Find("grip");
 
             Vector3 offset = _weaponInstances[weaponType].transform.position - grip.position;
             _weaponInstances[weaponType].transform.position = _weaponSocket.position + offset;
 
-            _weaponInstances[_currentWeaponType]?.SetActive(false);
             _weaponInstances[weaponType]?.SetActive(true);
+            _currentWeaponType = weaponType;
         }
         else
         {

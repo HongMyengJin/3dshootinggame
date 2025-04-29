@@ -36,7 +36,7 @@ public class CommonEnemy : EnemyBase, IDamageable, IEnemyIdleContext, IEnemyChas
 
     protected override void Update()
     {
-        currentState?.Update();
+        _currentState?.Update();
     }
 
     public void MoveToNextPatrolPoint()

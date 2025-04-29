@@ -14,13 +14,14 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
     [SerializeField] protected EnemyStatSO _stat;
     [SerializeField] protected HealthComponent _healthComponent;
     [SerializeField] protected HealthBarController _healthBarController;
+    [SerializeField] protected Animator _animator;
 
     // --- 상태 관련 ---
     protected readonly Dictionary<EnemyStateType, IEnemyState> stateMap = new();
-    protected IEnemyState currentState;                       
+    protected IEnemyState _currentState;                       
     protected EnemyStateType _currentType;                     
-    protected EnemyStateType sheduledChangeType;              
-    protected Coroutine scheduledTransition;                  
+    protected EnemyStateType _sheduledChangeType;              
+    protected Coroutine _scheduledTransition;                  
 
     // --- 전투 및 위치 데이터 ---
     [SerializeField] protected int _health;                   
@@ -39,6 +40,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
     public Vector3 KnockbackDirection => _knockbackDirection;
     public bool IsActive => gameObject.activeInHierarchy;
     public Transform Transform => transform;
+    public Animator Animator => _animator;
 
     public EnemyStateType CurrentType => _currentType;
     protected virtual void Awake()
@@ -50,6 +52,8 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
         _agent = GetComponent<NavMeshAgent>();
         _agent.speed = _stat.MoveSpeed;
 
+        _animator = GetComponent<Animator>();
+
         if (_healthComponent != null && _healthBarController != null)
         {
             _healthBarController.Setup(transform, _healthComponent);
@@ -57,17 +61,17 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
     }
     protected virtual void Update()
     {
-        currentState?.Update();
+        _currentState?.Update();
     }
 
     protected void ChangeState(EnemyStateType next)
     {
-        currentState?.Exit();        
+        _currentState?.Exit();        
         if (stateMap.TryGetValue(next, out var nextState))
         {
-            currentState = nextState;
+            _currentState = nextState;
             _currentType = next;
-            currentState.Enter(this);
+            _currentState.Enter(this);
             Debug.Log($"상태 전환: {_currentType} -> {next}");
         }
         else
@@ -81,7 +85,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
     {
         if (stateMap.TryGetValue(next, out var nextState))
         {
-            scheduledTransition = StartCoroutine(DelayedChange(next, delay));
+            _scheduledTransition = StartCoroutine(DelayedChange(next, delay));
         }
         else
         {
@@ -96,7 +100,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
 
     private IEnumerator DelayedChange(EnemyStateType next, float delay)
     {
-        sheduledChangeType = next;
+        _sheduledChangeType = next;
         yield return new WaitForSeconds(delay);
         ChangeState(next);
     }
