@@ -7,6 +7,15 @@ public class PlayerRotate : MonoBehaviour
     private float _rotationX = 0;
 
     private Quaternion _targetRotation;
+    private Animator _animator;
+
+    private float _rotateValue;
+
+
+    private void Awake()
+    {
+        _animator = GetComponent<Animator>();
+    }
     private void Update()
     {
         if (CameraManager.Instance.GetCurrentViewType() != CameraViewType.QuaterView)
@@ -39,7 +48,10 @@ public class PlayerRotate : MonoBehaviour
             }
             else
             {
+                _rotateValue = Quaternion.Angle(transform.rotation, _targetRotation) / 180.0f;
                 transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotation, Time.deltaTime * 5.0f);
+                if(_rotateValue > 0.1f)
+                    _animator.SetFloat("MoveSpeed", _rotateValue);
             }
         }
     }

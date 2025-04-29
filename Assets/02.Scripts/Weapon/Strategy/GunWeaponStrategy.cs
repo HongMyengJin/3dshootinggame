@@ -1,4 +1,5 @@
-﻿using UnityEditor.UI;
+﻿using Unity.VisualScripting;
+using UnityEditor.UI;
 using UnityEngine;
 using static PlayerFire;
 
@@ -68,6 +69,8 @@ public class GunWeaponStrategy : IWeaponStrategy
             case CameraViewType.QuaterView:
                 {
                     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    float t = (muzzlePos.y - ray.origin.y) / ray.direction.y;
+                    Vector3 targetPos = ray.origin + ray.direction * t;
                     if (Physics.Raycast(ray, out RaycastHit hit))
                     {
                         Vector3 dir = (hit.point - muzzlePos).normalized;

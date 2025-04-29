@@ -57,7 +57,7 @@ public class PlayerFire : MonoBehaviour
         //    AddPower();
         //}
 
-        //// 마우스 오른쪽 올릴 때
+        ////// 마우스 오른쪽 올릴 때
         //if (Input.GetMouseButtonUp(1) && BombUI.Instance.CheckUseBomb())
         //{
         //    BombAttack();
@@ -75,16 +75,6 @@ public class PlayerFire : MonoBehaviour
         //}
 
         LoadGun();
-    }
-
-    public void BombAttack()
-    {
-        // 3. 발사 위치에 수류탄
-        GameObject bomb = BombManager.Instance.UseBomb(FirePosition.transform.position);
-        // 4. 생성된 수류탄을 카메라 방향으로 물리적인 힘 가하기
-        Rigidbody bombRigidbody = bomb.GetComponent<Rigidbody>();
-        bombRigidbody.AddForce(_mainCamera.transform.forward * ThrowPower, ForceMode.Impulse);
-        bombRigidbody.AddTorque(Vector3.one);
     }
 
     public FireData CalculateFireData()

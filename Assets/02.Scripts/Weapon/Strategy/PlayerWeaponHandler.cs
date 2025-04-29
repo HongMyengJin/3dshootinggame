@@ -4,7 +4,9 @@ using System.Collections.Generic;
 public enum WeaponType
 {
     Gun,
-    Sword
+    Sword,
+    Bomb,
+    WeaponTypeEnd
 }
 
 public class PlayerWeaponHandler : MonoBehaviour
@@ -23,27 +25,32 @@ public class PlayerWeaponHandler : MonoBehaviour
 
     private void Awake()
     {
-        _weaponInstances = new Dictionary<WeaponType, GameObject>();
+        _weaponInstances = new Dictionary<WeaponType, GameObject>((int)WeaponType.WeaponTypeEnd);
         foreach (WeaponDataSO data in _weaponDataAssets)
         {
+            if (data.weaponPrefab == null)
+                continue;
             GameObject weapon = Instantiate(data.weaponPrefab, _weaponSocket);
             weapon.transform.localPosition = Vector3.zero;
             weapon.transform.localRotation = Quaternion.identity;
             weapon.SetActive(false);
 
+            
             _weaponInstances[data.weaponType] = weapon;
         }
 
         _weaponStrategies = new Dictionary<WeaponType, IWeaponStrategy>()
         {
             { WeaponType.Gun, new GunWeaponStrategy(_animator, _weaponInstances[WeaponType.Gun].transform.Find("MuzzlePosition")) },
-            { WeaponType.Sword, new SwordWeaponStrategy(_animator, transform, _swordAttackData, this) }
+            { WeaponType.Sword, new SwordWeaponStrategy(_animator, transform, _swordAttackData, this) },
+            { WeaponType.Bomb, new BombWeaponStrategy(_animator, _weaponSocket, gameObject) }
         };
 
         _keyWeaponMappings = new Dictionary<KeyCode, WeaponType>()
         {
             { KeyCode.Alpha1, WeaponType.Gun },
-            { KeyCode.Alpha2, WeaponType.Sword }
+            { KeyCode.Alpha2, WeaponType.Sword },
+            { KeyCode.Alpha3, WeaponType.Bomb },
         };
 
     }
@@ -51,7 +58,7 @@ public class PlayerWeaponHandler : MonoBehaviour
     {
         HandleAttackInput();
         HandleWeaponSwitchInput();
-        HandleBombThrowInput();
+        //HandleBombThrowInput();
     }
 
     private void HandleAttackInput()
@@ -78,22 +85,28 @@ public class PlayerWeaponHandler : MonoBehaviour
         }
     }
 
-    private void HandleBombThrowInput()
-    {
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            ThrowBomb();
-        }
-    }
+    //private void HandleBombThrowInput()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.G))
+    //    {
+    //        ThrowBomb();
+    //    }
+    //}
 
     private void SwitchWeapon(WeaponType weaponType)
     {
-
         if (_weaponStrategies.TryGetValue(weaponType, out var strategy))
         {
-            _weaponInstances[_currentWeaponType]?.SetActive(false);
             _currentWeaponStrategy = strategy;
             _currentWeaponType = weaponType;
+            if (!_weaponInstances.ContainsKey(weaponType))
+                return;
+            Transform grip = _weaponInstances[weaponType].transform.Find("grip");
+
+            Vector3 offset = _weaponInstances[weaponType].transform.position - grip.position;
+            _weaponInstances[weaponType].transform.position = _weaponSocket.position + offset;
+
+            _weaponInstances[_currentWeaponType]?.SetActive(false);
             _weaponInstances[weaponType]?.SetActive(true);
         }
         else

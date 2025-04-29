@@ -24,6 +24,7 @@ public class PlayerMove : MonoBehaviour, IDamageable
     private Animator _animator;
 
     private Vector3 _targetPosition;
+    private Vector3 _startPosition;
     private bool _IsMove = false;
     private float _moveValue = 0.0f;
 
@@ -31,11 +32,11 @@ public class PlayerMove : MonoBehaviour, IDamageable
     {
         _characterController = GetComponent<CharacterController>();
         _animator = GetComponent<Animator>();
+        _animator.SetFloat("MoveSpeed", _moveValue);
     }
 
     private void Update() 
     {
-        _animator.SetFloat("MoveSpeed", _moveValue);
         _animator.SetLayerWeight(2, 1.0f - PlayerStat.CurHealth / PlayerDataSo.MaxHealth);
         Debug.Log($"PlayerHealth: {PlayerStat.CurHealth / PlayerDataSo.MaxHealth} ");
         if (!_canInput)
@@ -80,6 +81,7 @@ public class PlayerMove : MonoBehaviour, IDamageable
             if (Physics.Raycast(ray, out RaycastHit hitInfo))
             {
                 _targetPosition = hitInfo.point;
+                _startPosition = transform.position;
                 _IsMove = true;
             }
         }
@@ -88,20 +90,25 @@ public class PlayerMove : MonoBehaviour, IDamageable
         {
             Vector3 direction = _targetPosition - transform.position;
             direction.y = 0.0f;
+
+            float targetDistance = Vector3.Distance(_startPosition, _targetPosition);
+            float curDistance = Vector3.Distance(transform.position, _targetPosition);
+
             if (direction.sqrMagnitude > 0.01f)
             {
                 direction.Normalize();
-                _moveValue += Time.deltaTime;
+                _moveValue = curDistance / targetDistance;
                 // _animator.SetFloat("Vertical", transform.forward.x);
                 _characterController.Move(new Vector3(direction.x, 0.0f, direction.z) * _moveSpeed * Time.deltaTime);
             }
             else
             {
-                _moveValue = 0.0f;
-                _IsMove = false;
+                _moveValue -= Time.deltaTime;
+                if(_moveValue <= 0.0f)
+                    _IsMove = false;
             }
         }
-
+        _animator.SetFloat("MoveSpeed", _moveValue);
         _characterController.Move(dir * _moveSpeed * Time.deltaTime);
 
     }
