@@ -38,6 +38,15 @@ public class PlayerFire : MonoBehaviour
 
     public ShootEnum CurShootEnum;
 
+    public GameObject UI_SniperZoom;
+    public GameObject UI_CrossHair;
+
+    private float ZoomInSize = 15f;
+    private float ZoomOutSize = 60f;
+    private bool _zoomMode = false;
+
+    
+
     private void Start()
     {
         _mainCamera = Camera.main;
@@ -47,6 +56,23 @@ public class PlayerFire : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetMouseButtonDown(1))
+        {
+            _zoomMode = !_zoomMode;
+            if(_zoomMode)
+            {
+                UI_SniperZoom.SetActive(true);
+                UI_CrossHair.SetActive(false);
+                Camera.main.fieldOfView = ZoomInSize;
+            }
+            else
+            {
+                UI_SniperZoom.SetActive(false);
+                UI_CrossHair.SetActive(true);
+                Camera.main.fieldOfView = ZoomOutSize;
+            }
+        }
+
         //CurCoolTime -= Time.deltaTime;
         // 2. 오른쪽 버튼 입력 받기
         // - 0: 왼쪽, 1: 오른쪽, 2: 휠
