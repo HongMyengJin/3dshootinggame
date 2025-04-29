@@ -25,6 +25,7 @@ public class PlayerMove : MonoBehaviour, IDamageable
 
     private Vector3 _targetPosition;
     private bool _IsMove = false;
+    private float _moveValue = 0.0f;
 
     private void Awake()
     {
@@ -34,12 +35,22 @@ public class PlayerMove : MonoBehaviour, IDamageable
 
     private void Update() 
     {
+        _animator.SetFloat("MoveSpeed", _moveValue);
+        _animator.SetLayerWeight(2, 1.0f - PlayerStat.CurHealth / PlayerDataSo.MaxHealth);
+        Debug.Log($"PlayerHealth: {PlayerStat.CurHealth / PlayerDataSo.MaxHealth} ");
         if (!_canInput)
             return;
+
+        // ---------------------------Test Code---------------------------
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            PlayerStat.ChangeValue(PlayerStat.Stat.Health, -10.0f);
+        }
+
         Vector2 input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
-        _animator.SetFloat("Horizontal", input.x);
-        _animator.SetFloat("Vertical", input.y);
+        //_animator.SetFloat("Horizontal", input.x);
+        //_animator.SetFloat("Vertical", input.y);
 
         Vector3 dir = new Vector3(input.x, 0, input.y).normalized;
 
@@ -76,17 +87,19 @@ public class PlayerMove : MonoBehaviour, IDamageable
         if(_IsMove)
         {
             Vector3 direction = _targetPosition - transform.position;
+            direction.y = 0.0f;
             if (direction.sqrMagnitude > 0.01f)
             {
                 direction.Normalize();
-
-                _animator.SetFloat("Horizontal", direction.x);
-                _animator.SetFloat("Vertical", direction.z);
+                _moveValue += Time.deltaTime;
                 // _animator.SetFloat("Vertical", transform.forward.x);
                 _characterController.Move(new Vector3(direction.x, 0.0f, direction.z) * _moveSpeed * Time.deltaTime);
             }
             else
+            {
+                _moveValue = 0.0f;
                 _IsMove = false;
+            }
         }
 
         _characterController.Move(dir * _moveSpeed * Time.deltaTime);
@@ -127,8 +140,7 @@ public class PlayerMove : MonoBehaviour, IDamageable
             dir = Camera.main.transform.TransformDirection(dir);
             dir.z = 0.0f;
             _characterController.Move(dir * _moveSpeed * Time.deltaTime);
-            PlayerStat.CurStamina -= climbValue;
-            PlayerStat.ChangeStamina();
+            PlayerStat.ChangeValue(PlayerStat.Stat.Stamina, -climbValue);
             _yVelocity = 0.0f; // 중력 초기화
             Debug.Log($"Stat: {PlayerStat.CurStamina} 사용 한 스태미나 {climbValue}");
             Debug.Log("클라이밍 중!");
@@ -161,9 +173,7 @@ public class PlayerMove : MonoBehaviour, IDamageable
         {
             // 스태미나 0보다 작은지 체크
             _moveSpeed = 23.0f;
-
-            PlayerStat.CurStamina -= Time.deltaTime * PlayerDataSo.StaminaUseSpeed;
-            PlayerStat.ChangeStamina();
+            PlayerStat.ChangeValue(PlayerStat.Stat.Stamina, -Time.deltaTime * PlayerDataSo.StaminaUseSpeed);
         }
     }
 
@@ -174,8 +184,7 @@ public class PlayerMove : MonoBehaviour, IDamageable
             if (PlayerStat.CurStamina - PlayerDataSo.StaminaDashUseSpeed < 0)
                 return;
 
-            PlayerStat.CurStamina -= PlayerDataSo.StaminaDashUseSpeed;
-            PlayerStat.ChangeStamina();
+            PlayerStat.ChangeValue(PlayerStat.Stat.Stamina, -PlayerDataSo.StaminaDashUseSpeed);
             _isDash = true;
             _dir = Camera.main.transform.TransformDirection(_dir);
             StartCoroutine(CoDash(0.5f));
@@ -190,11 +199,9 @@ public class PlayerMove : MonoBehaviour, IDamageable
 
             if (PlayerStat.CurStamina < PlayerDataSo.MaxStamina)
             {
-                PlayerStat.CurStamina += Time.deltaTime * PlayerDataSo.StaminaFillSpeed;
+                PlayerStat.ChangeValue(PlayerStat.Stat.Stamina, Time.deltaTime * PlayerDataSo.StaminaFillSpeed);
                 Debug.Log("현재 스태미나 증가 중!");
             }
-                
-            PlayerStat.ChangeStamina();
         }
     }
 
@@ -211,7 +218,7 @@ public class PlayerMove : MonoBehaviour, IDamageable
 
     public void TakeDamage(Damage damage)
     {
-
+        PlayerStat.ChangeValue(PlayerStat.Stat.Health, -damage.Value);
     }
 
     public void EnableControl()

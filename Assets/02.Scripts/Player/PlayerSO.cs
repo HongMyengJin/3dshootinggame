@@ -1,20 +1,23 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "PlayerSO", menuName = "Scriptable Objects/PlayerSO")]
 public class PlayerSO : ScriptableObject
 {
     [SerializeField]
-    public float JumpPower; // = 5f;
+    public float JumpPower; 
     [SerializeField]
-    public float Gravity; // = -9.8f;
+    public float Gravity; 
     [SerializeField]
-    public float MaxStamina; //  = 100.0f;
+    public float MaxStamina;
 
     [SerializeField]
-    public float StaminaUseSpeed; // = 100.0f;
+    public float StaminaUseSpeed;
     [SerializeField]
-    public float StaminaFillSpeed; // = 100.0f;
+    public float StaminaFillSpeed; 
 
     [SerializeField]
-    public float StaminaDashUseSpeed; // = 30.0f;
+    public float StaminaDashUseSpeed;
+
+    [SerializeField]
+    public float MaxHealth;
 }

@@ -18,3 +18,4 @@ MonoBehaviour:
   StaminaUseSpeed: 100
   StaminaFillSpeed: 100
   StaminaDashUseSpeed: 30
+  MaxHealth: 100
