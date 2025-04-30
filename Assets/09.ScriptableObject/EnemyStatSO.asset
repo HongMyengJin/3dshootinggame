@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: EnemyStatSO
   m_EditorClassIdentifier: 
   findDistance: 10
-  attackDistance: 2.5
-  returnDistance: 15
+  attackDistance: 7
+  returnDistance: 20
   distanceGap: 0.1
   moveSpeed: 3.5
   attackCooldown: 2

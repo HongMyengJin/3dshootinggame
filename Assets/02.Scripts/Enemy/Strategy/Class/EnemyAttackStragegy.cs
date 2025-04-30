@@ -6,12 +6,13 @@ using TMPro;
 public class EnemyAttackStragegy : IEnemyStrategy<IEnemyAttackContext>
 {
     private Coroutine _attackRoutine;
-    private readonly float _attackDelay = 3.0f;
+    private readonly float _attackDelay = 7.0f;
 
     public void Execute(IEnemyAttackContext context)
     {
         if (context == null)
             return;
+        context.Animator.SetBool("Attack", true);
         _attackRoutine = context.StartCoroutine(AttackLoop(context.Animator));
     }
     public void Update(IEnemyAttackContext context)
@@ -30,6 +31,12 @@ public class EnemyAttackStragegy : IEnemyStrategy<IEnemyAttackContext>
 
     public void Exit(IEnemyAttackContext context)
     {
+        context.Animator.SetBool("Attack", false);
         context.StopCoroutine(_attackRoutine);
+    }
+
+    public void OnAttackAnimationEvent()
+    {
+        Debug.Log("총알 나가는 시점!!!");
     }
 }

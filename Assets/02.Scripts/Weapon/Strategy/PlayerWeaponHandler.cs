@@ -41,7 +41,7 @@ public class PlayerWeaponHandler : MonoBehaviour
 
         _weaponStrategies = new Dictionary<WeaponType, IWeaponStrategy>()
         {
-            { WeaponType.Gun, new GunWeaponStrategy(_animator, _weaponInstances[WeaponType.Gun].transform.Find("MuzzlePosition")) },
+            { WeaponType.Gun, new PlayerGunWeaponStrategy(_animator, _weaponInstances[WeaponType.Gun].transform.Find("MuzzlePosition")) },
             { WeaponType.Sword, new SwordWeaponStrategy(_animator, transform, _swordAttackData, this) },
             { WeaponType.Bomb, new BombWeaponStrategy(_animator, _weaponSocket, gameObject) }
         };
@@ -58,7 +58,6 @@ public class PlayerWeaponHandler : MonoBehaviour
     {
         HandleAttackInput();
         HandleWeaponSwitchInput();
-        //HandleBombThrowInput();
     }
 
     private void HandleAttackInput()
@@ -84,14 +83,6 @@ public class PlayerWeaponHandler : MonoBehaviour
             }
         }
     }
-
-    //private void HandleBombThrowInput()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.G))
-    //    {
-    //        ThrowBomb();
-    //    }
-    //}
 
     private void SwitchWeapon(WeaponType weaponType)
     {
@@ -120,10 +111,5 @@ public class PlayerWeaponHandler : MonoBehaviour
     public void OnAttackHit()
     {
         _currentWeaponStrategy?.Attack();
-    }
-
-    private void ThrowBomb()
-    {
-        Debug.Log("폭탄 던지기!");
     }
 }

@@ -21,8 +21,7 @@ public class EnemyChaseStragegy : IEnemyStrategy<IEnemyChaseContext>
 
     public void Exit(IEnemyChaseContext context)
     {
-        // 여기서 갑자기 방향이 틀어지네..
-       //context.Animator.SetFloat("MoveSpeed", 0.0f);
+        context.Animator.SetFloat("MoveSpeed", 0.0f);
         NavMeshAgent Agent = context.Agent;
         Agent.ResetPath();
         Agent.isStopped = true;

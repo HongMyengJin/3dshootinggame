@@ -3,7 +3,7 @@ using UnityEditor.UI;
 using UnityEngine;
 using static PlayerFire;
 
-public class GunWeaponStrategy : IWeaponStrategy
+public class PlayerGunWeaponStrategy : IWeaponStrategy
 {
     private readonly Animator _animator;
     private readonly Transform _firePoint;
@@ -11,7 +11,7 @@ public class GunWeaponStrategy : IWeaponStrategy
 
     public Transform Self { get; }
 
-    public GunWeaponStrategy(Animator animator, Transform firePoint)
+    public PlayerGunWeaponStrategy(Animator animator, Transform firePoint)
     {
         this._animator = animator;
 
