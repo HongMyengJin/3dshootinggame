@@ -44,7 +44,7 @@ public class PlayerGunWeaponStrategy : IWeaponStrategy
         {
             case CameraViewType.FPS:
                 {
-                    Vector3 dir = Camera.main.transform.forward;
+                    Vector3 dir = _firePoint.forward;
                     return new FireData
                     {
                         direction = dir,

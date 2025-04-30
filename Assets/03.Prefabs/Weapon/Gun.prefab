@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 234802539060791091}
-  - component: {fileID: 2895404095372892279}
   m_Layer: 0
   m_Name: Gun
   m_TagString: Untagged
@@ -30,32 +29,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3865618386761673623}
-  - {fileID: 1867655647178980524}
   - {fileID: 506552591304883244}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &2895404095372892279
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2266522816366072821}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 3.7, y: 1.3, z: 0.4}
-  m_Center: {x: 0.7, y: 0, z: 0}
 --- !u!1 &4508235803697697611
 GameObject:
   m_ObjectHideFlags: 0
@@ -66,7 +42,7 @@ GameObject:
   m_Component:
   - component: {fileID: 506552591304883244}
   m_Layer: 0
-  m_Name: grip
+  m_Name: GripPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -80,13 +56,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4508235803697697611}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.0023, y: 0, z: 0.0242}
+  m_LocalRotation: {x: 0.17887688, y: -0.1222988, z: -0.18669859, w: 0.9582222}
+  m_LocalPosition: {x: 0.0428, y: -0.0578, z: 0.0314}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 3865618386761673623}
+  - {fileID: 1867655647178980524}
   m_Father: {fileID: 234802539060791091}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 17.286, y: -18.386, z: -24.869}
 --- !u!1 &7875629891038975433
 GameObject:
   m_ObjectHideFlags: 0
@@ -112,11 +90,11 @@ Transform:
   m_GameObject: {fileID: 7875629891038975433}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.279, y: 0.143, z: 0}
+  m_LocalPosition: {x: 0.8132, y: -0.0051, z: 0.0858}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 234802539060791091}
+  m_Father: {fileID: 506552591304883244}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9020199851624546143
 GameObject:
@@ -129,6 +107,7 @@ GameObject:
   - component: {fileID: 1867655647178980524}
   - component: {fileID: 8684985352694524449}
   - component: {fileID: 760969794954671006}
+  - component: {fileID: 6075046077575020840}
   m_Layer: 0
   m_Name: sniperBody
   m_TagString: Untagged
@@ -144,12 +123,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9020199851624546143}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 80, y: 80, z: 80}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 234802539060791091}
+  m_Father: {fileID: 506552591304883244}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8684985352694524449
 MeshFilter:
@@ -204,3 +183,24 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &6075046077575020840
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9020199851624546143}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.014555457, y: 0.0014117438, z: 0.0030736434}
+  m_Center: {x: 0.003000514, y: 0.000017323171, z: 0.0003418158}

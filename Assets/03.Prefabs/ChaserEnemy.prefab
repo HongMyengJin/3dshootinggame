@@ -540,6 +540,7 @@ MonoBehaviour:
   _stat: {fileID: 11400000, guid: c1589a72fe33dbb439c651118be449a9, type: 2}
   _healthComponent: {fileID: 1038994099424388829}
   _healthBarController: {fileID: 3087308227029016456}
+  _animator: {fileID: 0}
   _health: 100
 --- !u!143 &3273522217664137264
 CharacterController:

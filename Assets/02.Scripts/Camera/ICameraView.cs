@@ -1,7 +1,8 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
-// ½ÃÁ¡º°·Î ³ª´©±â À§ÇÑ Ä«¸Ş¶ó ÀÎÅÍÆäÀÌ½º
+// ì‹œì ë³„ë¡œ ë‚˜ëˆ„ê¸° ìœ„í•œ ì¹´ë©”ë¼ ì¸í„°í˜ì´ìŠ¤
 public interface ICameraView
 {
     void UpdateView();
+    void SettingCursor();
 }

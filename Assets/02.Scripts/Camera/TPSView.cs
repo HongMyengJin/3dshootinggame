@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class TPSView : ICameraView
 {
@@ -16,6 +16,8 @@ public class TPSView : ICameraView
         player = _player;
 
         yaw = player.eulerAngles.y;
+
+        SettingCursor();
     }
 
     public void UpdateView()
@@ -27,5 +29,11 @@ public class TPSView : ICameraView
         Quaternion rotation = Quaternion.Euler(pitch, yaw, 0.0f);
         cameraTransform.position = player.position + rotation * offset;
         cameraTransform.LookAt(player.position + Vector3.up * 1.5f);
+    }
+
+    public void SettingCursor()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 }

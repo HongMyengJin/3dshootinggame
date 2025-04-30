@@ -41,7 +41,7 @@ public class PlayerWeaponHandler : MonoBehaviour
 
         _weaponStrategies = new Dictionary<WeaponType, IWeaponStrategy>()
         {
-            { WeaponType.Gun, new PlayerGunWeaponStrategy(_animator, _weaponInstances[WeaponType.Gun].transform.Find("MuzzlePosition")) },
+            { WeaponType.Gun, new PlayerGunWeaponStrategy(_animator, _weaponInstances[WeaponType.Gun].transform.Find("GripPoint/MuzzlePosition")) },
             { WeaponType.Sword, new SwordWeaponStrategy(_animator, transform, _swordAttackData, this) },
             { WeaponType.Bomb, new BombWeaponStrategy(_animator, _weaponSocket, gameObject) }
         };
@@ -94,10 +94,10 @@ public class PlayerWeaponHandler : MonoBehaviour
             {
                 return;
             }
-            Transform grip = _weaponInstances[weaponType].transform.Find("grip");
-
-            Vector3 offset = _weaponInstances[weaponType].transform.position - grip.position;
-            _weaponInstances[weaponType].transform.position = _weaponSocket.position + offset;
+            _weaponInstances[weaponType].transform.SetParent(_weaponSocket);
+            _weaponInstances[weaponType].transform.localPosition = Vector3.zero;
+            _weaponInstances[weaponType].transform.localRotation = Quaternion.identity;
+            // _weaponInstances[weaponType].transform.position = _weaponSocket.position;
 
             _weaponInstances[weaponType]?.SetActive(true);
             _currentWeaponType = weaponType;
