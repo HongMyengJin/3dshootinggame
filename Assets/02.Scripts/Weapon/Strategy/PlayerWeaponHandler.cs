@@ -23,6 +23,8 @@ public class PlayerWeaponHandler : MonoBehaviour
     private Dictionary<KeyCode, WeaponType> _keyWeaponMappings;
     private WeaponType _currentWeaponType = WeaponType.Gun;
 
+    public Transform WeaponSocket => _weaponSocket;
+
     private void Awake()
     {
         _weaponInstances = new Dictionary<WeaponType, GameObject>((int)WeaponType.WeaponTypeEnd);
@@ -112,4 +114,5 @@ public class PlayerWeaponHandler : MonoBehaviour
     {
         _currentWeaponStrategy?.Attack();
     }
+
 }
