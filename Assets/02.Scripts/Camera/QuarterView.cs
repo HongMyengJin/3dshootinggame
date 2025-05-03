@@ -9,6 +9,7 @@ public class QuarterView : ICameraView
     {
         this.cameraTransform = cameraTransform;
         this.player = player;
+        player.localRotation = Quaternion.identity;
         SettingCursor();
     }
 

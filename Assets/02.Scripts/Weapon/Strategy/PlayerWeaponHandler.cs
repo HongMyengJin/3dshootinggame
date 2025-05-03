@@ -65,16 +65,8 @@ public class PlayerWeaponHandler : MonoBehaviour
     {
         HandleAttackInput();
         HandleWeaponSwitchInput();
-
-
     }
 
-    //private void LateUpdate()
-    //{
-    //    //Ray ray = CameraManager.Instance.GetCurrentCamera().ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-    //    //Debug.DrawRay(ray.origin, ray.direction * 100f, Color.red);
-    //    //Debug.DrawRay(CameraManager.Instance.GetCurrentCamera().transform.position, CameraManager.Instance.GetCurrentCamera().transform.forward * 100f, Color.blue);
-    //}
     private void HandleAttackInput()
     {
         if (Input.GetMouseButtonDown(0))
@@ -112,7 +104,6 @@ public class PlayerWeaponHandler : MonoBehaviour
             _weaponInstances[weaponType].transform.SetParent(_weaponSocket);
             _weaponInstances[weaponType].transform.localPosition = Vector3.zero;
             _weaponInstances[weaponType].transform.localRotation = Quaternion.identity;
-            // _weaponInstances[weaponType].transform.position = _weaponSocket.position;
 
             _weaponInstances[weaponType]?.SetActive(true);
             _currentWeaponType = weaponType;
@@ -122,13 +113,6 @@ public class PlayerWeaponHandler : MonoBehaviour
             Debug.LogWarning($"무기 전략을 찾을 수 없음: {weaponType}");
         }
     }
-
-    //public void OnAttackHit()
-    //{
-    //    _currentWeaponStrategy?.Attack();
-    //}
-
-
     private void LateUpdate()
     {
         if(_IsAttack)
@@ -142,93 +126,6 @@ public class PlayerWeaponHandler : MonoBehaviour
     {
         _IsAttack = true;
     }
-    //public FireData CalculateFireData()
-    //{
-    //    Camera cam = CameraManager.Instance.GetCurrentCamera();
-    //    CameraViewType cameraViewType = CameraManager.Instance.GetCurrentViewType();
-    //    Vector3 muzzlePos = _muzzlePosition.position;
-
-    //    switch (cameraViewType)
-    //    {
-    //        case CameraViewType.FPS:
-    //            {
-    //                Ray camRay = cam.ScreenPointToRay(new Vector3(Screen.width * 0.5f, Screen.height * 0.5f));
-    //                Vector3 fireDir = camRay.direction;
-
-    //                Ray fireRay = new Ray(muzzlePos, fireDir);
-    //                Physics.Raycast(fireRay, out RaycastHit hit, 200f);
-    //                Vector3 targetPoint = hit.point;
-    //                Vector3 direction = (targetPoint - muzzlePos).normalized;
-
-    //                return new FireData
-    //                {
-    //                    direction = direction,
-    //                    ray = fireRay,
-    //                    hitInfo = hit,
-    //                };
-    //            }
-    //        case CameraViewType.TPS:
-    //            {
-    //                Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
-    //                if (Physics.Raycast(ray, out RaycastHit hit, 100f))
-    //                {
-    //                    Vector3 dir = (hit.point - muzzlePos).normalized;
-    //                    return new FireData { direction = dir, ray = new Ray(muzzlePos, dir), hitInfo = hit };
-    //                }
-    //                else
-    //                {
-    //                    Vector3 dir = ray.direction;
-    //                    return new FireData { direction = dir, ray = new Ray(muzzlePos, dir), hitInfo = null };
-    //                }
-    //            }
-    //        case CameraViewType.QuaterView:
-    //            {
-    //                Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-    //                float t = (muzzlePos.y - ray.origin.y) / ray.direction.y;
-    //                Vector3 targetPos = ray.origin + ray.direction * t;
-    //                if (Physics.Raycast(ray, out RaycastHit hit))
-    //                {
-    //                    Vector3 dir = (hit.point - muzzlePos).normalized;
-    //                    return new FireData { direction = dir, ray = new Ray(muzzlePos, dir), hitInfo = hit };
-    //                }
-    //                else
-    //                {
-    //                    Vector3 dir = _muzzlePosition.forward;
-    //                    return new FireData { direction = dir, ray = new Ray(muzzlePos, dir), hitInfo = null };
-    //                }
-    //            }
-    //    }
-
-    //    return new FireData { direction = Vector3.zero, ray = new Ray(muzzlePos, Vector3.forward), hitInfo = null };
-    //}
-    //public void ShootAttack()
-    //{
-    //    FireData fire = CalculateFireData();
-
-    //    if (!fire.hitInfo.HasValue)
-    //        return;
-
-    //    RaycastHit hitInfo = fire.hitInfo.Value;
-
-    //    BulletManager.Instance.UseBullet(hitInfo.point);
-    //    LazerManager.Instance.SettingLine(_muzzlePosition.position, hitInfo.point);
-
-    //    if (hitInfo.collider.TryGetComponent<IDamageable>(out IDamageable damageable))
-    //    {
-    //        Vector3 hitDir = -hitInfo.normal;
-    //        hitDir.y = 0.0f;
-
-    //        Damage damage = new Damage
-    //        {
-    //            Value = 10,
-    //            From = _muzzlePosition.gameObject,
-    //            Dir = hitDir
-    //        };
-
-    //        damageable.TakeDamage(damage);
-    //    }
-    //}
-
 
     public void ShootAttack()
     {
@@ -239,11 +136,9 @@ public class PlayerWeaponHandler : MonoBehaviour
 
         RaycastHit hitInfo = fire.hitInfo.Value;
 
-        // 시각/효과 처리
         BulletManager.Instance.UseBullet(hitInfo.point);
         LazerManager.Instance.SettingLine(_muzzlePosition.position, hitInfo.point);
 
-        // 데미지 처리
         if (hitInfo.collider.TryGetComponent<IDamageable>(out IDamageable damageable))
         {
             Vector3 hitDir = -hitInfo.normal;

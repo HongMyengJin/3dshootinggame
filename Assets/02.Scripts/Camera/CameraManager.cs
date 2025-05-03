@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -11,7 +12,7 @@ public class CameraManager : MonoBehaviour
 
     private bool _canControl = false;
     public static CameraManager Instance { get; private set; }
-
+    public static event Action<CameraViewType> OnViewTypeChanged;
     private void Awake()
     {
         if (Instance == null)
@@ -36,8 +37,7 @@ public class CameraManager : MonoBehaviour
         PlayerView playerView = player.GetComponent<PlayerView>();
         views = new Dictionary<CameraViewType, ICameraView>
         {
-            // 타입에 따른 값들 할당
-            { CameraViewType.FPS, new FPSView( playerWeaponHandler.WeaponSocket, player, playerView.MeshTransform) },
+            { CameraViewType.FPS, new FPSView( playerWeaponHandler.WeaponSocket, player) },
             { CameraViewType.TPS, new TPSView( player.transform) },
             { CameraViewType.QuaterView, new QuarterView(Camera.main.transform, player.transform) },
         };
@@ -51,6 +51,7 @@ public class CameraManager : MonoBehaviour
 
         SetView(CameraViewType.FPS);
         SwitchCamera(CameraViewType.FPS);
+
     }
 
     public void SetView(CameraViewType type)
@@ -80,12 +81,18 @@ public class CameraManager : MonoBehaviour
 
     public void SwitchCamera(CameraViewType cameraType)
     {
-        foreach (var (type, camera) in _cameraMap)
+        if (_cameraMap.ContainsKey(currentViewType))
+            _cameraMap[currentViewType].enabled = false;
+
+        if (_cameraMap.ContainsKey(cameraType))
         {
-            camera.enabled = type == cameraType;
-            if (camera.enabled)
-                return;
+            _cameraMap[cameraType].enabled = true;
+            currentViewType = cameraType;
+
+            OnViewTypeChanged?.Invoke(cameraType);
         }
+
+        
     }
 
     public Camera GetCurrentCamera()

@@ -3,7 +3,8 @@ using UnityEngine;
 public class InputManager : MonoBehaviour
 {
     public static InputManager Instance { get; private set; }
-
+    public bool JumpPressed { get; private set; }
+    public void ResetJump() => JumpPressed = false;
     private void Awake()
     {
         if (Instance == null)
@@ -33,5 +34,7 @@ public class InputManager : MonoBehaviour
             CameraManager.Instance.SetView(CameraViewType.QuaterView);
             CameraManager.Instance.SwitchCamera(CameraViewType.QuaterView);
         }
+
+        JumpPressed = Input.GetKeyDown(KeyCode.Space);
     }
 }

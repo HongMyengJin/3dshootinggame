@@ -16,6 +16,8 @@ public class TPSView : ICameraView
 
         yaw = player.eulerAngles.y;
 
+        player.transform.rotation = Quaternion.identity;
+
         SettingCursor();
     }
 
