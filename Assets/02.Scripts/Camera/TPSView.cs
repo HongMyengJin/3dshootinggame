@@ -10,9 +10,8 @@ public class TPSView : ICameraView
 
     private readonly Vector3 offset = new Vector3(0, 2f, -4f);
 
-    public TPSView(Transform _cameraTransform, Transform _player)
+    public TPSView(Transform _player)
     {
-        cameraTransform = _cameraTransform;
         player = _player;
 
         yaw = player.eulerAngles.y;
@@ -22,6 +21,8 @@ public class TPSView : ICameraView
 
     public void UpdateView()
     {
+        Transform cameraTransform = CameraManager.Instance.GetCurrentCamera().transform;
+
         yaw += Input.GetAxis("Mouse X");
         pitch += Input.GetAxis("Mouse Y");
         pitch = Mathf.Clamp(pitch, -40.0f, 60.0f);

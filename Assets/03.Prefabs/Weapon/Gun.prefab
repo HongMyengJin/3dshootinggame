@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 234802539060791091}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 506552591304883244}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: GripPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -74,7 +74,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3865618386761673623}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: MuzzlePosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,13 +89,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7875629891038975433}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.8132, y: -0.0051, z: 0.0858}
+  m_LocalRotation: {x: 0.534832, y: 0.49944, z: 0.49813038, w: 0.46516722}
+  m_LocalPosition: {x: 0.81320006, y: -0.005099982, z: 0.08579998}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 506552591304883244}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 94.07, z: 93.92}
 --- !u!1 &9020199851624546143
 GameObject:
   m_ObjectHideFlags: 0
@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 8684985352694524449}
   - component: {fileID: 760969794954671006}
   - component: {fileID: 6075046077575020840}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: sniperBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}

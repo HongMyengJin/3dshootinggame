@@ -33,19 +33,19 @@ public class CameraManager : MonoBehaviour
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         PlayerWeaponHandler playerWeaponHandler = player.GetComponent<PlayerWeaponHandler>();
-        
+        PlayerView playerView = player.GetComponent<PlayerView>();
         views = new Dictionary<CameraViewType, ICameraView>
         {
             // 타입에 따른 값들 할당
-            { CameraViewType.FPS, new FPSView(Camera.main.transform, playerWeaponHandler.WeaponSocket, player) },
-            { CameraViewType.TPS, new TPSView(Camera.main.transform, player.transform) },
+            { CameraViewType.FPS, new FPSView( playerWeaponHandler.WeaponSocket, player, playerView.MeshTransform) },
+            { CameraViewType.TPS, new TPSView( player.transform) },
             { CameraViewType.QuaterView, new QuarterView(Camera.main.transform, player.transform) },
         };
 
         _cameraMap = new Dictionary<CameraViewType, Camera>
         {
             { CameraViewType.FPS, _fpsCamera },
-            { CameraViewType.TPS, _mainCamera },  // 같은 카메라 공유
+            { CameraViewType.TPS, _mainCamera },
             { CameraViewType.QuaterView, _mainCamera },
         };
 
@@ -83,7 +83,18 @@ public class CameraManager : MonoBehaviour
         foreach (var (type, camera) in _cameraMap)
         {
             camera.enabled = type == cameraType;
+            if (camera.enabled)
+                return;
         }
+    }
+
+    public Camera GetCurrentCamera()
+    {
+        if (_cameraMap.TryGetValue(currentViewType, out var camera))
+        {
+            return camera;
+        }
+        return null;
     }
 
     public void EnableControl()

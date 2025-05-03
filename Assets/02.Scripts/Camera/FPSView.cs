@@ -5,7 +5,7 @@ public class FPSView : ICameraView
 {
     private Transform cameraTransform;
     private Transform weaponTransform;
-    private Transform playerHead;
+    private Transform playerMeshTransform;
     private GameObject player;
 
     private float yaw;
@@ -13,16 +13,12 @@ public class FPSView : ICameraView
 
     private readonly Vector3 offset = new Vector3(0, 0.5f, 0.0f);
 
-    public FPSView(Transform _cameraTransform, Transform _weaponTransform, GameObject _player)
+    public FPSView(Transform _weaponTransform, GameObject _player, Transform _playerMeshTransform)
     {
-        this.cameraTransform = Camera.main.transform;
         this.weaponTransform = _weaponTransform;
         this.player = _player;
+        this.playerMeshTransform = _playerMeshTransform;
 
-        // cameraTransform.transform.position += offset;
-
-        Animator animator = _player.GetComponent<Animator>();
-        playerHead = animator.GetBoneTransform(HumanBodyBones.Head);
         SettingCursor();
     }
 
@@ -33,6 +29,8 @@ public class FPSView : ICameraView
         pitch = Mathf.Clamp(pitch, -60.0f, 60.0f);
 
         player.transform.rotation = Quaternion.Euler(pitch, yaw, 0.0f);
+        //playerMeshTransform.transform.localRotation = Quaternion.Euler(pitch, 0.0f, 0.0f);
+        // CameraManager.Instance.GetCurrentCamera().transform.localRotation = Quaternion.Euler(pitch, 0.0f, 0.0f);
     }
 
     public void SettingCursor()

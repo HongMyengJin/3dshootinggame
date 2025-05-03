@@ -21,14 +21,17 @@ public class InputManager : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Alpha8))
         {
             CameraManager.Instance.SetView(CameraViewType.FPS);
+            CameraManager.Instance.SwitchCamera(CameraViewType.FPS);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha9))
         {
             CameraManager.Instance.SetView(CameraViewType.TPS);
+            CameraManager.Instance.SwitchCamera(CameraViewType.TPS);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha0))
         {
             CameraManager.Instance.SetView(CameraViewType.QuaterView);
+            CameraManager.Instance.SwitchCamera(CameraViewType.QuaterView);
         }
     }
 }

@@ -58,7 +58,7 @@ public class PlayerMove : MonoBehaviour, IDamageable
         if (Mathf.Abs(dir.x) > 0.0f || Mathf.Abs(dir.z) > 0.0f)
             _dir = dir;
         
-        dir = Camera.main.transform.TransformDirection(dir);
+        dir = CameraManager.Instance.GetCurrentCamera().transform.TransformDirection(dir);
 
         if (Climb(dir, input.x, input.y))
             return;
