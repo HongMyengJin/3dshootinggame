@@ -26,6 +26,8 @@ public class PlayerController : MonoBehaviour, IPlayerMoveContext, IPlayerJumpCo
         CharacterController = GetComponent<CharacterController>();
         Animator = GetComponent<Animator>();
         _stateMachine = new PlayerStateMachine(this);
+
+        jumpStrategy.OnJumpPerformed += () => Animator.SetTrigger("Jump");
     }
 
     private void Update()
