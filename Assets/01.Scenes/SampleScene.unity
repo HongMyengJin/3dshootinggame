@@ -2643,7 +2643,6 @@ GameObject:
   m_Component:
   - component: {fileID: 652186131}
   - component: {fileID: 652186132}
-  - component: {fileID: 652186133}
   - component: {fileID: 652186134}
   - component: {fileID: 652186135}
   - component: {fileID: 652186136}
@@ -2690,21 +2689,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RotationSpeed: 150
---- !u!114 &652186133
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 652186127}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41746e5b7df6a614bb1cf8b66ec103e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Slider: {fileID: 512481812}
-  PlayerDataSo: {fileID: 11400000, guid: ee1ef26b4b430574baab6d533c8a3821, type: 2}
-  PlayerStat: {fileID: 652186136}
 --- !u!143 &652186134
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2836,7 +2820,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _walkSpeed: 10
-  _jumpForce: 10
+  _jumpForce: 18
+  _fallMultiplier: 5
 --- !u!1 &670194127
 GameObject:
   m_ObjectHideFlags: 0

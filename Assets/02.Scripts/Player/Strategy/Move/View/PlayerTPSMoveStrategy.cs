@@ -12,7 +12,7 @@ public class PlayerTPSMoveStrategy : IPlayerMoveStrategy
         Vector3 right = cameraTransform.right;
         right.y = 0;
 
-        Vector3 moveDir = forward * inputDir.y + right * inputDir.x;
+        Vector3 moveDir = forward * inputDir.z + right * inputDir.x;
         Vector3 move = moveDir.normalized * context.Speed;
         if (context is PlayerController player)
             move.y = player.GetVerticalVelocity();

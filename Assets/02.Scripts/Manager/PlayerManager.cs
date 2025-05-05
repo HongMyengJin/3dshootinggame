@@ -15,16 +15,16 @@ public class PlayerManager : MonoBehaviour
         }
         Instance = this;
 
-        _player = FindAnyObjectByType<PlayerMove>();
+        // _player = FindAnyObjectByType<PlayerMove>();
     }
     
     public void EnableControl()
     {
-        _player.EnableControl();
+        // _player.EnableControl();
     }
 
     public void DisableControl()
     {
-        _player.DisableControl();
+        // _player.DisableControl();
     }
 }
