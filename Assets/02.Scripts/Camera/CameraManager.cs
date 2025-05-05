@@ -63,7 +63,6 @@ public class CameraManager : MonoBehaviour
 
         Cursor.lockState = (type == CameraViewType.QuaterView ? CursorLockMode.None : CursorLockMode.Locked);
 
-        currentViewType = type;
         currentView = views[type];
     }
 
@@ -79,11 +78,17 @@ public class CameraManager : MonoBehaviour
         currentView?.UpdateView();
     }
 
+    public void EnableResetCamera()
+    {
+        foreach(var camera in _cameraMap.Values)
+        {
+            camera.enabled = false;
+        }
+    }
+
     public void SwitchCamera(CameraViewType cameraType)
     {
-        if (_cameraMap.ContainsKey(currentViewType))
-            _cameraMap[currentViewType].enabled = false;
-
+        EnableResetCamera();
         if (_cameraMap.ContainsKey(cameraType))
         {
             _cameraMap[cameraType].enabled = true;
