@@ -8,7 +8,7 @@ public class TPSView : ICameraView
     private float yaw;
     private float pitch;
 
-    private readonly Vector3 offset = new Vector3(0, 2f, -4f);
+    private readonly Vector3 offset = new Vector3(0, 1.5f, -5f);
 
     public TPSView(Transform _player)
     {

@@ -2,7 +2,7 @@
 
 public class PlayerRotate : MonoBehaviour
 {
-    public float RotationSpeed = 200.0f;
+    public float RotationSpeed = 0.1f;
 
     private float _rotationX = 0;
 
@@ -11,6 +11,9 @@ public class PlayerRotate : MonoBehaviour
 
     private float _rotateValue;
 
+    private float _cameraYaw;
+    private float _cameraPitch;
+
 
     private void Awake()
     {
@@ -18,16 +21,22 @@ public class PlayerRotate : MonoBehaviour
     }
     private void Update()
     {
-        if (CameraManager.Instance.GetCurrentViewType() != CameraViewType.QuaterView)
+        if (CameraManager.Instance.GetCurrentViewType() != CameraViewType.QuaterView) // 쿼터뷰가 아닐 때
         {
-            // 1. 마우스 입력을 받는다. (마우스의 커서의 움직임 방향)
-            float mouseX = Input.GetAxis("Mouse X");
+            Transform cameraTransform = CameraManager.Instance.GetCurrentCamera().transform;
 
-            // 2. 회전한 양만큼 누적시켜 나간다.
-            _rotationX += mouseX * RotationSpeed * Time.deltaTime;
 
-            // 3. 회전 방향으로 회전시킨다.
-            transform.eulerAngles = new Vector3(0, _rotationX, 0);
+            Vector3 lookDir = cameraTransform.forward;
+            lookDir.y = 0f;
+            lookDir.Normalize(); // 중요!
+
+            if (lookDir.sqrMagnitude > 0.01f)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(lookDir);
+
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
+                Debug.Log($"{lookDir} LookDir (정규화 후): 회전중~~");
+            }
         }
         else
         {
@@ -54,5 +63,10 @@ public class PlayerRotate : MonoBehaviour
                     _animator.SetFloat("MoveSpeed", _rotateValue);
             }
         }
+    }
+
+    private void LateUpdate()
+    {
+
     }
 }
