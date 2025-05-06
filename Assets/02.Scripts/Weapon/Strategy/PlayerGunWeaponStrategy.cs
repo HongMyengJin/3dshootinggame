@@ -43,4 +43,8 @@ public class PlayerGunWeaponStrategy : IWeaponStrategy
     {
         _onFire?.Invoke();
     }
+
+    public void OffAttackAnimationEvent()
+    {
+    }
 }

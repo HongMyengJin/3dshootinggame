@@ -6,25 +6,32 @@ using TMPro;
 public class EnemyAttackStragegy : IEnemyStrategy<IEnemyAttackContext>
 {
     private Coroutine _attackRoutine;
-    private readonly float _attackDelay = 7.0f;
+    private readonly float _attackDelay = 5.0f;
 
     public void Execute(IEnemyAttackContext context)
     {
         if (context == null)
             return;
-        context.Animator.SetBool("Attack", true);
         _attackRoutine = context.StartCoroutine(AttackLoop(context.Animator));
     }
     public void Update(IEnemyAttackContext context)
     {
+        float speed = context.Agent.velocity.magnitude;
+        context.Animator.SetFloat("MoveSpeed", speed);
+
         Vector3 targetDirection = (context.Target.position - context.Self.position).normalized;
+
+        targetDirection.y = 0.0f;
         context.Self.rotation = Quaternion.LookRotation(targetDirection);
     }
     private IEnumerator AttackLoop(Animator animator)
     {
         while (true)
         {
-            animator.SetTrigger("Shoot");
+            int rand = Random.Range(0, 4); // 0 ~ 3
+            animator.SetInteger("AttackType", rand);
+            animator.SetTrigger("Attack");
+
             yield return new WaitForSeconds(_attackDelay);
         }
     }

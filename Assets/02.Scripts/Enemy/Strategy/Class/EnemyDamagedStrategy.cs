@@ -8,6 +8,7 @@ public class EnemyDamagedStragegy : IEnemyStrategy<IEnemyDamagedContext>
     {
         if (context == null)
             return;
+        Debug.Log("넉백 시작");
         context.StartCoroutine(Knockback(context));
     }
     public void Update(IEnemyDamagedContext context)
@@ -27,7 +28,7 @@ public class EnemyDamagedStragegy : IEnemyStrategy<IEnemyDamagedContext>
         while (elapsed < duration)
         {
             float value = Mathf.Lerp(0, context.State.KnockbackMaxSpeed, elapsed / duration);
-            context.Controller.Move(direction * value * Time.deltaTime);
+            context.Self.position += direction * value * Time.deltaTime;
             elapsed += Time.deltaTime;
             yield return null;
         }

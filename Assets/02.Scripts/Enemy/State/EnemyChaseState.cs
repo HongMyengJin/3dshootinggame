@@ -21,6 +21,7 @@ public class EnemyChaseState : IEnemyState
 
         chaseStrategy.Update(context);
         float distance = Vector3.Distance(context.Self.position, context.Target.position);
+        
         if (distance >= context.State.ReturnDistance)
         {
             context.ScheduleStateChange(EnemyStateType.Return);

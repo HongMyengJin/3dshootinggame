@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UIElements;
 
 public class EnemyChaseStragegy : IEnemyStrategy<IEnemyChaseContext>
 {
@@ -14,9 +15,15 @@ public class EnemyChaseStragegy : IEnemyStrategy<IEnemyChaseContext>
     }
     public void Update(IEnemyChaseContext context)
     {
+        Transform selfTransform = context.Self;
+        Quaternion selfRotation = context.Self.rotation;
+        selfRotation.x = 0.0f;
+
         float speed = context.Agent.velocity.magnitude;
         context.Animator.SetFloat("MoveSpeed", speed);
         context.Agent.SetDestination(context.Target.transform.position);
+
+        selfTransform.rotation = selfRotation;
     }
 
     public void Exit(IEnemyChaseContext context)

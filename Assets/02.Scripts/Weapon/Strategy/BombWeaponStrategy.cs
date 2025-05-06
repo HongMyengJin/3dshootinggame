@@ -35,6 +35,11 @@ public class BombWeaponStrategy : IWeaponStrategy
         BombAttack();
     }
 
+    public void OffAttackAnimationEvent()
+    {
+
+    }
+
 
     public void BombAttack()
     {

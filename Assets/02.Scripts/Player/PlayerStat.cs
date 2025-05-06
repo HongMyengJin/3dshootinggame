@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
-public class PlayerStat : MonoBehaviour
+public class PlayerStat : MonoBehaviour, IDamageable
 {
     public enum Stat
     {
@@ -9,6 +9,8 @@ public class PlayerStat : MonoBehaviour
         Health,
         StatEnd
     }
+
+    public event Action<PlayerStateType> OnStateChangeRequested;
 
     public PlayerSO PlayerDataSo;
     public Slider[] Slider;
@@ -40,5 +42,15 @@ public class PlayerStat : MonoBehaviour
             _curValue[(int)stat] = maxValue;
 
         Slider[(int)stat].value = _curValue[(int)stat] / maxValue;
+    }
+
+    public void TakeDamage(Damage damage)
+    {
+        ChangeValue(Stat.Health, -damage.Value);
+
+        if (_curValue[(int)Stat.Health] <= 0)
+            OnStateChangeRequested?.Invoke(PlayerStateType.Dead);
+        else
+            OnStateChangeRequested?.Invoke(PlayerStateType.Damage);
     }
 }

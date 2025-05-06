@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class EnemyWeaponHandler : MonoBehaviour
 {
+    [SerializeField] private WeaponHitBox swordHitbox;
+
     private IWeaponStrategy _currentWeaponStrategy;
     private Dictionary<WeaponType, IWeaponStrategy> _weaponStrategies;
 
@@ -10,13 +12,20 @@ public class EnemyWeaponHandler : MonoBehaviour
     {
         _weaponStrategies = new Dictionary<WeaponType, IWeaponStrategy>()
         {
-            { WeaponType.Gun, new EnemyGunWeaponStrategy() }
+            { WeaponType.Sword, new EnemySwordWeaponStrategy(swordHitbox) }
         };
-        SwitchWeapon(WeaponType.Gun);
+        SwitchWeapon(WeaponType.Sword);
     }
     public void OnAttackAnimationEvent()
     {
+        Debug.Log("Enemy - OnAttackAnimationEvent 호출");
         _currentWeaponStrategy?.OnAttackAnimationEvent();
+    }
+
+    public void OffAttackAnimationEvent()
+    {
+        Debug.Log("Enemy - OffAttackAnimationEvent 호출");
+        _currentWeaponStrategy?.OffAttackAnimationEvent();
     }
 
     private void SwitchWeapon(WeaponType weaponType)

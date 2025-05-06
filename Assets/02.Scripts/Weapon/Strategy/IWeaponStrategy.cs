@@ -6,4 +6,5 @@ public interface IWeaponStrategy
     void Attack();
 
     void OnAttackAnimationEvent();
+    void OffAttackAnimationEvent();
 }

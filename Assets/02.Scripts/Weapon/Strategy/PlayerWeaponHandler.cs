@@ -49,7 +49,7 @@ public class PlayerWeaponHandler : MonoBehaviour
         _weaponStrategies = new Dictionary<WeaponType, IWeaponStrategy>()
         {
             { WeaponType.Gun, new PlayerGunWeaponStrategy(_animator, _weaponInstances[WeaponType.Gun].transform.Find("GripPoint/MuzzlePosition"), OnAttack) },
-            { WeaponType.Sword, new SwordWeaponStrategy(_animator, transform, _swordAttackData, this) },
+            { WeaponType.Sword, new SwordWeaponStrategy(_animator, transform, _swordAttackData, this, _weaponInstances[WeaponType.Sword].GetComponent<WeaponHitBox>()) },
             { WeaponType.Bomb, new BombWeaponStrategy(_animator, _weaponSocket, gameObject) }
         };
 
@@ -73,10 +73,6 @@ public class PlayerWeaponHandler : MonoBehaviour
         {
             _currentWeaponStrategy?.OnAttackInput();
         }
-    }
-    public void OnAttackAnimationEvent()
-    {
-        _currentWeaponStrategy?.OnAttackAnimationEvent(); 
     }
 
     private void HandleWeaponSwitchInput()
@@ -127,6 +123,18 @@ public class PlayerWeaponHandler : MonoBehaviour
         _IsAttack = true;
     }
 
+    public void OnAttackAnimationEvent()
+    {
+        Debug.Log("Enemy - OnAttackAnimationEvent 호출");
+        _currentWeaponStrategy?.OnAttackAnimationEvent();
+    }
+
+    public void OffAttackAnimationEvent()
+    {
+        Debug.Log("Enemy - OffAttackAnimationEvent 호출");
+        _currentWeaponStrategy?.OffAttackAnimationEvent();
+    }
+
     public void ShootAttack()
     {
         FireData fire = CalculateFireData();
@@ -141,7 +149,8 @@ public class PlayerWeaponHandler : MonoBehaviour
 
         if (hitInfo.collider.TryGetComponent<IDamageable>(out IDamageable damageable))
         {
-            Vector3 hitDir = -hitInfo.normal;
+            Vector3 hitDir = (hitInfo.point - _muzzlePosition.position).normalized;
+            // Vector3 hitDir = -hitInfo.normal;
             hitDir.y = 0.0f;
 
             Damage damage = new Damage
@@ -172,7 +181,6 @@ public class PlayerWeaponHandler : MonoBehaviour
                 return CalculateFireDataFromMouse(cam, muzzlePos);
         }
 
-        // fallback
         return new FireData { direction = Vector3.forward, ray = new Ray(muzzlePos, Vector3.forward), hitInfo = null };
     }
 

@@ -27,12 +27,12 @@ public class ChaserEnemy : EnemyBase, IDamageable, IEnemyChaseContext, IEnemyDam
         _currentState?.Update();
     }
 
-    //public void TakeDamage(Damage damage)
-    //{
-    //    _healthComponent.TakeDamage(damage.Value);
-    //    _health -= damage.Value;
-    //    _knockbackDirection = damage.Dir;
+    public override void TakeDamage(Damage damage)
+    {
+        _healthComponent.TakeDamage(damage.Value);
+        _health -= damage.Value;
+        _knockbackDirection = damage.Dir;
 
-    //    ChangeState(EnemyStateType.Damaged);
-    //}
+        ChangeState(EnemyStateType.Damaged);
+    }
 }

@@ -10,7 +10,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
     [SerializeField] protected Transform _self;                
     [SerializeField] protected Transform _target;              
     [SerializeField] protected NavMeshAgent _agent;            
-    [SerializeField] protected CharacterController _controller;
+    // [SerializeField] protected CharacterController _controller;
     [SerializeField] protected EnemyStatSO _stat;
     [SerializeField] protected HealthComponent _healthComponent;
     [SerializeField] protected HealthBarController _healthBarController;
@@ -32,7 +32,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
     public Transform Self => _self;
     public Transform Target => _target;
     public NavMeshAgent Agent => _agent;
-    public CharacterController Controller => _controller;
+    // public CharacterController Controller => _controller;
     public EnemyStatSO State => _stat;
     public int Health => _health;
 
@@ -46,10 +46,10 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
     protected virtual void Awake()
     {
         _startPosition = transform.position;
-        _controller = GetComponent<CharacterController>();
+        // _controller = GetComponentInParent<CharacterController>();
         _target = GameObject.FindGameObjectWithTag("Player").transform;
 
-        _agent = GetComponent<NavMeshAgent>();
+        _agent = GetComponentInParent<NavMeshAgent>();
         _agent.speed = _stat.MoveSpeed;
 
         _animator = GetComponent<Animator>();
@@ -119,12 +119,5 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
     {
         gameObject.SetActive(false);
     }
-    public void TakeDamage(Damage damage)
-    {
-        _healthComponent.TakeDamage(damage.Value);
-        _health -= damage.Value;
-        _knockbackDirection = damage.Dir;
-
-        ChangeState(EnemyStateType.Damaged);
-    }
+    public abstract void TakeDamage(Damage damage);
 }

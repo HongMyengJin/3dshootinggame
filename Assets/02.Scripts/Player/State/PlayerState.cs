@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 public abstract class PlayerState : IPlayerState
 {
-    protected PlayerController _player;
     protected IPlayerMoveStrategy moveStrategy;
 
     private static readonly Dictionary<CameraViewType, IPlayerMoveStrategy> strategyMap = new Dictionary<CameraViewType, IPlayerMoveStrategy>
@@ -12,9 +11,9 @@ public abstract class PlayerState : IPlayerState
         { CameraViewType.QuaterView,    new PlayerQuarterViewMoveStrategy() }
     };
 
-    protected PlayerState(PlayerController player)
+    protected PlayerState()
     {
-        this._player = player;
+        
     }
 
     public virtual void Enter()
