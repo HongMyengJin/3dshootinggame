@@ -26,7 +26,7 @@ public class CommonEnemy : EnemyBase, IDamageable, IEnemyIdleContext, IEnemyChas
     {
         stateMap.Add(EnemyStateType.Idle, new EnemyIdleState(new EnemyIdleStrategy()));
         stateMap.Add(EnemyStateType.Chase, new EnemyChaseState(new EnemyChaseStragegy()));
-        stateMap.Add(EnemyStateType.Attack, new EnemyAttackState(new EnemyAttackStragegy()));
+        stateMap.Add(EnemyStateType.Attack, new CommonEnemyAttackState(new EnemyAttackStragegy()));
         stateMap.Add(EnemyStateType.Damaged, new EnemyDamagedState(new EnemyDamagedStragegy(), EnemyStateType.Chase));
         stateMap.Add(EnemyStateType.Return, new EnemyReturnState(new EnemyReturnStragegy()));
         stateMap.Add(EnemyStateType.Patrol, new EnemyPatrolState(new EnemyPatrolStragegy()));
@@ -51,5 +51,10 @@ public class CommonEnemy : EnemyBase, IDamageable, IEnemyIdleContext, IEnemyChas
         _knockbackDirection = damage.Dir;
 
         ChangeState(EnemyStateType.Damaged);
+    }
+
+    public bool ShouldBlock()
+    {
+        return true;
     }
 }

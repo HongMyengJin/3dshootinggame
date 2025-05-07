@@ -3,18 +3,22 @@ using System.Collections;
 using UnityEngine.AI;
 using TMPro;
 
-public class EnemyAttackStragegy : IEnemyStrategy<IEnemyAttackContext>
+public class EnemyAttackStragegy : EnemyAttackStrategyBase
 {
     private Coroutine _attackRoutine;
     private readonly float _attackDelay = 5.0f;
 
-    public void Execute(IEnemyAttackContext context)
+    protected override void StartAttack(IEnemyAttackContext ctx)
+    {
+
+    }
+    public override void Execute(IEnemyAttackContext context)
     {
         if (context == null)
             return;
         _attackRoutine = context.StartCoroutine(AttackLoop(context.Animator));
     }
-    public void Update(IEnemyAttackContext context)
+    public override void Update(IEnemyAttackContext context)
     {
         float speed = context.Agent.velocity.magnitude;
         context.Animator.SetFloat("MoveSpeed", speed);
@@ -36,7 +40,7 @@ public class EnemyAttackStragegy : IEnemyStrategy<IEnemyAttackContext>
         }
     }
 
-    public void Exit(IEnemyAttackContext context)
+    public override void Exit(IEnemyAttackContext context)
     {
         context.Animator.SetBool("Attack", false);
         context.StopCoroutine(_attackRoutine);

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.UIElements;
+using System.Collections;
 
 public class EnemyChaseStragegy : IEnemyStrategy<IEnemyChaseContext>
 {
@@ -28,10 +28,23 @@ public class EnemyChaseStragegy : IEnemyStrategy<IEnemyChaseContext>
 
     public void Exit(IEnemyChaseContext context)
     {
-        context.Animator.SetFloat("MoveSpeed", 0.0f);
+        context.StartCoroutine(SmoothStop(context.Animator));
+
         NavMeshAgent Agent = context.Agent;
         Agent.ResetPath();
         Agent.isStopped = true;
         Agent.updateRotation = false;
+    }
+
+    public IEnumerator SmoothStop(Animator animator)
+    {
+        float speed = animator.GetFloat("MoveSpeed");
+        while (speed > 0.01f)
+        {
+            speed = Mathf.Lerp(speed, 0f, Time.deltaTime * 5f);
+            animator.SetFloat("MoveSpeed", speed);
+            yield return null;
+        }
+        animator.SetFloat("MoveSpeed", 0f);
     }
 }

@@ -20,6 +20,7 @@ public class PlayerWeaponHandler : MonoBehaviour
     [SerializeField] private AttackDataSO _swordAttackData;
     private Transform _muzzlePosition;
     private bool _IsAttack = false;
+    private bool _IsShootAttack = false;
 
     private Dictionary<WeaponType, IWeaponStrategy> _weaponStrategies;
     private Dictionary<WeaponType, GameObject> _weaponInstances;
@@ -111,28 +112,32 @@ public class PlayerWeaponHandler : MonoBehaviour
     }
     private void LateUpdate()
     {
-        if(_IsAttack)
+        if(_IsShootAttack)
         {
             ShootAttack();
-            _IsAttack = false;
+            _IsShootAttack = false;
         }
     }
-
     public void OnAttack()
     {
-        _IsAttack = true;
+        _IsShootAttack = true;
     }
-
+    public bool IsAttack()
+    {
+        return _IsAttack;
+    }
     public void OnAttackAnimationEvent()
     {
         Debug.Log("Enemy - OnAttackAnimationEvent 호출");
         _currentWeaponStrategy?.OnAttackAnimationEvent();
+        _IsAttack = true;
     }
 
     public void OffAttackAnimationEvent()
     {
         Debug.Log("Enemy - OffAttackAnimationEvent 호출");
         _currentWeaponStrategy?.OffAttackAnimationEvent();
+        _IsAttack = false;
     }
 
     public void ShootAttack()

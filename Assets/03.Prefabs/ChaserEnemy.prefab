@@ -536,7 +536,6 @@ MonoBehaviour:
   _self: {fileID: 8093857405612867884}
   _target: {fileID: 0}
   _agent: {fileID: 0}
-  _controller: {fileID: 3273522217664137264}
   _stat: {fileID: 11400000, guid: c1589a72fe33dbb439c651118be449a9, type: 2}
   _healthComponent: {fileID: 1038994099424388829}
   _healthBarController: {fileID: 3087308227029016456}
