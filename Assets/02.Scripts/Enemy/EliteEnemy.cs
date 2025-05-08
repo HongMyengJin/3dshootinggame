@@ -9,7 +9,7 @@ using static UnityEditor.PlayerSettings;
 public class EliteEnemy : EnemyBase, IDamageable, IEnemyIdleContext, IEnemyChaseContext, IEnemyPatrolContext, IEnemyReturnContext, IEnemyAttackContext, IEnemyDamagedContext, IEnemyDieContext
 {
     [SerializeField] private Transform[] _patrolPoints;
-    [SerializeField] private ShieldController _shieldController;
+    [SerializeField] private DissolveController _shieldController;
 
     private int patrolIndex;
 

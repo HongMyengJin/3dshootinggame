@@ -5,7 +5,7 @@ public class EliteEnemyAttackState : EnemyAttackStateBase
     private EnemyAttackStrategyBase _currentStrategy;
     private EnemyAttackType _currentAttackType = EnemyAttackType.EnemyAttackTypeEnd;
 
-    public EliteEnemyAttackState(ShieldController shieldController)
+    public EliteEnemyAttackState(DissolveController shieldController)
     {
         strategies = new Dictionary<EnemyAttackType, EnemyAttackStrategyBase>
         {
@@ -20,10 +20,12 @@ public class EliteEnemyAttackState : EnemyAttackStateBase
         float distance = Vector3.Distance(context.Self.position, context.Target.position);
 
         EnemyAttackType selectedType = EnemyAttackType.EnemyAttackTypeEnd;
-        if (context.ShouldBlock()) selectedType = EnemyAttackType.Shield;
-        else if (distance < 2f) selectedType = EnemyAttackType.Punch;
-        else if (distance < 4f) selectedType = EnemyAttackType.Jump;
-        else if (distance < 6f) selectedType = EnemyAttackType.Throw;
+
+        if (distance < 6f) selectedType = EnemyAttackType.Throw;
+        //if (context.ShouldBlock()) selectedType = EnemyAttackType.Shield;
+        //else if (distance < 2f) selectedType = EnemyAttackType.Punch;
+        //else if (distance < 4f) selectedType = EnemyAttackType.Jump;
+        //else if (distance < 6f) selectedType = EnemyAttackType.Throw;
 
         return selectedType;
     }

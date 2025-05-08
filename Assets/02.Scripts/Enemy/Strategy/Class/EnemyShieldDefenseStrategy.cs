@@ -2,8 +2,8 @@
 
 public class EnemyShieldDefenseStrategy : EnemyAttackStrategyBase
 {
-    private ShieldController _shieldController;
-    public EnemyShieldDefenseStrategy(ShieldController shieldController)
+    private DissolveController _shieldController;
+    public EnemyShieldDefenseStrategy(DissolveController shieldController)
     {
         _shieldController = shieldController;
 
