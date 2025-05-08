@@ -116,15 +116,16 @@ public class PlayerWeaponHandler : MonoBehaviour
         {
             ShootAttack();
             _IsShootAttack = false;
+            _IsAttack = false;
         }
     }
     public void OnAttack()
     {
         _IsShootAttack = true;
     }
-    public bool IsAttack()
+    public bool IsAttack() // 현재 공격 중 or Aim 상태일 때(조준 중)
     {
-        return _IsAttack;
+        return _IsAttack || _animator.GetBool("Aim");
     }
     public void OnAttackAnimationEvent()
     {
