@@ -1,17 +1,18 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 public class EliteEnemyAttackState : EnemyAttackStateBase
 {
-    private EnemyAttackStrategyBase currentStrategy;
+    private EnemyAttackStrategyBase _currentStrategy;
+    private EnemyAttackType _currentAttackType = EnemyAttackType.EnemyAttackTypeEnd;
 
-    public EliteEnemyAttackState()
+    public EliteEnemyAttackState(ShieldController shieldController)
     {
         strategies = new Dictionary<EnemyAttackType, EnemyAttackStrategyBase>
         {
             { EnemyAttackType.Punch, new EnemyPunchAttackStrategy() },
             { EnemyAttackType.Jump, new EnemyJumpAttackStrategy() },
             { EnemyAttackType.Throw, new EnemyThrowAttackStrategy() },
-            { EnemyAttackType.Shield, new EnemyShieldDefenseStrategy() }
+            { EnemyAttackType.Shield, new EnemyShieldDefenseStrategy(shieldController) }
         };
     }
     private EnemyAttackType GetSelectAndExecuteStrategy()
@@ -36,16 +37,17 @@ public class EliteEnemyAttackState : EnemyAttackStateBase
     {
         if (context == null) return;
 
-        currentStrategy?.Update(context);
+        _currentStrategy?.Update(context);
 
-        if (currentStrategy == null || currentStrategy.IsFinished())
+        if (_currentStrategy == null || _currentStrategy.IsFinished())
         {
             EnemyAttackType selectedType = GetSelectAndExecuteStrategy();
             if (selectedType != EnemyAttackType.EnemyAttackTypeEnd &&
                 strategies.TryGetValue(selectedType, out var strategy) && strategy.CanUse())
             {
-                currentStrategy = strategy;
-                currentStrategy.Execute(context);
+                _currentStrategy = strategy;
+                _currentAttackType = selectedType;
+                _currentStrategy.Execute(context);
             }
             else if(Vector3.Distance(context.Self.position, context.Target.position) > context.State.AttackDistance)
                 context.ScheduleStateChange(EnemyStateType.Chase);
@@ -54,6 +56,11 @@ public class EliteEnemyAttackState : EnemyAttackStateBase
 
     public override void Exit()
     {
-        currentStrategy?.Exit(context);
+        _currentStrategy?.Exit(context);
+    }
+
+    public EnemyAttackType GetCurrentAttackType()
+    {
+        return _currentAttackType;
     }
 }

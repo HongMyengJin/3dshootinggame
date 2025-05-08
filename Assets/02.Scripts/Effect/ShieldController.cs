@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
 using UnityEditor;
@@ -13,13 +13,12 @@ public class ShieldController : MonoBehaviour
     private Material _instanceMaterial;
     private Renderer _renderer;
     private Coroutine _fadeRoutine;
-    private bool _isVisible = true;
 
     void Awake()
     {
         _renderer = GetComponentInChildren<Renderer>();
         InitializeMaterial();
-        Hide();
+        SetDissolve(1.0f);
     }
 
     private void InitializeMaterial()
@@ -28,56 +27,45 @@ public class ShieldController : MonoBehaviour
         _renderer.material = _instanceMaterial;
     }
 
-    public void Show()
-    {
-        if (_isVisible) 
-            return;
-        _isVisible = true;
-        StartFade(1f, OnShieldShown);
-        _renderer.enabled = _isVisible;
-    }
-
     public void Hide()
     {
-        if (!_isVisible) 
-            return;
-        _isVisible = false;
-        StartFade(0f, OnShieldHidden);
-        _renderer.enabled = _isVisible;
+        StartDissolve(1f, OnShieldShown);
     }
 
-    private void StartFade(float targetAlpha, UnityEvent callback = null)
+    public void Show()
+    {
+        StartDissolve(0f, OnShieldHidden);
+    }
+
+    private void StartDissolve(float targetAlpha, UnityEvent callback = null)
     {
         if (_fadeRoutine != null)
             StopCoroutine(_fadeRoutine);
         _fadeRoutine = StartCoroutine(FadeRoutine(targetAlpha, callback));
     }
 
-    private IEnumerator FadeRoutine(float targetAlpha, UnityEvent callback)
+    private IEnumerator FadeRoutine(float targetdissolve, UnityEvent callback)
     {
-        float startAlpha = _instanceMaterial.color.a;
+        float startDissovle = _instanceMaterial.GetFloat("_Dissolve");
         float elapsed = 0f;
 
         while (elapsed < FadeDuration)
         {
             elapsed += Time.deltaTime;
             float t = elapsed / FadeDuration;
-            float alpha = Mathf.Lerp(startAlpha, targetAlpha, t);
-            SetAlpha(alpha);
+            float dissolve = Mathf.Lerp(startDissovle, targetdissolve, t);
+            SetDissolve(dissolve);
             yield return null;
         }
 
-        SetAlpha(targetAlpha);
+        SetDissolve(targetdissolve);
         callback?.Invoke();
     }
 
-    private void SetAlpha(float alpha)
+    private void SetDissolve(float dissolve)
     {
         if (_instanceMaterial == null)
             return;
-
-        Color baseColor = _instanceMaterial.GetColor("_BaseColor");
-        baseColor.a = alpha;
-        _instanceMaterial.SetColor("_BaseColor", baseColor);
+        _instanceMaterial.SetFloat("_Dissolve", dissolve);
     }
 }
