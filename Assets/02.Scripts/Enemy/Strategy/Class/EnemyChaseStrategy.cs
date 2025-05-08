@@ -1,5 +1,6 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
+using System.Collections;
 
 public class EnemyChaseStragegy : IEnemyStrategy<IEnemyChaseContext>
 {
@@ -8,7 +9,42 @@ public class EnemyChaseStragegy : IEnemyStrategy<IEnemyChaseContext>
         if (context == null)
             return;
 
-        Vector3 dir = (context.Target.transform.position - context.Self.transform.position).normalized;
-        context.Controller.Move(dir * context.State.MoveSpeed * Time.deltaTime);
+        NavMeshAgent Agent = context.Agent;
+        Agent.isStopped = false;
+        Agent.updateRotation = true;
+    }
+    public void Update(IEnemyChaseContext context)
+    {
+        Transform selfTransform = context.Self;
+        Quaternion selfRotation = context.Self.rotation;
+        selfRotation.x = 0.0f;
+
+        float speed = context.Agent.velocity.magnitude;
+        context.Animator.SetFloat("MoveSpeed", speed);
+        context.Agent.SetDestination(context.Target.transform.position);
+
+        selfTransform.rotation = selfRotation;
+    }
+
+    public void Exit(IEnemyChaseContext context)
+    {
+        context.StartCoroutine(SmoothStop(context.Animator));
+
+        NavMeshAgent Agent = context.Agent;
+        Agent.ResetPath();
+        Agent.isStopped = true;
+        Agent.updateRotation = false;
+    }
+
+    public IEnumerator SmoothStop(Animator animator)
+    {
+        float speed = animator.GetFloat("MoveSpeed");
+        while (speed > 0.01f)
+        {
+            speed = Mathf.Lerp(speed, 0f, Time.deltaTime * 5f);
+            animator.SetFloat("MoveSpeed", speed);
+            yield return null;
+        }
+        animator.SetFloat("MoveSpeed", 0f);
     }
 }

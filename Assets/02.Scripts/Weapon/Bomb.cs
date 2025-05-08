@@ -1,22 +1,57 @@
-using UnityEngine;
+ï»¿using UnityEngine;
+using static UnityEngine.InputSystem.HID.HID;
 
 public class Bomb : MonoBehaviour
 {
-    // ¸ñÇ¥: ¸¶¿ì½ºÀÇ ¿À¸¥ÂÊ ¹öÆ°À» ´©¸£¸é Ä«¸Ş¶ó°¡ ¹Ù¶óº¸´Â ¹æÇâÀ¸·Î ¼ö·ùÅºÀ» ´øÁö°í ½Í´Ù.
-    // 1. ¼ö·ùÅº ¿ÀºêÁ§Æ® ¸¸µé±â
-    // 2. ¿À¸¥ÂÊ ¹öÆ° ÀÔ·Â ¹Ş±â
-    // 3. ¹ß»ç À§Ä¡¿¡ ¼ö·ùÅº »ı¼ºÇÏ±â
-    // 4. »ı¼ºµÈ ¼ö·ùÅºÀ» Ä«¸Ş¶ó ¹æÇâÀ¸·Î ¹°¸®ÀûÀÎ Èû °¡ÇÏ±â
+    // ëª©í‘œ: ë§ˆìš°ìŠ¤ì˜ ì˜¤ë¥¸ìª½ ë²„íŠ¼ì„ ëˆ„ë¥´ë©´ ì¹´ë©”ë¼ê°€ ë°”ë¼ë³´ëŠ” ë°©í–¥ìœ¼ë¡œ ìˆ˜ë¥˜íƒ„ì„ ë˜ì§€ê³  ì‹¶ë‹¤.
+    // 1. ìˆ˜ë¥˜íƒ„ ì˜¤ë¸Œì íŠ¸ ë§Œë“¤ê¸°
+    // 2. ì˜¤ë¥¸ìª½ ë²„íŠ¼ ì…ë ¥ ë°›ê¸°
+    // 3. ë°œì‚¬ ìœ„ì¹˜ì— ìˆ˜ë¥˜íƒ„ ìƒì„±í•˜ê¸°
+    // 4. ìƒì„±ëœ ìˆ˜ë¥˜íƒ„ì„ ì¹´ë©”ë¼ ë°©í–¥ìœ¼ë¡œ ë¬¼ë¦¬ì ì¸ í˜ ê°€í•˜ê¸°
 
     public GameObject ExplosionEffectPrefab;
 
-    // Ãæµ¹ÇßÀ» ¶§
+    private Rigidbody _rigidbody;
+    private Collider _collider;
+
+    private void Awake()
+    {
+        _rigidbody = GetComponent<Rigidbody>();
+        _collider = GetComponent<Collider>();
+        OffSimulation();
+    }
+
+    // ì¶©ëŒí–ˆì„ ë•Œ
 
     private void OnCollisionEnter(Collision collision)
     {
+        Debug.Log($"ì¶©ëŒ~~:{collision.gameObject.name}");
         GameObject effectObject = Instantiate(ExplosionEffectPrefab);
         effectObject.transform.position = transform.position;
 
         gameObject.SetActive(false);
+    }
+
+    public void OffSimulation()
+    {
+        _rigidbody.useGravity = false;
+        _collider.enabled = false;
+        //_rigidbody.isKinematic = true;
+        //_rigidbody.linearVelocity = Vector3.zero;  // í˜„ì¬ ì†ë„ë„ 0ìœ¼ë¡œ ì´ˆê¸°í™”
+        //_rigidbody.angularVelocity = Vector3.zero;  // íšŒì „ ì†ë„ë„ 0ìœ¼ë¡œ ì´ˆê¸°í™”
+    }
+
+    public void OnSimulation()
+    {
+        _rigidbody.linearVelocity = Vector3.zero;
+        _rigidbody.angularVelocity = Vector3.zero;
+        _rigidbody.useGravity = true;
+        _collider.enabled = true;
+    }
+
+    public void AddForce(Vector3 dir, float Power)
+    {
+        OnSimulation();
+        _rigidbody.AddForce(dir * Power, ForceMode.Impulse);
     }
 }

@@ -26,7 +26,7 @@ public class CommonEnemy : EnemyBase, IDamageable, IEnemyIdleContext, IEnemyChas
     {
         stateMap.Add(EnemyStateType.Idle, new EnemyIdleState(new EnemyIdleStrategy()));
         stateMap.Add(EnemyStateType.Chase, new EnemyChaseState(new EnemyChaseStragegy()));
-        stateMap.Add(EnemyStateType.Attack, new EnemyAttackState(new EnemyAttackStragegy()));
+        stateMap.Add(EnemyStateType.Attack, new CommonEnemyAttackState(new EnemyAttackStragegy()));
         stateMap.Add(EnemyStateType.Damaged, new EnemyDamagedState(new EnemyDamagedStragegy(), EnemyStateType.Chase));
         stateMap.Add(EnemyStateType.Return, new EnemyReturnState(new EnemyReturnStragegy()));
         stateMap.Add(EnemyStateType.Patrol, new EnemyPatrolState(new EnemyPatrolStragegy()));
@@ -36,7 +36,7 @@ public class CommonEnemy : EnemyBase, IDamageable, IEnemyIdleContext, IEnemyChas
 
     protected override void Update()
     {
-        currentState?.Update();
+        _currentState?.Update();
     }
 
     public void MoveToNextPatrolPoint()
@@ -44,11 +44,17 @@ public class CommonEnemy : EnemyBase, IDamageable, IEnemyIdleContext, IEnemyChas
         patrolIndex = (patrolIndex + 1) % PatrolPoints.Length;
         Agent.SetDestination(PatrolPoints[patrolIndex].position);
     }
-    public void TakeDamage(Damage damage)
+    public override void TakeDamage(Damage damage)
     {
+        _healthComponent.TakeDamage(damage.Value);
         _health -= damage.Value;
         _knockbackDirection = damage.Dir;
 
         ChangeState(EnemyStateType.Damaged);
+    }
+
+    public bool ShouldBlock()
+    {
+        return true;
     }
 }

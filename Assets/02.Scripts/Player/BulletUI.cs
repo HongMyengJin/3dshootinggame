@@ -31,16 +31,16 @@ public class BulletUI : MonoBehaviour
         TimerText.text = Timer.ToString("F1");
     }
 
-    public void UpdateState(PlayerFire.ShootEnum shootEnum)
-    {
-        switch (shootEnum)
-        {
-            case PlayerFire.ShootEnum.None:
-                StateText.text = "";
-                break;
-            case PlayerFire.ShootEnum.Load:
-                StateText.text = "장전 중";
-                break;
-        }
-    }
+    //public void UpdateState(PlayerFire.ShootEnum shootEnum)
+    //{
+    //    switch (shootEnum)
+    //    {
+    //        case PlayerFire.ShootEnum.None:
+    //            StateText.text = "";
+    //            break;
+    //        case PlayerFire.ShootEnum.Load:
+    //            StateText.text = "장전 중";
+    //            break;
+    //    }
+    //}
 }

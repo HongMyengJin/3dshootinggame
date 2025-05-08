@@ -12,17 +12,16 @@ public class EnemyFollowState : IEnemyState
     public void Enter(IEnemyContext ctx)
     {
         context = ctx as IEnemyChaseContext;
+        chaseStrategy.Execute(context);
     }
     public void Update()
     {
         if (context == null)
             return;
-
-        chaseStrategy.Execute(context);
-        float distance = Vector3.Distance(context.Self.position, context.Target.position);
+        chaseStrategy.Update(context);
     }
     public void Exit()
     {
-
+        chaseStrategy.Exit(context);
     }
 }

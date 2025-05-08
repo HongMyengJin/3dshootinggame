@@ -12,13 +12,14 @@ public class EnemyIdleState : IEnemyState
     public void Enter(IEnemyContext ctx)
     {
         context = ctx as IEnemyIdleContext;
+        idleStrategy.Execute(context);
     }
     public void Update()
     {
         if (context == null)
             return;
 
-        idleStrategy.Execute(context);
+        idleStrategy.Update(context);
         if (Vector3.Distance(context.Self.position, context.Target.position) < context.State.FindDistance)
         {
             context.ScheduleStateChange(EnemyStateType.Chase);
@@ -29,7 +30,7 @@ public class EnemyIdleState : IEnemyState
     }
     public void Exit()
     {
-
+        idleStrategy.Exit(context);
     }
 
-    }
+}

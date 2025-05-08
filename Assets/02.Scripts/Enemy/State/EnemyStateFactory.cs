@@ -15,7 +15,7 @@ public static class EnemyStateFactory
                 EnemyStateType.Patrol => new EnemyPatrolState(new EnemyPatrolStragegy()),
                 EnemyStateType.Chase => new EnemyChaseState(new EnemyChaseStragegy()),
                 EnemyStateType.Return => new EnemyReturnState(new EnemyReturnStragegy()),
-                EnemyStateType.Attack => new EnemyAttackState(new EnemyAttackStragegy()),
+                EnemyStateType.Attack => new CommonEnemyAttackState(new EnemyAttackStragegy()),
                 EnemyStateType.Damaged => new EnemyDamagedState(new EnemyDamagedStragegy(), EnemyStateType.Chase),
                 EnemyStateType.Die => new EnemyDieState(new EnemyDieStragegy()),
                 _ => null // 그 외

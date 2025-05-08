@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Threading;
 using UnityEngine;
 
@@ -9,9 +9,8 @@ public class CooldownTimer : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(WaitTime(3f)); // 3ÃÊ ÈÄ ¾Æ·¡ ÄÚµå°¡ ½ÇÇàµÈ´Ù.
+        StartCoroutine(WaitTime(3f)); // 3ì´ˆ í›„ ì•„ëž˜ ì½”ë“œê°€ ì‹¤í–‰ëœë‹¤.
 
-        Debug.Log("°í¸¶¿ö¿ä ¼ö¹Î¾¾.");
     }
 
     private void Update()
@@ -19,17 +18,17 @@ public class CooldownTimer : MonoBehaviour
         //_timer += Time.deltaTime;
         //if (_timer >= Cooltime)
         //{
-        //    Debug.Log($"{Cooltime}ÀÌ Áö³µ½À´Ï´Ù.");
+        //    Debug.Log($"{Cooltime}ì´ ì§€ë‚¬ìŠµë‹ˆë‹¤.");
         //}
     }
 
-    // ÄÚ·çÆ¾: À¯´ÏÆ¼ÀÇ ºñµ¿±â ÇÔ¼ö ½ÇÇà ¹æ½ÄÀ¸·Î µ¿±â¿Í ´Ù¸£°Ô ¿©·¯ ½Ã°£¿¡ °ÉÃÄ¼­ ¾ÈÀÇ ³»¿ëÀ» ¼öÇàÇÒ ¼ö ÀÖ´Ù.
+    // ì½”ë£¨í‹´: ìœ ë‹ˆí‹°ì˜ ë¹„ë™ê¸° í•¨ìˆ˜ ì‹¤í–‰ ë°©ì‹ìœ¼ë¡œ ë™ê¸°ì™€ ë‹¤ë¥´ê²Œ ì—¬ëŸ¬ ì‹œê°„ì— ê±¸ì³ì„œ ì•ˆì˜ ë‚´ìš©ì„ ìˆ˜í–‰í•  ìˆ˜ ìžˆë‹¤.
     // Coroutine: IEnumerator, IEnumerable, yield
     private IEnumerator WaitTime(float waitTime)
     {
-        // yield: ÄÚ·çÆ¾ÀÇ ÇÙ½ÉÀûÀÎ ºÎºÐÀ¸·Î, ½ÇÇàÀ» ÁßÁöÇÏ°í À¯´ÏÆ¼ÀÇ ´ÙÀ½ Æ¯Á¤ Á¶°Ç(ÇÁ·¹ÀÓ, ÃÊ, ³×Æ®¿öÅ©)ÀÌ ÃæÁ·µÉ ¶§±îÁö ±â´Ù¸®°Ô ÇÏ´Â ¿ªÇÒ
+        // yield: ì½”ë£¨í‹´ì˜ í•µì‹¬ì ì¸ ë¶€ë¶„ìœ¼ë¡œ, ì‹¤í–‰ì„ ì¤‘ì§€í•˜ê³  ìœ ë‹ˆí‹°ì˜ ë‹¤ìŒ íŠ¹ì • ì¡°ê±´(í”„ë ˆìž„, ì´ˆ, ë„¤íŠ¸ì›Œí¬)ì´ ì¶©ì¡±ë  ë•Œê¹Œì§€ ê¸°ë‹¤ë¦¬ê²Œ í•˜ëŠ” ì—­í• 
         yield return new WaitForSeconds(waitTime);
 
-        Debug.Log($"{waitTime}ÀÌ Áö³µ½À´Ï´Ù.");
+        Debug.Log($"{waitTime}ì´ ì§€ë‚¬ìŠµë‹ˆë‹¤.");
     }
 }

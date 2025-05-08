@@ -15,16 +15,21 @@ public class EnemyDamagedState : IEnemyState
     public void Enter(IEnemyContext ctx)
     {
         context = ctx as IEnemyDamagedContext;
+        Animator animator = ctx.Animator;
         damagedStrategy.Execute(context);
+
+        animator.SetTrigger("Damage");
         context.StartCoroutine(Stun(context, nextState));
     }
     public void Update()
     {
         if (context == null)
             return;
+        damagedStrategy.Update(context);
     }
     public void Exit()
     {
+        damagedStrategy.Exit(context);
     }
 
     private IEnumerator Stun(IEnemyDamagedContext context, EnemyStateType nextState)

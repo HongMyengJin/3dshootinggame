@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ChaserEnemyStatSO
   m_EditorClassIdentifier: 
   findDistance: 1000
-  attackDistance: 2.5
+  attackDistance: 8
   returnDistance: 15
   distanceGap: 0.1
   moveSpeed: 3.5

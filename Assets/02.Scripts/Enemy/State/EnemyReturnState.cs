@@ -11,13 +11,14 @@ public class EnemyReturnState : IEnemyState
     public void Enter(IEnemyContext ctx)
     {
         context = ctx as IEnemyReturnContext;
+        returnStrategy.Execute(context);
     }
     public void Update()
     {
         if (context == null)
             return;
 
-        returnStrategy.Execute(context);
+        returnStrategy.Update(context);
 
         if (Vector3.Distance(context.Self.position, context.StartPoint) <= context.State.DistanceGap)
         {
@@ -32,6 +33,6 @@ public class EnemyReturnState : IEnemyState
     }
     public void Exit()
     {
-
+        returnStrategy.Exit(context);
     }
 }

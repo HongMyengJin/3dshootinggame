@@ -12,13 +12,14 @@ public class EnemyPatrolState : IEnemyState
     public void Enter(IEnemyContext ctx)
     {
         context = ctx as IEnemyPatrolContext;
+        patrolStrategy.Execute(context);
     }
     public void Update()
     {
         if (context == null)
             return;
 
-        patrolStrategy.Execute(context);
+        patrolStrategy.Update(context);
 
         // 상태 전환 판단 - State 관리
 
@@ -33,10 +34,7 @@ public class EnemyPatrolState : IEnemyState
         if (context == null || context.Agent == null)
             return;
 
-        NavMeshAgent agent = context.Agent;
-
-        agent.isStopped = true;
-        agent.ResetPath();
+        patrolStrategy.Exit(context);
     }
 }
 

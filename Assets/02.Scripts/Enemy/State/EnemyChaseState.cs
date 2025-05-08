@@ -12,14 +12,16 @@ public class EnemyChaseState : IEnemyState
     public void Enter(IEnemyContext ctx)
     {
         context = ctx as IEnemyChaseContext;
+        chaseStrategy.Execute(context);
     }
     public void Update()
     {
         if (context == null)
             return;
 
-        chaseStrategy.Execute(context);
+        chaseStrategy.Update(context);
         float distance = Vector3.Distance(context.Self.position, context.Target.position);
+        
         if (distance >= context.State.ReturnDistance)
         {
             context.ScheduleStateChange(EnemyStateType.Return);
@@ -31,6 +33,6 @@ public class EnemyChaseState : IEnemyState
     }
     public void Exit()
     {
-
+        chaseStrategy.Exit(context);
     }
 }

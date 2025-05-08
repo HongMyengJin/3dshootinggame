@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 
@@ -6,7 +6,18 @@ public class EnemyDamagedStragegy : IEnemyStrategy<IEnemyDamagedContext>
 {
     public void Execute(IEnemyDamagedContext context)
     {
+        if (context == null)
+            return;
+        Debug.Log("넉백 시작");
         context.StartCoroutine(Knockback(context));
+    }
+    public void Update(IEnemyDamagedContext context)
+    {
+
+    }
+    public void Exit(IEnemyDamagedContext context)
+    {
+
     }
     private IEnumerator Knockback(IEnemyDamagedContext context)
     {
@@ -17,7 +28,7 @@ public class EnemyDamagedStragegy : IEnemyStrategy<IEnemyDamagedContext>
         while (elapsed < duration)
         {
             float value = Mathf.Lerp(0, context.State.KnockbackMaxSpeed, elapsed / duration);
-            context.Controller.Move(direction * value * Time.deltaTime);
+            context.Self.position += direction * value * Time.deltaTime;
             elapsed += Time.deltaTime;
             yield return null;
         }

@@ -4,4 +4,5 @@ using UnityEngine.AI;
 
 public interface IEnemyAttackContext : IEnemyContext
 {
+    bool ShouldBlock();
 }

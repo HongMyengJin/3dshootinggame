@@ -1,20 +1,72 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class PlayerRotate : MonoBehaviour
 {
-    public float RotationSpeed = 150f;
+    public float RotationSpeed = 0.1f;
 
     private float _rotationX = 0;
 
+    private Quaternion _targetRotation;
+    private Animator _animator;
+
+    private float _rotateValue;
+
+    private float _cameraYaw;
+    private float _cameraPitch;
+
+
+    private void Awake()
+    {
+        _animator = GetComponent<Animator>();
+    }
     private void Update()
     {
-        // 1. ¸¶¿ì½º ÀÔ·ÂÀ» ¹Þ´Â´Ù. (¸¶¿ì½ºÀÇ Ä¿¼­ÀÇ ¿òÁ÷ÀÓ ¹æÇâ)
-        float mouseX = Input.GetAxis("Mouse X");
+        if (CameraManager.Instance.GetCurrentViewType() != CameraViewType.QuaterView) // ì¿¼í„°ë·°ê°€ ì•„ë‹ ë•Œ
+        {
+            Transform cameraTransform = CameraManager.Instance.GetCurrentCamera().transform;
 
-        // 2. È¸ÀüÇÑ ¾ç¸¸Å­ ´©Àû½ÃÄÑ ³ª°£´Ù.
-        _rotationX += mouseX * RotationSpeed * Time.deltaTime;
 
-        // 3. È¸Àü ¹æÇâÀ¸·Î È¸Àü½ÃÅ²´Ù.
-        transform.eulerAngles = new Vector3(0, _rotationX, 0);
+            Vector3 lookDir = cameraTransform.forward;
+            lookDir.y = 0f;
+            lookDir.Normalize(); // ì¤‘ìš”!
+
+            if (lookDir.sqrMagnitude > 0.01f)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(lookDir);
+
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
+                Debug.Log($"{lookDir} LookDir (ì •ê·œí™” í›„): íšŒì „ì¤‘~~");
+            }
+        }
+        else
+        {
+            if (Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(0))
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out RaycastHit hitInfo))
+                {
+                    Vector3 clickPosition = hitInfo.point;
+                    Vector3 direction = (clickPosition - transform.position);
+                    direction.y = 0; // ìˆ˜í‰ íšŒì „ë§Œ
+                    if (direction.sqrMagnitude > 0.01f)
+                    {
+                        Quaternion targetRotation = Quaternion.LookRotation(direction);
+                        _targetRotation = targetRotation;
+                    }
+                }
+            }
+            else
+            {
+                _rotateValue = Quaternion.Angle(transform.rotation, _targetRotation) / 180.0f;
+                transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotation, Time.deltaTime * 5.0f);
+                if(_rotateValue > 0.1f)
+                    _animator.SetFloat("MoveSpeed", _rotateValue);
+            }
+        }
+    }
+
+    private void LateUpdate()
+    {
+
     }
 }
