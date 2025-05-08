@@ -17,7 +17,7 @@ public class PopupManager : MonoBehaviour
 
     [Header("팝업 UI 참조")]
     public List<UI_Popup> Popups; // 모든 팝업을 관리하는데
-    private List<UI_Popup> _openedPopups = new();
+    private Stack<UI_Popup> _openedPopups = new();
     private void Awake()
     {
         Instance = this;
@@ -35,7 +35,7 @@ public class PopupManager : MonoBehaviour
             if (popup.gameObject.name == popupName)
             {
                 popup.Open(closeCallback);
-                _openedPopups.Add(popup);
+                _openedPopups.Push(popup);
                 break;
             }
         }
@@ -47,11 +47,23 @@ public class PopupManager : MonoBehaviour
         {
             if (_openedPopups.Count > 0)
             {
-                _openedPopups[_openedPopups.Count - 1].Close();
-                _openedPopups.RemoveAt(_openedPopups.Count - 1);
+                while (true)
+                {
+                    UI_Popup popup = _openedPopups.Pop();
+
+                    bool opened = popup.isActiveAndEnabled;
+                    popup.Close();
+
+                    if (opened || _openedPopups.Peek() == null) // 열려있는 팝업을 닫았거나 || 더 이상 닫을 팝업이 없으면 탈출!
+                    {
+                        break;
+                    }
+                }
             }
             else
+            {
                 GameManager_.Instance.Pause();
+            }
         }
     }
 }
