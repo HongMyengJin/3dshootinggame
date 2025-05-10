@@ -15,7 +15,8 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
     [SerializeField] protected HealthComponent _healthComponent;
     [SerializeField] protected HealthBarController _healthBarController;
     [SerializeField] protected Animator _animator;
-
+    [SerializeField] protected Collider _collider;
+    protected Rigidbody _rigidbody;
     // --- 상태 관련 ---
     protected readonly Dictionary<EnemyStateType, IEnemyState> stateMap = new();
     protected IEnemyState _currentState;                       
@@ -32,6 +33,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
     public Transform Self => _self;
     public Transform Target => _target;
     public NavMeshAgent Agent => _agent;
+    public Rigidbody Rigidbody => _rigidbody;
     // public CharacterController Controller => _controller;
     public EnemyStatSO State => _stat;
     public int Health => _health;
@@ -41,6 +43,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
     public bool IsActive => gameObject.activeInHierarchy;
     public Transform Transform => transform;
     public Animator Animator => _animator;
+    public Collider Collider => _collider;
 
     public EnemyStateType CurrentType => _currentType;
     protected virtual void Awake()
@@ -49,10 +52,12 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
         // _controller = GetComponentInParent<CharacterController>();
         _target = GameObject.FindGameObjectWithTag("Player").transform;
 
-        _agent = GetComponentInParent<NavMeshAgent>();
-        _agent.speed = _stat.MoveSpeed;
+        // _agent = GetComponentInParent<NavMeshAgent>();
+        _rigidbody = GetComponentInChildren<Rigidbody>();
+        // _agent.speed = _stat.MoveSpeed;
 
         _animator = GetComponent<Animator>();
+        _collider = GetComponentInChildren<Collider>();
 
         if (_healthComponent != null && _healthBarController != null)
         {
@@ -72,7 +77,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
             _currentState = nextState;
             _currentType = next;
             _currentState.Enter(this);
-            Debug.Log($"상태 전환: {_currentType} -> {next}");
+            // Debug.Log($"상태 전환: {_currentType} -> {next}");
         }
         else
         {

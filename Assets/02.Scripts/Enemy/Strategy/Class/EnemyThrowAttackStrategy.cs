@@ -20,7 +20,7 @@ public class EnemyThrowAttackStrategy : EnemyAttackStrategyBase
         Vector3 direction = (targetTransform.position - transform.position).normalized;
 
         Quaternion targetRotation = Quaternion.LookRotation(direction);
-        Quaternion rotationOffset = Quaternion.Euler(0, 30.0f, 0);
+        Quaternion rotationOffset = Quaternion.Euler(0, 0.0f, 0);
         targetRotation *= rotationOffset;
 
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5.0f);

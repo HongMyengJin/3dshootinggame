@@ -68,4 +68,18 @@ public class EliteEnemy : EnemyBase, IDamageable, IEnemyIdleContext, IEnemyChase
     {
         return PlayerManager.Instance.IsAttack();
     }
+    private void LateUpdate()
+    {
+        _currentState?.LateUpdate();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log($"현재 트리거 중~ {other.name} ");
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log($"현재 콜리전 중~ {collision.gameObject.name} ");
+    }
 }

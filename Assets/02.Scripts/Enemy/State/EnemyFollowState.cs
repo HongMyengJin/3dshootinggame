@@ -20,6 +20,9 @@ public class EnemyFollowState : IEnemyState
             return;
         chaseStrategy.Update(context);
     }
+    public void LateUpdate()
+    {
+    }
     public void Exit()
     {
         chaseStrategy.Exit(context);

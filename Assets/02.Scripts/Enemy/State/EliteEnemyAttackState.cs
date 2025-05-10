@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 public class EliteEnemyAttackState : EnemyAttackStateBase
 {
@@ -21,7 +22,7 @@ public class EliteEnemyAttackState : EnemyAttackStateBase
 
         EnemyAttackType selectedType = EnemyAttackType.EnemyAttackTypeEnd;
 
-        if (distance < 6f) selectedType = EnemyAttackType.Throw;
+        if (distance < 13f) selectedType = EnemyAttackType.Jump;
         //if (context.ShouldBlock()) selectedType = EnemyAttackType.Shield;
         //else if (distance < 2f) selectedType = EnemyAttackType.Punch;
         //else if (distance < 4f) selectedType = EnemyAttackType.Jump;
@@ -38,9 +39,7 @@ public class EliteEnemyAttackState : EnemyAttackStateBase
     public override void Update()
     {
         if (context == null) return;
-
         _currentStrategy?.Update(context);
-
         if (_currentStrategy == null || _currentStrategy.IsFinished())
         {
             EnemyAttackType selectedType = GetSelectAndExecuteStrategy();
@@ -56,6 +55,10 @@ public class EliteEnemyAttackState : EnemyAttackStateBase
         }
     }
 
+    public override void LateUpdate()
+    {
+        
+    }
     public override void Exit()
     {
         _currentStrategy?.Exit(context);

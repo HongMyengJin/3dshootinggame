@@ -29,6 +29,9 @@ public class EnemyPatrolState : IEnemyState
             return;
         }
     }
+    public void LateUpdate()
+    {
+    }
     public void Exit()
     {
         if (context == null || context.Agent == null)

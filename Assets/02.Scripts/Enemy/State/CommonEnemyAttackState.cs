@@ -28,6 +28,9 @@ public class CommonEnemyAttackState : IEnemyState
         }
     }
 
+    public void LateUpdate()
+    {
+    }
     public void Exit()
     {
         attackStrategy.Exit(context);

@@ -31,6 +31,9 @@ public class EnemyReturnState : IEnemyState
             context.ScheduleStateChange(EnemyStateType.Chase);
         }
     }
+    public void LateUpdate()
+    {
+    }
     public void Exit()
     {
         returnStrategy.Exit(context);

@@ -17,5 +17,6 @@ public abstract class EnemyAttackStateBase : IEnemyState
 
     public virtual void Enter(IEnemyContext ctx) { }
     public virtual void Update() { }
+    public virtual void LateUpdate() { }
     public virtual void Exit() { }
 }

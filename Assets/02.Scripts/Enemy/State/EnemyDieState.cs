@@ -19,6 +19,9 @@ public class EnemyDieState : IEnemyState
             return;
         dieStrategy.Update(context);
     }
+    public void LateUpdate()
+    {
+    }
     public void Exit()
     {
         dieStrategy.Exit(context);

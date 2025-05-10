@@ -23,4 +23,15 @@ public class EnemyShieldDefenseStrategy : EnemyAttackStrategyBase
         _shieldController.Hide();
     }
 
+    public override void Update(IEnemyAttackContext ctx)
+    {
+        Transform transform = ctx.Self;
+        Transform targetTransform = ctx.Target;
+
+        Vector3 direction = (targetTransform.position - transform.position).normalized;
+
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5.0f);
+    }
+
 }

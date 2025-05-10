@@ -23,6 +23,8 @@ public class EnemyPatrolStragegy : IEnemyStrategy<IEnemyPatrolContext>
     }
     public void Exit(IEnemyPatrolContext context)
     {
+        if(context.Agent == null)
+            return;
         NavMeshAgent agent = context.Agent;
 
         agent.isStopped = true;

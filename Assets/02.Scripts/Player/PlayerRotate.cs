@@ -35,7 +35,6 @@ public class PlayerRotate : MonoBehaviour
                 Quaternion targetRotation = Quaternion.LookRotation(lookDir);
 
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
-                Debug.Log($"{lookDir} LookDir (정규화 후): 회전중~~");
             }
         }
         else

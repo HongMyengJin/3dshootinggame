@@ -6,7 +6,7 @@ public class EnemyChaseStragegy : IEnemyStrategy<IEnemyChaseContext>
 {
     public void Execute(IEnemyChaseContext context)
     {
-        if (context == null)
+        if (context == null || context.Agent == null)
             return;
 
         NavMeshAgent Agent = context.Agent;
@@ -15,6 +15,9 @@ public class EnemyChaseStragegy : IEnemyStrategy<IEnemyChaseContext>
     }
     public void Update(IEnemyChaseContext context)
     {
+        if (context == null || context.Agent == null)
+            return;
+
         Transform selfTransform = context.Self;
         Quaternion selfRotation = context.Self.rotation;
         selfRotation.x = 0.0f;
@@ -28,6 +31,9 @@ public class EnemyChaseStragegy : IEnemyStrategy<IEnemyChaseContext>
 
     public void Exit(IEnemyChaseContext context)
     {
+        if (context == null || context.Agent == null)
+            return;
+
         context.StartCoroutine(SmoothStop(context.Animator));
 
         NavMeshAgent Agent = context.Agent;
