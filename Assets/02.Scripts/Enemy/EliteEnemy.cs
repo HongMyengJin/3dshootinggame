@@ -57,6 +57,8 @@ public class EliteEnemy : EnemyBase, IDamageable, IEnemyIdleContext, IEnemyChase
             return; // 현재 실드 상태이면 데미지 X
         }
 
+        EffectManager.Instance.Play(ObjectType.Boss, EffectType.Hit, damage.Position, Quaternion.identity, 0.8f);
+
         _healthComponent.TakeDamage(damage.Value);
         _health -= damage.Value;
         _knockbackDirection = damage.Dir;

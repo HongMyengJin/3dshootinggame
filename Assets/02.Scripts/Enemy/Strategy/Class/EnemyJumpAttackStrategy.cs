@@ -20,7 +20,7 @@ public class EnemyJumpAttackStrategy : EnemyAttackStrategyBase
 
     protected override void StartAttack(IEnemyAttackContext ctx)
     {
-        // ctx.Agent.isStopped = true;
+        ctx.Agent.isStopped = true;
         ctx.Collider.isTrigger = true;
         ctx.Animator.SetTrigger("JumpAttack");
         Vector3 position = ctx.Self.position;
@@ -45,14 +45,14 @@ public class EnemyJumpAttackStrategy : EnemyAttackStrategyBase
         direction.x = 0.0f;
         direction.y = 0.0f;
 
-        UpdateJump(ctx.Self, ctx.Agent, ctx.Collider);
-        transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotation, Time.deltaTime);
+        UpdateJump(ctx.Self, ctx.Collider);
+        transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotation, Time.deltaTime * 3.0f);
     }
 
     public override void Exit(IEnemyAttackContext ctx) 
     {
-        //ctx.Agent.isStopped = false;
-        //ctx.Agent.Warp(ctx.Self.position);
+        ctx.Agent.isStopped = false;
+        ctx.Agent.Warp(ctx.Self.position);
     }
 
     public void StartJump(Vector3 _startPosition)
@@ -62,7 +62,7 @@ public class EnemyJumpAttackStrategy : EnemyAttackStrategyBase
         _jumping = true;
     }
 
-    public void UpdateJump(Transform transform, NavMeshAgent agent, Collider collider)
+    public void UpdateJump(Transform transform, Collider collider)
     {
         if (!_jumping) return;
 
@@ -80,10 +80,13 @@ public class EnemyJumpAttackStrategy : EnemyAttackStrategyBase
 
         RaycastHit hit;
         int groundOnlyMask = LayerMask.GetMask("Ground", "Player");
+
         if (t < 1f)
             transform.position = nextPos;
-        else if(Physics.Raycast(transform.position + Vector3.up * 0.5f, Vector3.down, out hit, 2.0f, groundOnlyMask))
+        else if (Physics.Raycast(transform.position + Vector3.up * 0.5f, Vector3.down, out hit, 2.0f, groundOnlyMask))
         {
+            EffectManager.Instance.Play(ObjectType.Boss, EffectType.Ground, hit.point, Quaternion.identity, 1.5f, 0.55f);
+
             transform.position = new Vector3(transform.position.x, hit.point.y, transform.position.z);
             _jumping = false;
             collider.isTrigger = false;

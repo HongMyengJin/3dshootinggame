@@ -52,9 +52,10 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
         // _controller = GetComponentInParent<CharacterController>();
         _target = GameObject.FindGameObjectWithTag("Player").transform;
 
-        // _agent = GetComponentInParent<NavMeshAgent>();
+        _agent = GetComponentInParent<NavMeshAgent>();
         _rigidbody = GetComponentInChildren<Rigidbody>();
-        // _agent.speed = _stat.MoveSpeed;
+
+        _agent.speed = _stat.MoveSpeed;
 
         _animator = GetComponent<Animator>();
         _collider = GetComponentInChildren<Collider>();

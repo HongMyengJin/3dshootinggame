@@ -29,47 +29,59 @@ public class EffectManager : MonoBehaviour
     }
 
 
-    [SerializeField] private List<EffectInfo> effects;
-    private readonly Dictionary<EffectType, Queue<GameObject>> effectPool = new Dictionary<EffectType, Queue<GameObject>>();
-
+    [SerializeField] private List<EffectPresetSO> _presets;
+    private readonly Dictionary<ObjectType, EffectPresetSO> _presetMap = new();
+    private readonly Dictionary<GameObject, Queue<GameObject>> _pool = new();
 
     private void PreloadEffect()
     {
-        foreach (var effect in effects)
+        foreach (EffectPresetSO preset in _presets)
         {
-            Queue<GameObject> pool = new Queue<GameObject>();
-            for (int i = 0; i < effect.preloadCount; i++)
+            _presetMap[preset.Target] = preset;
+
+            foreach (EffectPresetSO.EffectInfo pair in preset.Effects)
             {
-                GameObject obj = Instantiate(effect.prefab);
-                obj.SetActive(false);
-                pool.Enqueue(obj);
+                if (!_pool.ContainsKey(pair.prefab))
+                    _pool[pair.prefab] = new Queue<GameObject>();
+
+                for (int i = 0; i < pair.preloadCount; i++)
+                {
+                    GameObject obj = Instantiate(pair.prefab);
+                    obj.SetActive(false);
+                    _pool[pair.prefab].Enqueue(obj);
+                }
             }
-            effectPool.Add(effect.effectType, pool);
         }
     }
 
-    public void Play(EffectType effectType, Vector3 position, Quaternion rotation = default)
+    public void Play(ObjectType target, EffectType type, Vector3 position, Quaternion rotation, float playTime = 1.0f, float waitTime = 0.0f)
     {
-        if (!effectPool.TryGetValue(effectType, out var queue)) // 이펙트x
+        if (!_presetMap.TryGetValue(target, out var preset)) 
             return;
 
-        GameObject obj = queue.Count > 0 ? queue.Dequeue() : Instantiate(GetPrefab(effectType));
+        GameObject prefab = preset.GetPrefab(type);
+        if (prefab == null) 
+            return;
 
+        if (!_pool.TryGetValue(prefab, out var queue))
+        {
+            queue = new Queue<GameObject>();
+            _pool[prefab] = queue;
+        }
+
+        GameObject obj = queue.Count > 0 ? queue.Dequeue() : Instantiate(prefab);
         obj.transform.SetPositionAndRotation(position, rotation);
+
+        StartCoroutine(ReleaseAfter(prefab, obj, playTime, waitTime));
+    }
+
+    private IEnumerator ReleaseAfter(GameObject prefab, GameObject obj, float delay, float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
         obj.SetActive(true);
 
-        StartCoroutine(ReleaseAfter(effectType, obj, 2f)); // 2초 후에 비활성화
-    }
-
-    GameObject GetPrefab(EffectType effectType)
-    {
-        return effects.Find(effect => effect.effectType == effectType)?.prefab;
-    }
-
-    IEnumerator ReleaseAfter(EffectType effectType, GameObject obj, float time)
-    {
-        yield return new WaitForSeconds(time);
+        yield return new WaitForSeconds(delay);
         obj.SetActive(false);
-        effectPool[effectType].Enqueue(obj);
+        _pool[prefab].Enqueue(obj);
     }
 }

@@ -20,9 +20,8 @@ public class EliteEnemyAttackState : EnemyAttackStateBase
     {
         float distance = Vector3.Distance(context.Self.position, context.Target.position);
 
-        EnemyAttackType selectedType = EnemyAttackType.EnemyAttackTypeEnd;
+        EnemyAttackType selectedType = EnemyAttackType.Punch;
 
-        if (distance < 13f) selectedType = EnemyAttackType.Jump;
         //if (context.ShouldBlock()) selectedType = EnemyAttackType.Shield;
         //else if (distance < 2f) selectedType = EnemyAttackType.Punch;
         //else if (distance < 4f) selectedType = EnemyAttackType.Jump;
@@ -44,13 +43,14 @@ public class EliteEnemyAttackState : EnemyAttackStateBase
         {
             EnemyAttackType selectedType = GetSelectAndExecuteStrategy();
             if (selectedType != EnemyAttackType.EnemyAttackTypeEnd &&
+                Vector3.Distance(context.Self.position, context.Target.position) < context.State.AttackDistance &&
                 strategies.TryGetValue(selectedType, out var strategy) && strategy.CanUse())
             {
                 _currentStrategy = strategy;
                 _currentAttackType = selectedType;
                 _currentStrategy.Execute(context);
             }
-            else if(Vector3.Distance(context.Self.position, context.Target.position) > context.State.AttackDistance)
+            else if(Vector3.Distance(context.Self.position, context.Target.position) < context.State.FindDistance)
                 context.ScheduleStateChange(EnemyStateType.Chase);
         }
     }

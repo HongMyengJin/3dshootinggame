@@ -163,7 +163,8 @@ public class PlayerWeaponHandler : MonoBehaviour
             {
                 Value = 10,
                 From = _muzzlePosition.gameObject,
-                Dir = hitDir
+                Dir = hitDir,
+                Position = hitInfo.point
             };
 
             damageable.TakeDamage(damage);

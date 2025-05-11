@@ -20,13 +20,16 @@ public class WeaponHitBox : MonoBehaviour
         // if ((!isHitboxActive) || (!LayerMaskExtensions.Contains(targetLayer, other.gameObject))) return;
 
         Vector3 dir = (other.transform.position - transform.position).normalized;
+        Vector3 hitPoint = other.ClosestPoint(transform.position);
+
         if (other.TryGetComponent(out IDamageable damageable))
         {
             Damage damage = new Damage
             {
                 Value = _damage,
                 From = this.gameObject,
-                Dir = dir
+                Dir = dir,
+                Position = hitPoint
             };
             damageable.TakeDamage(damage);
         }
