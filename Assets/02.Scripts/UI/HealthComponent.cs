@@ -8,10 +8,13 @@ public class HealthComponent : MonoBehaviour
     [SerializeField] private float _maxHealth = 100f;
     private float _currentHealth;
 
+    public float HpPercent => _currentHealth / _maxHealth;
+
     private void Awake()
     {
         _currentHealth = _maxHealth;
     }
+
 
     public void TakeDamage(float damage)
     {

@@ -3,56 +3,46 @@ using Unity.VisualScripting;
 using UnityEngine;
 public class EliteEnemyAttackState : EnemyAttackStateBase
 {
+    private readonly PhaseAttackSelector _selector;
     private EnemyAttackStrategyBase _currentStrategy;
+    private EnemyAttackStrategyBase _preStrategy;
     private EnemyAttackType _currentAttackType = EnemyAttackType.EnemyAttackTypeEnd;
 
-    public EliteEnemyAttackState(DissolveController shieldController)
+    public EliteEnemyAttackState(List<PhaseDataSO> phaseDataList, DissolveController shieldController)
     {
-        strategies = new Dictionary<EnemyAttackType, EnemyAttackStrategyBase>
-        {
-            { EnemyAttackType.Punch, new EnemyPunchAttackStrategy() },
-            { EnemyAttackType.Jump, new EnemyJumpAttackStrategy() },
-            { EnemyAttackType.Throw, new EnemyThrowAttackStrategy() },
-            { EnemyAttackType.Shield, new EnemyShieldDefenseStrategy(shieldController) }
-        };
-    }
-    private EnemyAttackType GetSelectAndExecuteStrategy()
-    {
-        float distance = Vector3.Distance(context.Self.position, context.Target.position);
-
-        EnemyAttackType selectedType = EnemyAttackType.Punch;
-
-        //if (context.ShouldBlock()) selectedType = EnemyAttackType.Shield;
-        //else if (distance < 2f) selectedType = EnemyAttackType.Punch;
-        //else if (distance < 4f) selectedType = EnemyAttackType.Jump;
-        //else if (distance < 6f) selectedType = EnemyAttackType.Throw;
-
-        return selectedType;
+        _selector = new PhaseAttackSelector(phaseDataList, shieldController);
     }
 
     public override void Enter(IEnemyContext ctx)
     {
+        _currentStrategy = null;
         context = ctx as IEnemyAttackContext;
     }
 
     public override void Update()
     {
+        _preStrategy = _currentStrategy;
+        Debug.Log($"현재 공격 전략: {_currentStrategy} ");
         if (context == null) return;
-        _currentStrategy?.Update(context);
+
+        _selector.UpdatePhase(context.HpPercent);
+
         if (_currentStrategy == null || _currentStrategy.IsFinished())
         {
-            EnemyAttackType selectedType = GetSelectAndExecuteStrategy();
-            if (selectedType != EnemyAttackType.EnemyAttackTypeEnd &&
-                Vector3.Distance(context.Self.position, context.Target.position) < context.State.AttackDistance &&
-                strategies.TryGetValue(selectedType, out var strategy) && strategy.CanUse())
-            {
-                _currentStrategy = strategy;
-                _currentAttackType = selectedType;
-                _currentStrategy.Execute(context);
-            }
-            else if(Vector3.Distance(context.Self.position, context.Target.position) < context.State.FindDistance)
+            _currentStrategy = _selector.SelectStrategy(context);
+
+            bool shouldChase = _currentStrategy == null && Vector3.Distance(context.Self.position, context.Target.position) < context.State.AttackDistance;
+
+            if (shouldChase)
                 context.ScheduleStateChange(EnemyStateType.Chase);
+
+            if (_preStrategy != _currentStrategy)
+            {
+                _currentStrategy?.Execute(context);
+            }
         }
+
+        _currentStrategy?.Update(context);
     }
 
     public override void LateUpdate()

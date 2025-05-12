@@ -7,8 +7,8 @@ public class EnemyShieldDefenseStrategy : EnemyAttackStrategyBase
     {
         _shieldController = shieldController;
 
-        _cooldown = 6f;
-        _duration = 1f;
+        _cooldown = 2.0f;
+        _duration = 5f;
     }
 
     protected override void StartAttack(IEnemyAttackContext ctx)
