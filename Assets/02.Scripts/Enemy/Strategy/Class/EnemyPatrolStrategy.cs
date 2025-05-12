@@ -9,8 +9,6 @@ public class EnemyPatrolStragegy : IEnemyStrategy<IEnemyPatrolContext>
             return;
 
         NavMeshAgent Agent = context.Agent;
-        float speed = Agent.velocity.magnitude;
-        context.Animator.SetFloat("MoveSpeed", speed);
 
         if (!Agent.pathPending && Agent.remainingDistance < context.State.DistanceGap)
         {
@@ -19,10 +17,14 @@ public class EnemyPatrolStragegy : IEnemyStrategy<IEnemyPatrolContext>
     }
     public void Update(IEnemyPatrolContext context)
     {
-
+        NavMeshAgent Agent = context.Agent;
+        float speed = Agent.velocity.magnitude;
+        context.Animator.SetFloat("MoveSpeed", speed);
     }
     public void Exit(IEnemyPatrolContext context)
     {
+        if(context.Agent == null)
+            return;
         NavMeshAgent agent = context.Agent;
 
         agent.isStopped = true;

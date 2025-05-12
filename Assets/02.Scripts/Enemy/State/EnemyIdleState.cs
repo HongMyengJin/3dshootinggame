@@ -28,6 +28,9 @@ public class EnemyIdleState : IEnemyState
 
         context.ScheduleStateChange(EnemyStateType.Patrol, context.State.PatrolWaitTime);
     }
+    public void LateUpdate()
+    {
+    }
     public void Exit()
     {
         idleStrategy.Exit(context);

@@ -51,7 +51,7 @@ public class CFX_SpawnSystem : MonoBehaviour
 				{
 					if(instance.instantiateIfNeeded)
 					{
-						Debug.Log("[CFX_SpawnSystem.GetNextObject()] A new instance has been created for \"" + sourceObj.name + "\" because no active instance were found in the pool.\n", instance);
+						Debug.Log("[CFX_SpawnSystem.GetNextObject()] A new instance has been created for \"" + sourceObj.name + "\" because no active instance were found in the _pool.\n", instance);
 						PreloadObject(sourceObj);
 						var list = instance.instantiatedObjects[uniqueId];
 						returnObj = list[list.Count-1];
@@ -59,7 +59,7 @@ public class CFX_SpawnSystem : MonoBehaviour
 					}
 					else
 					{
-						Debug.LogWarning("[CFX_SpawnSystem.GetNextObject()] There are no active instances available in the pool for \"" + sourceObj.name +"\"\nYou may need to increase the preloaded object count for this prefab?", instance);
+						Debug.LogWarning("[CFX_SpawnSystem.GetNextObject()] There are no active instances available in the _pool for \"" + sourceObj.name +"\"\nYou may need to increase the preloaded object count for this prefab?", instance);
 						return null;
 					}
 				}

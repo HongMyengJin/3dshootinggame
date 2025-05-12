@@ -1,28 +1,31 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 public class EliteEnemyAttackState : EnemyAttackStateBase
 {
-    private EnemyAttackStrategyBase currentStrategy;
+    private EnemyAttackStrategyBase _currentStrategy;
+    private EnemyAttackType _currentAttackType = EnemyAttackType.EnemyAttackTypeEnd;
 
-    public EliteEnemyAttackState()
+    public EliteEnemyAttackState(DissolveController shieldController)
     {
         strategies = new Dictionary<EnemyAttackType, EnemyAttackStrategyBase>
         {
             { EnemyAttackType.Punch, new EnemyPunchAttackStrategy() },
             { EnemyAttackType.Jump, new EnemyJumpAttackStrategy() },
             { EnemyAttackType.Throw, new EnemyThrowAttackStrategy() },
-            { EnemyAttackType.Shield, new EnemyShieldDefenseStrategy() }
+            { EnemyAttackType.Shield, new EnemyShieldDefenseStrategy(shieldController) }
         };
     }
     private EnemyAttackType GetSelectAndExecuteStrategy()
     {
         float distance = Vector3.Distance(context.Self.position, context.Target.position);
 
-        EnemyAttackType selectedType = EnemyAttackType.EnemyAttackTypeEnd;
-        if (context.ShouldBlock()) selectedType = EnemyAttackType.Shield;
-        else if (distance < 2f) selectedType = EnemyAttackType.Punch;
-        else if (distance < 4f) selectedType = EnemyAttackType.Jump;
-        else if (distance < 6f) selectedType = EnemyAttackType.Throw;
+        EnemyAttackType selectedType = EnemyAttackType.Punch;
+
+        //if (context.ShouldBlock()) selectedType = EnemyAttackType.Shield;
+        //else if (distance < 2f) selectedType = EnemyAttackType.Punch;
+        //else if (distance < 4f) selectedType = EnemyAttackType.Jump;
+        //else if (distance < 6f) selectedType = EnemyAttackType.Throw;
 
         return selectedType;
     }
@@ -35,25 +38,34 @@ public class EliteEnemyAttackState : EnemyAttackStateBase
     public override void Update()
     {
         if (context == null) return;
-
-        currentStrategy?.Update(context);
-
-        if (currentStrategy == null || currentStrategy.IsFinished())
+        _currentStrategy?.Update(context);
+        if (_currentStrategy == null || _currentStrategy.IsFinished())
         {
             EnemyAttackType selectedType = GetSelectAndExecuteStrategy();
             if (selectedType != EnemyAttackType.EnemyAttackTypeEnd &&
+                Vector3.Distance(context.Self.position, context.Target.position) < context.State.AttackDistance &&
                 strategies.TryGetValue(selectedType, out var strategy) && strategy.CanUse())
             {
-                currentStrategy = strategy;
-                currentStrategy.Execute(context);
+                _currentStrategy = strategy;
+                _currentAttackType = selectedType;
+                _currentStrategy.Execute(context);
             }
-            else if(Vector3.Distance(context.Self.position, context.Target.position) > context.State.AttackDistance)
+            else if(Vector3.Distance(context.Self.position, context.Target.position) < context.State.FindDistance)
                 context.ScheduleStateChange(EnemyStateType.Chase);
         }
     }
 
+    public override void LateUpdate()
+    {
+        
+    }
     public override void Exit()
     {
-        currentStrategy?.Exit(context);
+        _currentStrategy?.Exit(context);
+    }
+
+    public EnemyAttackType GetCurrentAttackType()
+    {
+        return _currentAttackType;
     }
 }

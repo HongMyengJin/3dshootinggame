@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85ad6a03f9c7f984fb296818d7ef85da, type: 3}
   m_Name: EliteEnemyStatSO
   m_EditorClassIdentifier: 
-  findDistance: 10
+  findDistance: 20
   attackDistance: 8
-  returnDistance: 20
+  returnDistance: 30
   distanceGap: 0.1
   moveSpeed: 2
   attackCooldown: 2

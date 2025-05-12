@@ -13,13 +13,13 @@ public class Barrel : MonoBehaviour, IDamageable
 
         if (Health <= 0)
         {
-            EffectManager.Instance.Play(EffectType.BarrelBomb, transform.position);
+            // EffectManager.Instance.Play(EffectType.BarrelBomb, transform.position);
             TriggerExplosion();
             ExplodeSelf();
             return;
         }
 
-        EffectManager.Instance.Play(EffectType.BarrelHit, transform.position);
+        // EffectManager.Instance.Play(EffectType.BarrelHit, transform.position);
     }
 
     public void TriggerExplosion()
@@ -65,6 +65,6 @@ public class Barrel : MonoBehaviour, IDamageable
         Vector3 randomTorque = Random.onUnitSphere * Power; 
         rb.AddTorque(randomTorque, ForceMode.Impulse);
 
-        EffectManager.Instance.Play(EffectType.BarrelBomb, transform.position);
+        // EffectManager.Instance.Play(EffectType.BarrelBomb, transform.position);
     }
 }

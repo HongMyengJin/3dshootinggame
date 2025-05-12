@@ -27,6 +27,10 @@ public class EnemyDamagedState : IEnemyState
             return;
         damagedStrategy.Update(context);
     }
+
+    public void LateUpdate()
+    {
+    }
     public void Exit()
     {
         damagedStrategy.Exit(context);

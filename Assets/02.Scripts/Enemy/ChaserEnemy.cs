@@ -27,6 +27,7 @@ public class ChaserEnemy : EnemyBase, IDamageable, IEnemyChaseContext, IEnemyDam
         _currentState?.Update();
     }
 
+
     public override void TakeDamage(Damage damage)
     {
         _healthComponent.TakeDamage(damage.Value);

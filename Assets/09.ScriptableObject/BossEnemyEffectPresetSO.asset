@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5273b33c3190bd447bf5c731ddcea818, type: 3}
+  m_Name: BossEnemyEffectPresetSO
+  m_EditorClassIdentifier: 
+  Target: 2
+  Effects:
+  - type: 3
+    prefab: {fileID: 582853664019174547, guid: a0660d9cfc454c34dabb8d0be44705d5, type: 3}
+    preloadCount: 5
+  - type: 1
+    prefab: {fileID: 5819595443806514721, guid: 7caa964ea1a24d244bf002b6247b8f0a, type: 3}
+    preloadCount: 5
