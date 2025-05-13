@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 public class EnemyShieldDefenseStrategy : EnemyAttackStrategyBase
 {
@@ -7,12 +8,16 @@ public class EnemyShieldDefenseStrategy : EnemyAttackStrategyBase
     {
         _shieldController = shieldController;
 
-        _cooldown = 2.0f;
+        _cooldown = 5.0f;
         _duration = 5f;
     }
 
     protected override void StartAttack(IEnemyAttackContext ctx)
     {
+        AnimationClip clip = ctx.Animator.runtimeAnimatorController.animationClips
+        .FirstOrDefault(c => c.name == "Shield");
+        _duration = clip.length;
+
         ctx.Animator.SetBool("Shield", true);
         _shieldController.Show();
     }

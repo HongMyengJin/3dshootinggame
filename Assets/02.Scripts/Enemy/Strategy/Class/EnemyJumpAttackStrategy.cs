@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -14,12 +15,16 @@ public class EnemyJumpAttackStrategy : EnemyAttackStrategyBase
     private Quaternion _targetRotation;
     public EnemyJumpAttackStrategy()
     {
-        _cooldown = 5f;
-        _duration = 5.0f;
+        _cooldown = 5.0f;
+        _duration = 3.0f;
     }
 
     protected override void StartAttack(IEnemyAttackContext ctx)
     {
+        AnimationClip clip = ctx.Animator.runtimeAnimatorController.animationClips
+        .FirstOrDefault(c => c.name == "Mutant Jump Attack");
+        _duration = clip.length * 0.5f;
+
         ctx.Agent.isStopped = true;
         ctx.Collider.isTrigger = true;
         ctx.Animator.SetTrigger("JumpAttack");

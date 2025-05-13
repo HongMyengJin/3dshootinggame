@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minHpPercent: 0.6
   maxHpPercent: 1
-  allowedAttacks: 0300000001000000
+  allowedAttacks: 0100000002000000

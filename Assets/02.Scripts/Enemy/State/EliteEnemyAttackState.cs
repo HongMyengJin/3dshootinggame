@@ -6,7 +6,15 @@ public class EliteEnemyAttackState : EnemyAttackStateBase
     private readonly PhaseAttackSelector _selector;
     private EnemyAttackStrategyBase _currentStrategy;
     private EnemyAttackStrategyBase _preStrategy;
-    private EnemyAttackType _currentAttackType = EnemyAttackType.EnemyAttackTypeEnd;
+    // private EnemyAttackType _currentAttackType = EnemyAttackType.EnemyAttackTypeEnd;
+    private float _lastUsedTime = 0.0f;
+    private float _cooldown = 5.0f;
+    public bool CanUse()
+    {
+        bool use = (Time.time - _lastUsedTime) > _cooldown;
+        Debug.Log($"사용 가능: {use} , 쿨타임: {_cooldown}, 지난 시간: {_lastUsedTime}, 계산 시간: {(Time.time - _lastUsedTime)}");
+        return use;
+    }
 
     public EliteEnemyAttackState(List<PhaseDataSO> phaseDataList, DissolveController shieldController)
     {
@@ -27,18 +35,22 @@ public class EliteEnemyAttackState : EnemyAttackStateBase
 
         _selector.UpdatePhase(context.HpPercent);
 
-        if (_currentStrategy == null || _currentStrategy.IsFinished())
+        if (_currentStrategy == null || (_currentStrategy.IsFinished() && CanUse()))
         {
             _currentStrategy = _selector.SelectStrategy(context);
-
-            bool shouldChase = _currentStrategy == null && Vector3.Distance(context.Self.position, context.Target.position) < context.State.AttackDistance;
-
-            if (shouldChase)
-                context.ScheduleStateChange(EnemyStateType.Chase);
-
-            if (_preStrategy != _currentStrategy)
+            if( _currentStrategy != null)
             {
-                _currentStrategy?.Execute(context);
+                _currentStrategy.Execute(context);
+                _lastUsedTime = Time.time;
+                Debug.Log($"현재 전략: {_currentStrategy.GetType().Name}");
+            }
+            else
+            {
+                if(Vector3.Distance(context.Self.position, context.Target.position) < context.State.FindDistance)
+                    context.ScheduleStateChange(EnemyStateType.Chase);
+                else
+                    context.ScheduleStateChange(EnemyStateType.Patrol);
+
             }
         }
 
@@ -54,8 +66,8 @@ public class EliteEnemyAttackState : EnemyAttackStateBase
         _currentStrategy?.Exit(context);
     }
 
-    public EnemyAttackType GetCurrentAttackType()
-    {
-        return _currentAttackType;
-    }
+    //public EnemyAttackType GetCurrentAttackType()
+    //{
+    //    return _currentAttackType;
+    //}
 }

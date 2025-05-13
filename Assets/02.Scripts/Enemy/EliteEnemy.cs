@@ -52,12 +52,12 @@ public class EliteEnemy : EnemyBase, IDamageable, IEnemyIdleContext, IEnemyChase
     {
         EliteEnemyAttackState eliteEnemyAttackState = _currentState as EliteEnemyAttackState;
 
-        if (_currentType == EnemyStateType.Attack 
-            && eliteEnemyAttackState != null 
-            && eliteEnemyAttackState.GetCurrentAttackType() == EnemyAttackType.Shield)
-        {
-            return; // 현재 실드 상태이면 데미지 X
-        }
+        //if (_currentType == EnemyStateType.Attack 
+        //    && eliteEnemyAttackState != null 
+        //    && eliteEnemyAttackState.GetCurrentAttackType() == EnemyAttackType.Shield)
+        //{
+        //    return; // 현재 실드 상태이면 데미지 X
+        //}
 
         EffectManager.Instance.Play(ObjectType.Boss, EffectType.Hit, damage.Position, Quaternion.identity, 0.8f);
 

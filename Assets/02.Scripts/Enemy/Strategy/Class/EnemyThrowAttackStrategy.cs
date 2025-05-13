@@ -1,14 +1,18 @@
+using System.Linq;
 using UnityEngine;
 
 public class EnemyThrowAttackStrategy : EnemyAttackStrategyBase
 {
     public EnemyThrowAttackStrategy()
     {
-        _cooldown = 4f;
-        _duration = 5.0f;
+        _cooldown = 2.0f;
+        _duration = 7.0f;
     }
     protected override void StartAttack(IEnemyAttackContext ctx)
     {
+        AnimationClip clip = ctx.Animator.runtimeAnimatorController.animationClips
+        .FirstOrDefault(c => c.name == "Casting Spell");
+        _duration = clip.length;
         ctx.Animator.SetTrigger("Throw");
     }
 

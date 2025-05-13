@@ -5,16 +5,15 @@ public abstract class EnemyAttackStrategyBase : IEnemyStrategy<IEnemyAttackConte
 {
     protected float _cooldown;
     protected float _duration;
-    protected float _lastUsedTime;
+
     protected bool _isFinished;
+    protected float _lastUsedTime;
 
-    public bool CanUse() => Time.time - _lastUsedTime > _cooldown;
     public bool IsFinished() => _isFinished;
-
+    public bool CanUse() => Time.time - _lastUsedTime > _cooldown;
     public virtual void Execute(IEnemyAttackContext ctx)
     {
         _isFinished = false;
-        _lastUsedTime = Time.time;
         StartAttack(ctx);
         ctx.StartCoroutine(EndAfter(ctx));
     }
@@ -24,6 +23,7 @@ public abstract class EnemyAttackStrategyBase : IEnemyStrategy<IEnemyAttackConte
     protected virtual IEnumerator EndAfter(IEnemyAttackContext ctx)
     {
         yield return new WaitForSeconds(_duration);
+        _lastUsedTime = Time.time;
         _isFinished = true;
     }
 
