@@ -16,6 +16,8 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
     [SerializeField] protected HealthBarController _healthBarController;
     [SerializeField] protected Animator _animator;
     [SerializeField] protected Collider _collider;
+    [SerializeField] protected float _health;
+    
     protected Rigidbody _rigidbody;
     // --- 상태 관련 ---
     protected readonly Dictionary<EnemyStateType, IEnemyState> stateMap = new();
@@ -24,8 +26,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
     protected EnemyStateType _sheduledChangeType;              
     protected Coroutine _scheduledTransition;                  
 
-    // --- 전투 및 위치 데이터 ---
-    [SerializeField] protected int _health;                   
+    // --- 전투 및 위치 데이터 ---               
     protected Vector3 _startPosition;                         
     protected Vector3 _knockbackDirection;                    
 
@@ -36,7 +37,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
     public Rigidbody Rigidbody => _rigidbody;
     // public CharacterController Controller => _controller;
     public EnemyStatSO State => _stat;
-    public int Health => _health;
+    public float Health => _health;
 
     public Vector3 StartPoint => _startPosition;
     public Vector3 KnockbackDirection => _knockbackDirection;
@@ -44,8 +45,10 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
     public Transform Transform => transform;
     public Animator Animator => _animator;
     public Collider Collider => _collider;
+    public float HpPercent => _healthComponent == null ? 0.0f : _healthComponent.HpPercent;
 
     public EnemyStateType CurrentType => _currentType;
+
     protected virtual void Awake()
     {
         _startPosition = transform.position;
@@ -75,6 +78,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
         _currentState?.Exit();        
         if (stateMap.TryGetValue(next, out var nextState))
         {
+            Debug.Log($"스테이트 변경: {nextState} ");
             _currentState = nextState;
             _currentType = next;
             _currentState.Enter(this);
@@ -89,7 +93,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemyContext, IEnemy
 
     public void ScheduleStateChange(EnemyStateType next, float delay)
     {
-        if (stateMap.TryGetValue(next, out var nextState))
+        if (stateMap.TryGetValue(next, out var nextState) && next != CurrentType)
         {
             _scheduledTransition = StartCoroutine(DelayedChange(next, delay));
         }

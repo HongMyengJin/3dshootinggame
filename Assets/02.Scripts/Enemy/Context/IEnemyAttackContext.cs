@@ -6,4 +6,5 @@ public interface IEnemyAttackContext : IEnemyContext
 {
     Collider Collider { get; }
     bool ShouldBlock();
+    float HpPercent { get; }
 }

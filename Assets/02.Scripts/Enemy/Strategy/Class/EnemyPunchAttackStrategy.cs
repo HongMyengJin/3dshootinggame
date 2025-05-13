@@ -5,7 +5,7 @@ public class EnemyPunchAttackStrategy : EnemyAttackStrategyBase
     public EnemyPunchAttackStrategy()
     {
         _cooldown = 4f;
-        _duration = 1.2f;
+        _duration = 5.0f;
     }
     protected override void StartAttack(IEnemyAttackContext ctx)
     {

@@ -4,7 +4,6 @@ public class RunState : IGameState
 {
     public void Enter()
     {
-        Debug.Log("Enter Run");
         PlayerManager.Instance.EnableControl();
         CameraManager.Instance.EnableControl();
         GameManager.Instance.StartCoroutine(ShowStartText());
@@ -12,7 +11,6 @@ public class RunState : IGameState
 
     public void Exit()
     {
-        Debug.Log("Exit Run");
     }
 
     private IEnumerator ShowStartText()

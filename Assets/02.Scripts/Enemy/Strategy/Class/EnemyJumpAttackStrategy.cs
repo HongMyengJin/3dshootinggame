@@ -15,7 +15,7 @@ public class EnemyJumpAttackStrategy : EnemyAttackStrategyBase
     public EnemyJumpAttackStrategy()
     {
         _cooldown = 5f;
-        _duration = 1.0f;
+        _duration = 5.0f;
     }
 
     protected override void StartAttack(IEnemyAttackContext ctx)

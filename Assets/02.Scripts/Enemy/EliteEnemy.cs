@@ -10,6 +10,7 @@ public class EliteEnemy : EnemyBase, IDamageable, IEnemyIdleContext, IEnemyChase
 {
     [SerializeField] private Transform[] _patrolPoints;
     [SerializeField] private DissolveController _shieldController;
+    [SerializeField] private List<PhaseDataSO> _phaseDataList;
 
     private int patrolIndex;
 
@@ -28,7 +29,7 @@ public class EliteEnemy : EnemyBase, IDamageable, IEnemyIdleContext, IEnemyChase
     {
         stateMap.Add(EnemyStateType.Idle, new EnemyIdleState(new EnemyIdleStrategy()));
         stateMap.Add(EnemyStateType.Chase, new EnemyChaseState(new EnemyChaseStragegy()));
-        stateMap.Add(EnemyStateType.Attack, new EliteEnemyAttackState(_shieldController));
+        stateMap.Add(EnemyStateType.Attack, new EliteEnemyAttackState(_phaseDataList, _shieldController));
         stateMap.Add(EnemyStateType.Damaged, new EnemyDamagedState(new EnemyDamagedStragegy(), EnemyStateType.Chase));
         stateMap.Add(EnemyStateType.Return, new EnemyReturnState(new EnemyReturnStragegy()));
         stateMap.Add(EnemyStateType.Patrol, new EnemyPatrolState(new EnemyPatrolStragegy()));
@@ -38,6 +39,7 @@ public class EliteEnemy : EnemyBase, IDamageable, IEnemyIdleContext, IEnemyChase
 
     protected override void Update()
     {
+        Debug.Log($"현재 스테이트: {_currentState} ");
         _currentState?.Update();
     }
 
@@ -73,15 +75,5 @@ public class EliteEnemy : EnemyBase, IDamageable, IEnemyIdleContext, IEnemyChase
     private void LateUpdate()
     {
         _currentState?.LateUpdate();
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        Debug.Log($"현재 트리거 중~ {other.name} ");
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        Debug.Log($"현재 콜리전 중~ {collision.gameObject.name} ");
     }
 }
