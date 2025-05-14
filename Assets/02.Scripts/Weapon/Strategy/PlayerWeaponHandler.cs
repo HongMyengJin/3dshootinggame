@@ -70,7 +70,11 @@ public class PlayerWeaponHandler : MonoBehaviour
 
     private void HandleAttackInput()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            _currentWeaponStrategy?.ToggleActiveStance();
+        }
+        else if (Input.GetMouseButtonDown(0))
         {
             _currentWeaponStrategy?.OnAttackInput();
         }
@@ -125,7 +129,7 @@ public class PlayerWeaponHandler : MonoBehaviour
     }
     public bool IsAttack() // 현재 공격 중 or Aim 상태일 때(조준 중)
     {
-        return _IsAttack || _animator.GetBool("Aim");
+        return _animator.GetBool("Aim");
     }
     public void OnAttackAnimationEvent()
     {

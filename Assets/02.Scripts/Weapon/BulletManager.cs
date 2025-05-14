@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+Ôªøusing System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -39,7 +39,7 @@ public class BulletManager : MonoBehaviour
 
     public GameObject UseBullet(Vector3 position)
     {
-        // 3∞≥ πÃ∏∏ ¿Œµ¶Ω∫ ªÁøÎ
+        // 3Í∞ú ÎØ∏Îßå Ïù∏Îç±Ïä§ ÏÇ¨Ïö©
         _bulletIdx = (++_bulletIdx) % MaxBulletN;
 
         
@@ -47,7 +47,7 @@ public class BulletManager : MonoBehaviour
         BulletObject.SetActive(true);
         _bulletList[_bulletIdx].PlayEffect(position);
 
-        BulletUI.Instance.UpdateBulletN(MaxBulletN - _bulletIdx);
+        BulletUI.Instance?.UpdateBulletN(MaxBulletN - _bulletIdx);
         return BulletObject;
     }
 
@@ -58,6 +58,6 @@ public class BulletManager : MonoBehaviour
             _bulletList[i].gameObject.SetActive(false);
         }
         _bulletIdx = 0;
-        BulletUI.Instance.UpdateBulletN(MaxBulletN - _bulletIdx);
+        BulletUI.Instance?.UpdateBulletN(MaxBulletN - _bulletIdx);
     }
 }

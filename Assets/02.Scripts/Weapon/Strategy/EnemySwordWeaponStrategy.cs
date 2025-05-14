@@ -11,7 +11,10 @@ public class EnemySwordWeaponStrategy : IWeaponStrategy
     {
         _swordHitBox = weaponHitBox;
     }
+    public void ToggleActiveStance()
+    {
 
+    }
     public void OnAttackInput()
     {
     }

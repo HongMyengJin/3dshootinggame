@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 public abstract class EnemyAttackStrategyBase : IEnemyStrategy<IEnemyAttackContext>
@@ -10,7 +10,7 @@ public abstract class EnemyAttackStrategyBase : IEnemyStrategy<IEnemyAttackConte
     protected float _lastUsedTime;
 
     public bool IsFinished() => _isFinished;
-    public bool CanUse() => Time.time - _lastUsedTime > _cooldown;
+    public virtual bool CanUse(IEnemyAttackContext ctx) => Time.time - _lastUsedTime > _cooldown;
     public virtual void Execute(IEnemyAttackContext ctx)
     {
         _isFinished = false;

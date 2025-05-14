@@ -30,10 +30,15 @@ public class PlayerGunWeaponStrategy : IWeaponStrategy
         this._onFire = fireCallback;
     }
 
-    public void OnAttackInput()
+    public void ToggleActiveStance()
     {
         _aim = !_aim;
         _animator.SetBool("Aim", _aim);
+    }
+
+    public void OnAttackInput()
+    {
+        _animator.SetTrigger("Shoot");
     }
     public void Attack()
     {

@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class EnemyShieldDefenseStrategy : EnemyAttackStrategyBase
 {
+    public override bool CanUse(IEnemyAttackContext ctx) => (Time.time - _lastUsedTime > _cooldown) && ctx.ShouldBlock();
     private DissolveController _shieldController;
     public EnemyShieldDefenseStrategy(DissolveController shieldController)
     {

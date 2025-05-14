@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 public class PhaseAttackSelector
@@ -33,7 +33,7 @@ public class PhaseAttackSelector
             if (hpPercent >= phase.minHpPercent && hpPercent <= phase.maxHpPercent)
             {
                 _currentPhase = phase;
-                Debug.Log($"ÇöÀç ÆäÀÌÁî: {_currentPhase.name}");
+                Debug.Log($"í˜„ìž¬ íŽ˜ì´ì¦ˆ: {_currentPhase.name}");
                 return;
             }
         }
@@ -44,7 +44,7 @@ public class PhaseAttackSelector
         foreach (EnemyAttackType type in _currentPhase?.allowedAttacks)
         {
             var strategy = _strategyMap[type];
-            if (strategy != null && strategy.CanUse())
+            if (strategy != null && strategy.CanUse(context))
                 return strategy;
         }
         return null;

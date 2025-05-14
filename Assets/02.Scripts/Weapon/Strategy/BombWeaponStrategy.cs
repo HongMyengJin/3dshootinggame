@@ -21,7 +21,10 @@ public class BombWeaponStrategy : IWeaponStrategy
         this._animator = animator;
         _player = player;
     }
+    public void ToggleActiveStance()
+    {
 
+    }
     public void OnAttackInput()
     {
         _animator.SetTrigger("Throw");

@@ -18,7 +18,10 @@ public class SwordWeaponStrategy : IWeaponStrategy
         this._executionContext = executionContext;
         _swordHitBox = swordHitBox;
     }
+    public void ToggleActiveStance()
+    {
 
+    }
     public void OnAttackInput()
     {
         _animator.SetTrigger("Slash");
